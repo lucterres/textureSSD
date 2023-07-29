@@ -24,6 +24,7 @@ __author__ = 'Maxwell Goldberg'
 import argparse
 import cv2
 import numpy as np
+import time
 
 EIGHT_CONNECTED_NEIGHBOR_KERNEL = np.array([[1., 1., 1.],
                                             [1., 0., 1.],
@@ -251,6 +252,10 @@ def parse_args():
 
 def main():
     args = parse_args()
+    #args.sample_path='examples/161.jpg'
+    #args.out_path = 'result/161_out.jpg'
+    #args.window_height = 100
+    #args.window_width = 100
 
     sample = cv2.imread(args.sample_path)
     if sample is None:
@@ -258,11 +263,18 @@ def main():
 
     validate_args(args)
 
+    # Determine whether the sentiment of text is positive
+    # Use a web service
+
+    tic = time.time() 
+    toc = time.time()
+    print ("Tempo de processamento:" , toc - tic);
     synthesized_texture = synthesize_texture(original_sample=sample, 
                                              window_size=(args.window_height, args.window_width), 
                                              kernel_size=args.kernel_size, 
                                              visualize=args.visualize)
-
+    toc = time.time()
+    print ("Tempo de processamento:" , toc - tic);
     if args.out_path is not None:
         cv2.imwrite(args.out_path, synthesized_texture)
 
