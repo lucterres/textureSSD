@@ -92,7 +92,6 @@ def select_pixel_index(normalized_ssd, indices, method='uniform'):
     # Select a random pixel index from the index list.
     selection = np.random.choice(np.arange(N), size=1, p=weights)
     selected_index = (indices[0][selection], indices[1][selection])
-    
     return selected_index
 
 def get_neighboring_pixel_indices(pixel_mask):
@@ -179,10 +178,12 @@ def initialize_texture_synthesis(original_sample, window_size, kernel_size):
 
     return sample, window, mask, padded_window, padded_mask, result_window
     
-def synthesize_texture(original_sample, window_size, kernel_size, visualize):
+def synthesize_texture(original_sample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
     global gif_count
     (sample, window, mask, padded_window, 
         padded_mask, result_window) = initialize_texture_synthesis(original_sample, window_size, kernel_size)
+    
+    sample = sample * semantic_mask
 
     # Synthesize texture until all pixels in the window are filled.
     while texture_can_be_synthesized(mask):
@@ -193,29 +194,29 @@ def synthesize_texture(original_sample, window_size, kernel_size, visualize):
         neighboring_indices = permute_neighbors(mask, neighboring_indices)
         
         for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
+            if generat_mask[ch, cw]==1:
+                window_slice = padded_window[ch:ch+kernel_size, cw:cw+kernel_size]
+                mask_slice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
 
-            window_slice = padded_window[ch:ch+kernel_size, cw:cw+kernel_size]
-            mask_slice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
+                # Compute SSD for the current pixel neighborhood and select an index with low error.
+                ssd = normalized_ssd(sample, window_slice, mask_slice)
+                indices = get_candidate_indices(ssd)
+                selected_index = select_pixel_index(ssd, indices)
 
-            # Compute SSD for the current pixel neighborhood and select an index with low error.
-            ssd = normalized_ssd(sample, window_slice, mask_slice)
-            indices = get_candidate_indices(ssd)
-            selected_index = select_pixel_index(ssd, indices)
+                # Translate index to accommodate padding.
+                selected_index = (selected_index[0] + kernel_size // 2, selected_index[1] + kernel_size // 2)
 
-            # Translate index to accommodate padding.
-            selected_index = (selected_index[0] + kernel_size // 2, selected_index[1] + kernel_size // 2)
-
-            # Set windows and mask.
-            window[ch, cw] = sample[selected_index]
-            mask[ch, cw] = 1
-            result_window[ch, cw] = original_sample[selected_index[0], selected_index[1]]
-
-            if visualize:
-                cv2.imshow('synthesis window', result_window)
-                key = cv2.waitKey(1) 
-                if key == 27:
-                    cv2.destroyAllWindows()
-                    return result_window
+                # Set windows and mask.
+                window[ch, cw] = sample[selected_index]
+                mask[ch, cw] = 1
+                result_window[ch, cw] = original_sample[selected_index[0], selected_index[1]]
+                
+                if visualize:
+                    cv2.imshow('synthesis window', result_window)
+                    key = cv2.waitKey(1) 
+                    if key == 27:
+                        cv2.destroyAllWindows()
+                        return result_window
 
     if visualize:
         cv2.imshow('synthesis window', result_window)
@@ -241,7 +242,9 @@ def validate_args(args):
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Perform texture synthesis')
-    parser.add_argument('--sample_path', type=str, required=True, help='Path to the texture sample')
+    parser.add_argument('--sample_path', type=str, required=True, help='Path to texture sample')
+    parser.add_argument('--semantic_mask_path', type=str, required=False, help='Path to semantic mask')
+    parser.add_argument('--generat_mask_path', type=str, required=False, help='Path to geracional mask')
     parser.add_argument('--out_path', type=str, required=False, help='Output path for synthesized texture')
     parser.add_argument('--window_height', type=int,  required=False, default=50, help='Height of the synthesis window')
     parser.add_argument('--window_width', type=int, required=False, default=50, help='Width of the synthesis window')
@@ -260,6 +263,18 @@ def main():
     sample = cv2.imread(args.sample_path)
     if sample is None:
         raise ValueError('Unable to read image from sample_path.')
+    
+    if args.semantic_mask_path != "":
+        semantic_mask = cv2.imread(args.semantic_mask_path)
+        semantic_mask = cv2.cvtColor(semantic_mask, cv2.COLOR_BGR2GRAY) / 255
+        if semantic_mask is None:
+            raise ValueError('Unable to read image from sample_path.')
+        
+    if args.generat_mask_path != "":
+        generat_mask = cv2.imread(args.generat_mask_path)
+        generat_mask = cv2.cvtColor(generat_mask, cv2.COLOR_BGR2GRAY) /255 
+        if generat_mask is None:
+            raise ValueError('Unable to read image from sample_path.')
 
     validate_args(args)
 
@@ -270,6 +285,8 @@ def main():
     toc = time.time()
     print ("Tempo de processamento:" , toc - tic);
     synthesized_texture = synthesize_texture(original_sample=sample, 
+                                             semantic_mask = semantic_mask,
+                                             generat_mask = generat_mask,
                                              window_size=(args.window_height, args.window_width), 
                                              kernel_size=args.kernel_size, 
                                              visualize=args.visualize)

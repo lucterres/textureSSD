@@ -12,12 +12,13 @@
             "console": "integratedTerminal",
             "args": [
                 "--visualize",
-                "--sample_path=examples/0c6ec35477.png", 
-                "--out_path=result/0c6ec35477.jpg" ,
-                "--window_height=200",
-                "--window_width=200"
-     
-                
+                "--sample_path=tgs_salt/1bd1c8c771.png", 
+                "--semantic_mask_path=tgs_salt/1bd1c8c771.png" ,
+                "--generat_mask_path=tgs_salt/1bd1c8c771.png" ,
+                "--out_path=result/1bd1c8c771.jpg" ,
+                "--window_height=101",
+                "--window_width=101"
+                   
             ],
             "justMyCode": true
         }
