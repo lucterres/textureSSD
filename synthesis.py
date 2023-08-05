@@ -141,7 +141,7 @@ def initialize_texture_synthesis(original_sample, window_size, kernel_size):
     sample = sample / 255.
 
     # Generate window
-    window = np.zeros(window_size, dtype=np.float64)
+    window = np.zeros(window_size, dtype=int) # dtype=np.float64)
 
     # Generate output window
     if original_sample.ndim == 2:
@@ -270,11 +270,15 @@ def main():
         if semantic_mask is None:
             raise ValueError('Unable to read image from sample_path.')
         
-    if args.generat_mask_path != "":
+    if args.generat_mask_path != "none":
         generat_mask = cv2.imread(args.generat_mask_path)
         generat_mask = cv2.cvtColor(generat_mask, cv2.COLOR_BGR2GRAY) /255 
         if generat_mask is None:
             raise ValueError('Unable to read image from sample_path.')
+    else:
+        idim = args.window_height
+        jdim = args.window_width
+        generat_mask =np.ones((idim,jdim),dtype=int)
 
     validate_args(args)
 

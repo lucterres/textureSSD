@@ -14,10 +14,11 @@
                 "--visualize",
                 "--sample_path=tgs_salt/1bd1c8c771.png", 
                 "--semantic_mask_path=tgs_salt/0a1742c740Mask.png" ,
-                "--generat_mask_path=tgs_salt/1bd1c8c771.png" ,
+                //"--generat_mask_path=tgs_salt/1bd1c8c771.png" ,
+                "--generat_mask_path=none" , 
                 "--out_path=result/1bd1c8c771.jpg" ,
-                "--window_height=101",
-                "--window_width=101"
+                "--window_height=15",
+                "--window_width=15"
                    
             ],
             "justMyCode": true
