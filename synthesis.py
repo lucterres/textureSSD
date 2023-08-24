@@ -243,7 +243,7 @@ def validate_args(args):
 def parse_args():
     parser = argparse.ArgumentParser(description='Perform texture synthesis')
     parser.add_argument('--sample_path', type=str, required=True, help='Path to texture sample')
-    parser.add_argument('--semantic_mask_path', type=str, required=False, help='Path to semantic mask')
+    parser.add_argument('--sample_semantic_mask_path', type=str, required=False, help='Path to semantic mask')
     parser.add_argument('--generat_mask_path', type=str, required=False, help='Path to geracional mask')
     parser.add_argument('--out_path', type=str, required=False, help='Output path for synthesized texture')
     parser.add_argument('--window_height', type=int,  required=False, default=50, help='Height of the synthesis window')
@@ -264,10 +264,10 @@ def main():
     if sample is None:
         raise ValueError('Unable to read image from sample_path.')
     
-    if args.semantic_mask_path != "":
-        semantic_mask = cv2.imread(args.semantic_mask_path)
-        semantic_mask = cv2.cvtColor(semantic_mask, cv2.COLOR_BGR2GRAY) / 255
-        if semantic_mask is None:
+    if args.sample_semantic_mask_path != "":
+        sample_semantic_mask = cv2.imread(args.sample_semantic_mask_path)
+        sample_semantic_mask = cv2.cvtColor(sample_semantic_mask, cv2.COLOR_BGR2GRAY) / 255
+        if sample_semantic_mask is None:
             raise ValueError('Unable to read image from sample_path.')
         
     if args.generat_mask_path != "none":
@@ -289,7 +289,7 @@ def main():
     toc = time.time()
     print ("Tempo de processamento:" , toc - tic);
     synthesized_texture = synthesize_texture(original_sample=sample, 
-                                             semantic_mask = semantic_mask,
+                                             semantic_mask = sample_semantic_mask,
                                              generat_mask = generat_mask,
                                              window_size=(args.window_height, args.window_width), 
                                              kernel_size=args.kernel_size, 

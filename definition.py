@@ -1,9 +1,11 @@
 
+import cv2
 
 # Template Sysnthesis definitions
 #
 # all numpy arrays
-# original_sample - original image, the source pattern to be compared and reproduced
+
+original_sample = cv2.imread("args.sample_path")   #-  original image, the source pattern to be compared and reproduced
 
 # sample - original_sample in gray scale, converted to floating point and 
 #          normalize to the range [0., 1.]
@@ -27,7 +29,7 @@
            # same dimension of window and result_window
 
 
-# semantic_mask - diferent regions of patterns of input image 
+# sample_semantic_mask - diferent regions of patterns of input image 
                    # 0 salt,
                    # 1 litofacies,
                    # 2 frontier
