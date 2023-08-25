@@ -183,7 +183,7 @@ def synthesize_texture(original_sample, semantic_mask, generat_mask, window_size
     (sample, window, mask, padded_window, 
         padded_mask, result_window) = initialize_texture_synthesis(original_sample, window_size, kernel_size)
     
-    sample = sample * semantic_mask
+    #sample = sample * semantic_mask
 
     # Synthesize texture until all pixels in the window are filled.
     while texture_can_be_synthesized(mask):
