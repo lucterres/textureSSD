@@ -269,7 +269,9 @@ def main():
         sample_semantic_mask = cv2.cvtColor(sample_semantic_mask, cv2.COLOR_BGR2GRAY) / 255
         if sample_semantic_mask is None:
             raise ValueError('Unable to read image from sample_path.')
-        
+    else:
+         sample_semantic_mask = sample
+            
     if args.generat_mask_path != "none":
         generat_mask = cv2.imread(args.generat_mask_path)
         generat_mask = cv2.cvtColor(generat_mask, cv2.COLOR_BGR2GRAY) /255 
