@@ -141,7 +141,7 @@ def initialize_texture_synthesis(original_sample, window_size, kernel_size):
     sample = sample / 255.
 
     # Generate window
-    window = np.zeros(window_size, dtype=int) # dtype=np.float64)
+    window = np.zeros(window_size, dtype=np.float64) # dtype=np.float64)
 
     # Generate output window
     if original_sample.ndim == 2:
@@ -283,9 +283,6 @@ def main():
         generat_mask =np.ones((idim,jdim),dtype=int)
 
     validate_args(args)
-
-    # Determine whether the sentiment of text is positive
-    # Use a web service
 
     tic = time.time() 
     toc = time.time()
