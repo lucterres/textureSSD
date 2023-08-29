@@ -12,16 +12,18 @@
             "console": "integratedTerminal",
             "args": [
                 "--visualize",
-                "--sample_path=examples/161.jpg", 
-                "--sample_semantic_mask_path=" ,
-                //"--generat_mask_path=tgs_salt/0a1742c740Mask.png" ,
-                "--generat_mask_path=none" , 
-                "--out_path=result/161.jpg" ,
+                "--sample_path=tgs_salt/1bd1c8c771.png", 
+                "--sample_semantic_mask_path=tgs_salt/1bd1c8c771Mask.png" ,
+                "--generat_mask_path=tgs_salt/0a1742c740Mask.png" ,
+                //"--generat_mask_path=none" , 
+                "--out_path=result/1bd1c8c771.jpg" ,
                 "--window_height=100",
                 "--window_width=100"
+                   
             ],
             "justMyCode": true
         }
     ]
 }
+
 // --sample_path "examples/0b9cb1205a.png" --window_height 100 --window_width 100 --out_path "result/out_2.png" --visualize
