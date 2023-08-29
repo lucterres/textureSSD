@@ -33,7 +33,7 @@ SIGMA_COEFF = 6.4      # The denominator for a 2D Gaussian sigma used in the ref
 ERROR_THRESHOLD = 0.1  # The default error threshold for synthesis acceptance in the reference implementation.
 
 
-def normalized_ssd(sample, window, mask):
+def normalized_ssd(sample, semantic_mask, window, mask):
     wh, ww = window.shape
     sh, sw = sample.shape
 
@@ -199,7 +199,7 @@ def synthesize_texture(original_sample, semantic_mask, generat_mask, window_size
                 mask_slice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
 
                 # Compute SSD for the current pixel neighborhood and select an index with low error.
-                ssd = normalized_ssd(sample, window_slice, mask_slice)
+                ssd = normalized_ssd(sample, semantic_mask, window_slice, mask_slice)
                 indices = get_candidate_indices(ssd)
                 selected_index = select_pixel_index(ssd, indices)
 
