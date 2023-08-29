@@ -33,7 +33,7 @@ SIGMA_COEFF = 6.4      # The denominator for a 2D Gaussian sigma used in the ref
 ERROR_THRESHOLD = 0.1  # The default error threshold for synthesis acceptance in the reference implementation.
 
 
-def normalized_ssd(sample, semantic_mask, window, mask):
+def normalized_ssd(sample, window, mask):
     wh, ww = window.shape
     sh, sw = sample.shape
 
@@ -183,7 +183,14 @@ def synthesize_texture(original_sample, semantic_mask, generat_mask, window_size
     (sample, window, mask, padded_window, 
         padded_mask, result_window) = initialize_texture_synthesis(original_sample, window_size, kernel_size)
     
-    sample = sample * semantic_mask
+    edges = cv2.Canny(semantic_mask,100,200)
+    kernel = np.ones((7,7))
+    dilated_edge = cv2.dilate(edges, kernel, iterations=1)
+    
+    sample = sample * semantic_mask # to only look inside the semantic template
+    sample = sample - dilated_edge
+    
+    # mask = generat_mask
 
     # Synthesize texture until all pixels in the window are filled.
     while texture_can_be_synthesized(mask):
@@ -194,12 +201,12 @@ def synthesize_texture(original_sample, semantic_mask, generat_mask, window_size
         neighboring_indices = permute_neighbors(mask, neighboring_indices)
         
         for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
-            if generat_mask[ch, cw]==1:
+            #if generat_mask[ch, cw]==1: # generate only inside the mask
                 window_slice = padded_window[ch:ch+kernel_size, cw:cw+kernel_size]
                 mask_slice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
 
                 # Compute SSD for the current pixel neighborhood and select an index with low error.
-                ssd = normalized_ssd(sample, semantic_mask, window_slice, mask_slice)
+                ssd = normalized_ssd(sample, window_slice, mask_slice)
                 indices = get_candidate_indices(ssd)
                 selected_index = select_pixel_index(ssd, indices)
 
