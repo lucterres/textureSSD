@@ -14,8 +14,7 @@
                 "--visualize",
                 "--sample_path=tgs_salt/1bd1c8c771.png", 
                 "--sample_semantic_mask_path=tgs_salt/1bd1c8c771Mask.png" ,
-                "--generat_mask_path=tgs_salt/0a1742c740Mask.png" ,
-                //"--generat_mask_path=none" , 
+                "--generat_mask_path=tgs_salt/0bdd44d530Mask.png" , 
                 "--out_path=result/1bd1c8c771.jpg" ,
                 "--window_height=101",
                 "--window_width=101"
@@ -27,3 +26,4 @@
 }
 
 // --sample_path "examples/0b9cb1205a.png" --window_height 100 --window_width 100 --out_path "result/out_2.png" --visualize
+//"--generat_mask_path=none" , 
