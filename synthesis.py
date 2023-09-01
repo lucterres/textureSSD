@@ -25,6 +25,7 @@ import argparse
 import cv2
 import numpy as np
 import time
+import uuid
 
 EIGHT_CONNECTED_NEIGHBOR_KERNEL = np.array([[1., 1., 1.],
                                             [1., 0., 1.],
@@ -177,6 +178,15 @@ def initialize_texture_synthesis(original_sample, window_size, kernel_size):
     mask = padded_mask[win:-win, win:-win]
 
     return sample, window, mask, padded_window, padded_mask, result_window
+
+def sampleBreak(rGBsample, mask):
+    sample = cv2.cvtColor(rGBsample, cv2.COLOR_BGR2GRAY)
+    dilated_edge, zone0, zone1, fullmask = create_Masks(mask)
+    sample_dilated_edge = sample * dilated_edge
+    sample_reduced  = sample * zone0
+    sample_inverted = sample * zone1
+    return sample_dilated_edge, sample_reduced, sample_inverted
+
 # Calculating Masks
 def create_Masks(mask):
     # edge definition
@@ -201,50 +211,37 @@ def create_Masks(mask):
 
     return dilated_edge, zone0, zone1, fullmask
 
-def synthesize_texture(original_sample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
+def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
     global gif_count
-    (sample, window, mask, padded_window, 
-        padded_mask, result_window) = initialize_texture_synthesis(original_sample, window_size, kernel_size)
-    
-    """     
-    dilated_edge, zone0, zone1,full = create_Masks(semantic_mask)
+    (sampleGray, resultGrayWindow, setGenerationDoneMask, padded_window, 
+        padded_mask, resultRGBWindow) = initialize_texture_synthesis(origRGBSample, window_size, kernel_size)
 
-    # the semantic zones template
-    sampleEdge  = sample * dilated_edge 
-    sampleZone0 = sample * zone0 
-    sampleZone1 = sample * zone1  
-
-    
-
-    dilated_edge, zone0, zone1, generat_mask = create_Masks(generat_mask)
-
-    # mask = generat_mask
-    """
+    sample_dilated_edge, sample_reduced, sample_inverted = sampleBreak(origRGBSample, semantic_mask)
+    #sample = sample_dilated_edge
 
     # Synthesize texture until all pixels in the window are filled.
-    while texture_can_be_synthesized(mask):
+    while texture_can_be_synthesized(setGenerationDoneMask):
         # Get neighboring indices
-        neighboring_indices = get_neighboring_pixel_indices(mask)
+        neighboring_indices = get_neighboring_pixel_indices(setGenerationDoneMask)
 
         # Permute and sort neighboring indices by quantity of 8-connected neighbors.
-        neighboring_indices = permute_neighbors(mask, neighboring_indices)
+        neighboring_indices = permute_neighbors(setGenerationDoneMask, neighboring_indices)
         
         for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
+            #if generat_mask[ch, cw] > 0:
                 """
                 if generat_mask[ch, cw]==1.0: # 
-                
                     sample=sampleZone0
                 if generat_mask[ch, cw]==2.0: # 
                     sample=sampleEdge
                 if generat_mask[ch, cw]==3.0: # 
                     sample=sampleZone1     
                 """                                   
-
-                window_slice = padded_window[ch:ch+kernel_size, cw:cw+kernel_size]
-                mask_slice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
+                windowPatchSlice = padded_window[ch:ch+kernel_size, cw:cw+kernel_size]
+                maskPatchSlice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
 
                 # Compute SSD for the current pixel neighborhood and select an index with low error.
-                ssd = normalized_ssd(sample, window_slice, mask_slice)
+                ssd = normalized_ssd(sampleGray, windowPatchSlice, maskPatchSlice)
                 indices = get_candidate_indices(ssd)
                 selected_index = select_pixel_index(ssd, indices)
 
@@ -252,23 +249,23 @@ def synthesize_texture(original_sample, semantic_mask, generat_mask, window_size
                 selected_index = (selected_index[0] + kernel_size // 2, selected_index[1] + kernel_size // 2)
 
                 # Set windows and mask.
-                window[ch, cw] = sample[selected_index]
-                mask[ch, cw] = 1
-                result_window[ch, cw] = original_sample[selected_index[0], selected_index[1]]
+                resultGrayWindow[ch, cw] = sampleGray[selected_index]
+                setGenerationDoneMask[ch, cw] = 1
+                resultRGBWindow[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
                 
                 if visualize:
-                    cv2.imshow('synthesis window', result_window)
+                    cv2.imshow('synthesis window', resultRGBWindow)
                     key = cv2.waitKey(1) 
                     if key == 27:
                         cv2.destroyAllWindows()
-                        return result_window
+                        return resultRGBWindow
 
     if visualize:
-        cv2.imshow('synthesis window', result_window)
+        cv2.imshow('synthesis window', resultRGBWindow)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    return result_window
+    return resultRGBWindow
 
 
 def validate_args(args):
@@ -329,11 +326,13 @@ def main():
 
     validate_args(args)
 
+    dilated_edge, zone0, zone1, fullmask = create_Masks(generat_mask)
+    generat_mask = dilated_edge
 
     tic = time.time() 
     toc = time.time()
     print ("Tempo de processamento:" , toc - tic);
-    synthesized_texture = synthesize_texture(original_sample=sample, 
+    synthesized_texture = synthesize_texture(origRGBSample=sample, 
                                              semantic_mask = sample_semantic_mask,
                                              generat_mask = generat_mask,
                                              window_size=(args.window_height, args.window_width), 
@@ -341,8 +340,9 @@ def main():
                                              visualize=args.visualize)
     toc = time.time()
     print ("Tempo de processamento:" , toc - tic);
-    if args.out_path is not None:
-        cv2.imwrite(args.out_path, synthesized_texture)
+
+    filename = str(uuid.uuid4())[:8] + ".jpg"
+    cv2.imwrite(filename, synthesized_texture)
 
 if __name__ == '__main__':
     main()

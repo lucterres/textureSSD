@@ -1,0 +1,29 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                "--visualize",
+                "--sample_path=tgs_salt/1bd1c8c771.png", 
+                "--sample_semantic_mask_path=tgs_salt/1bd1c8c771Mask.png" ,
+                "--generat_mask_path=tgs_salt/0bdd44d530Mask.png" , 
+                "--out_path=result/1bd1c8c771.jpg" ,
+                "--window_height=101",
+                "--window_width=101"
+                   
+            ],
+            "justMyCode": true
+        }
+    ]
+}
+
+// --sample_path "examples/0b9cb1205a.png" --window_height 100 --window_width 100 --out_path "result/out_2.png" --visualize
+//"--generat_mask_path=none" , 
