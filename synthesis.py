@@ -177,27 +177,24 @@ def initialize_texture_synthesis(original_sample, window_size, kernel_size):
     mask = padded_mask[win:-win, win:-win]
 
     return sample, window, mask, padded_window, padded_mask, result_window
-
+# Calculating Masks
 def create_Masks(mask):
-    # Calculating Masks
-    semantic_mask = cv2.imread("tgs_salt/1bd1c8c771Mask.png")
-    semantic_mask = cv2.cvtColor(semantic_mask, cv2.COLOR_BGR2GRAY) 
-
-    edges = cv2.Canny(semantic_mask,100,200)
+    # edge definition
+    edges = cv2.Canny(mask,100,200)
     kernel = np.ones((11,11))
     dilated_edge = cv2.dilate(edges, kernel, iterations=1)
     inv_edge     = cv2.bitwise_not(dilated_edge)
 
     # Inverting the mask 
-    mask_inverted = cv2.bitwise_not(semantic_mask)
+    mask_inverted = cv2.bitwise_not(mask)
 
     # Normalize to the range [0., 1.]
-    semantic_mask = semantic_mask.astype(np.float64) / 255.
+    mask = mask.astype(np.float64) / 255.
     mask_inverted = mask_inverted.astype(np.float64) / 255.
     dilated_edge = dilated_edge.astype(np.float64) / 255.
     inv_edge     = inv_edge.astype(np.float64) / 255.
 
-    zone0 = semantic_mask * inv_edge
+    zone0 = mask * inv_edge
     zone1 = mask_inverted * inv_edge
 
     fullmask = zone0*1 + dilated_edge*2 +zone1*3
@@ -209,16 +206,20 @@ def synthesize_texture(original_sample, semantic_mask, generat_mask, window_size
     (sample, window, mask, padded_window, 
         padded_mask, result_window) = initialize_texture_synthesis(original_sample, window_size, kernel_size)
     
+    """     
     dilated_edge, zone0, zone1,full = create_Masks(semantic_mask)
 
     # the semantic zones template
     sampleEdge  = sample * dilated_edge 
     sampleZone0 = sample * zone0 
-    sampleZone1 = sample * zone1 
+    sampleZone1 = sample * zone1  
+
+    
 
     dilated_edge, zone0, zone1, generat_mask = create_Masks(generat_mask)
 
     # mask = generat_mask
+    """
 
     # Synthesize texture until all pixels in the window are filled.
     while texture_can_be_synthesized(mask):
@@ -229,12 +230,15 @@ def synthesize_texture(original_sample, semantic_mask, generat_mask, window_size
         neighboring_indices = permute_neighbors(mask, neighboring_indices)
         
         for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
+                """
                 if generat_mask[ch, cw]==1.0: # 
+                
                     sample=sampleZone0
                 if generat_mask[ch, cw]==2.0: # 
                     sample=sampleEdge
                 if generat_mask[ch, cw]==3.0: # 
-                    sample=sampleZone1                                        
+                    sample=sampleZone1     
+                """                                   
 
                 window_slice = padded_window[ch:ch+kernel_size, cw:cw+kernel_size]
                 mask_slice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
@@ -324,6 +328,7 @@ def main():
         generat_mask = np.ones((idim,jdim),dtype=int)
 
     validate_args(args)
+
 
     tic = time.time() 
     toc = time.time()
