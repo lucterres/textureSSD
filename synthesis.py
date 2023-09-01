@@ -218,6 +218,7 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
 
     sample_dilated_edge, sample_reduced, sample_inverted = sampleBreak(origRGBSample, semantic_mask)
     #sample = sample_dilated_edge
+    #setGenerationDoneMask = setGenerationDoneMask + generat_mask
 
     # Synthesize texture until all pixels in the window are filled.
     while texture_can_be_synthesized(setGenerationDoneMask):
@@ -228,7 +229,7 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
         neighboring_indices = permute_neighbors(setGenerationDoneMask, neighboring_indices)
         
         for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
-            #if generat_mask[ch, cw] > 0:
+            if (generat_mask[ch, cw] == 0.0):
                 """
                 if generat_mask[ch, cw]==1.0: # 
                     sample=sampleZone0
