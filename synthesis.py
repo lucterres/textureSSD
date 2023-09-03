@@ -161,7 +161,8 @@ def initialize_texture_synthesis(original_sample, window_size, kernel_size):
     seed = sample[ih:ih+3, iw:iw+3]
 
     # Place seed in center of window
-    ph, pw = (h//2)-1, (w//2)-1
+    # ph, pw = (h//2)-1, (w//2)-1
+    ph,pw = 62,50
     window[ph:ph+3, pw:pw+3] = seed
     mask[ph:ph+3, pw:pw+3] = 1
     result_window[ph:ph+3, pw:pw+3] = original_sample[ih:ih+3, iw:iw+3]
@@ -219,9 +220,7 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
     sample_dilated_edge, sample_reduced, sample_inverted = sampleBreak(origRGBSample, semantic_mask)
     #sample = sample_dilated_edge
     #setGenerationDoneMask = setGenerationDoneMask + generat_mask
-    mh, mw = generat_mask.shape[:2]
-    totalPixela = mh*mw
-    generationSize=totalPixela - totalIncompletePixels(generat_mask)
+    generationSize= totalIncompletePixels(generat_mask)
 
     # Synthesize texture until all pixels in the window are filled.
     while totalIncompletePixels(setGenerationDoneMask)>generationSize:
@@ -232,7 +231,7 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
         neighboring_indices = permute_neighbors(setGenerationDoneMask, neighboring_indices)
         
         for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
-            if (generat_mask[ch, cw] == 0.0):
+            if (generat_mask[ch, cw] > 0.0):
                 """
                 if generat_mask[ch, cw]==1.0: # 
                     sample=sampleZone0
