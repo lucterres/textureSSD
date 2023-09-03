@@ -125,13 +125,13 @@ def permute_neighbors(pixel_mask, neighbors):
 
     return permuted_neighbors
 
-def texture_can_be_synthesized(mask):
+def totalIncompletePixels(mask):
     # The texture can be synthesized while the mask has unfilled entries.
     mh, mw = mask.shape[:2]
     num_completed = np.count_nonzero(mask)
     num_incomplete = (mh * mw) - num_completed
     
-    return num_incomplete > 0
+    return num_incomplete
 
 def initialize_texture_synthesis(original_sample, window_size, kernel_size):
     # Convert original to sample representation.
@@ -219,9 +219,12 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
     sample_dilated_edge, sample_reduced, sample_inverted = sampleBreak(origRGBSample, semantic_mask)
     #sample = sample_dilated_edge
     #setGenerationDoneMask = setGenerationDoneMask + generat_mask
+    mh, mw = generat_mask.shape[:2]
+    totalPixela = mh*mw
+    generationSize=totalPixela - totalIncompletePixels(generat_mask)
 
     # Synthesize texture until all pixels in the window are filled.
-    while texture_can_be_synthesized(setGenerationDoneMask):
+    while totalIncompletePixels(setGenerationDoneMask)>generationSize:
         # Get neighboring indices
         neighboring_indices = get_neighboring_pixel_indices(setGenerationDoneMask)
 
@@ -263,7 +266,7 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
 
     if visualize:
         cv2.imshow('synthesis window', resultRGBWindow)
-        cv2.waitKey(0)
+        #cv2.waitKey(0)
         cv2.destroyAllWindows()
 
     return resultRGBWindow
