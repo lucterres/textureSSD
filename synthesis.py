@@ -344,6 +344,7 @@ def main():
     toc = time.time()
     print ("Tempo de processamento:" , toc - tic);
 
+    # save result
     filename = "result/" + str(uuid.uuid4())[:8] + ".jpg"
     cv2.imwrite(filename, synthesized_texture)
 
