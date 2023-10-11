@@ -332,6 +332,7 @@ def main():
     dilated_edge, zone0, zone1, fullmask = create_Masks(generat_mask)
     generat_mask = dilated_edge
 
+
     tic = time.time() 
     toc = time.time()
     print ("Tempo de processamento:" , toc - tic);
