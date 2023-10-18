@@ -26,6 +26,7 @@ import cv2
 import numpy as np
 import time
 import uuid
+import suport.patchesMethods as pm
 
 EIGHT_CONNECTED_NEIGHBOR_KERNEL = np.array([[1., 1., 1.],
                                             [1., 0., 1.],
@@ -180,44 +181,12 @@ def initialize_texture_synthesis(original_sample, window_size, kernel_size):
 
     return sample, window, mask, padded_window, padded_mask, result_window
 
-def sampleBreak(rGBsample, mask):
-    sample = cv2.cvtColor(rGBsample, cv2.COLOR_BGR2GRAY)
-    dilated_edge, zone0, zone1, fullmask = create_Masks(mask)
-    sample_dilated_edge = sample * dilated_edge
-    sample_reduced  = sample * zone0
-    sample_inverted = sample * zone1
-    return sample_dilated_edge, sample_reduced, sample_inverted
-
-# Calculating Masks
-def create_Masks(mask):
-    # edge definition
-    edges = cv2.Canny(mask,100,200)
-    kernel = np.ones((11,11))
-    dilated_edge = cv2.dilate(edges, kernel, iterations=1)
-    inv_edge     = cv2.bitwise_not(dilated_edge)
-
-    # Inverting the mask 
-    mask_inverted = cv2.bitwise_not(mask)
-
-    # Normalize to the range [0., 1.]
-    mask = mask.astype(np.float64) / 255.
-    mask_inverted = mask_inverted.astype(np.float64) / 255.
-    dilated_edge = dilated_edge.astype(np.float64) / 255.
-    inv_edge     = inv_edge.astype(np.float64) / 255.
-
-    zone0 = mask * inv_edge
-    zone1 = mask_inverted * inv_edge
-
-    fullmask = zone0*1 + dilated_edge*2 +zone1*3
-
-    return dilated_edge, zone0, zone1, fullmask
-
 def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
     global gif_count
     (sampleGray, resultGrayWindow, setGenerationDoneMask, padded_window, 
         padded_mask, resultRGBWindow) = initialize_texture_synthesis(origRGBSample, window_size, kernel_size)
 
-    sample_dilated_edge, sample_reduced, sample_inverted = sampleBreak(origRGBSample, semantic_mask)
+    sample_dilated_edge, sample_reduced, sample_inverted = pm.sampleBreak(origRGBSample, semantic_mask)
     #sample = sample_dilated_edge
     #setGenerationDoneMask = setGenerationDoneMask + generat_mask
     generationSize= totalIncompletePixels(generat_mask)
@@ -329,7 +298,7 @@ def main():
 
     validate_args(args)
 
-    dilated_edge, zone0, zone1, fullmask = create_Masks(generat_mask)
+    dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
     generat_mask = dilated_edge
 
 
