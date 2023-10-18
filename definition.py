@@ -27,6 +27,7 @@ original_sample = cv2.imread("args.sample_path")   #-  original image, the sourc
 
 # mask  - information about pixels already synthesized, 
            # same dimension of window and result_window
+           
 
 
 # sample_semantic_mask - diferent regions of patterns of input image 

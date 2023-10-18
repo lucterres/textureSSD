@@ -163,6 +163,7 @@ def initialize_texture_synthesis(original_sample, window_size, kernel_size):
 
     # Place seed in center of window
     # ph, pw = (h//2)-1, (w//2)-1
+    # Place seed inside edge zone
     ph,pw = 62,50
     window[ph:ph+3, pw:pw+3] = seed
     mask[ph:ph+3, pw:pw+3] = 1
@@ -300,7 +301,6 @@ def main():
 
     dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
     generat_mask = dilated_edge
-
 
     tic = time.time() 
     toc = time.time()

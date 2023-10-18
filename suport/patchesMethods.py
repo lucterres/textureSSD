@@ -17,6 +17,7 @@ def load(path):
     sample = cv2.cvtColor(sample, cv2.COLOR_BGR2GRAY)
     return sample
 
+# divide sample into diferent templates zones
 def sampleBreak(rGBsample, mask):
     sample = cv2.cvtColor(rGBsample, cv2.COLOR_BGR2GRAY)
     dilated_edge, zone0, zone1, fullmask = create_Masks(mask)
