@@ -35,14 +35,28 @@ def dispArrayImages(patches):
     if n > 1:
         fig, axs = plt.subplots(1, n , figsize=(10, 10))
         for i in range(n):
-            #axs[i].set_title(patches[i][0])
+            if (n<10): axs[i].set_title(patches[i][0])
             axs[i].imshow(cv2.cvtColor(patches[i][1], cv2.COLOR_BGR2RGB))
             axs[i].axis('off')
         plt.show()
     if n == 1:
         plt.figure(figsize=(10,10))
-        #plt.title(patches[0][0])
+        plt.title(patches[0][0])
         plt.imshow(cv2.cvtColor(patches[0][1], cv2.COLOR_BGR2RGB))
+        plt.axis('off')
+        plt.show()
+
+#show all images in imagesList
+def showImages(imagesList):
+    n = len(imagesList)
+    if n > 1:
+        fig, axs = plt.subplots(1, n , figsize=(5, 5))
+        for i in range(n):
+            axs[i].imshow(cv2.cvtColor(imagesList[i], cv2.COLOR_BGR2RGB))
+            axs[i].axis('off')
+        plt.show()
+    if n == 1:
+        plt.imshow(cv2.cvtColor(imagesList[0], cv2.COLOR_BGR2RGB))
         plt.axis('off')
         plt.show()
 
@@ -104,22 +118,7 @@ def searchNearestKey(patches, key):
     if n == 1:
         return patches[0][0],patches[0][1]
     return None
-
-
-#show all images in imagesList
-def showImages(imagesList):
-    n = len(imagesList)
-    if n > 1:
-        fig, axs = plt.subplots(1, n , figsize=(5, 5))
-        for i in range(n):
-            axs[i].imshow(cv2.cvtColor(imagesList[i], cv2.COLOR_BGR2RGB))
-            axs[i].axis('off')
-        plt.show()
-    if n == 1:
-        plt.imshow(cv2.cvtColor(imagesList[0], cv2.COLOR_BGR2RGB))
-        plt.axis('off')
-        plt.show()
-        
+     
 #load a list of images from files
 def loadImages(path, imageList):
     loadedImages = []

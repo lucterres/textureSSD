@@ -3,3 +3,4 @@ examples/
 .vs/
 ```
 .ipynb_checkpoints/
+*.pyc
