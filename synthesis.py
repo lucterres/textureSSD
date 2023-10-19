@@ -26,6 +26,7 @@ import cv2
 import numpy as np
 import time
 import uuid
+import pandas as pd
 import suport.patchesMethods as pm
 
 EIGHT_CONNECTED_NEIGHBOR_KERNEL = np.array([[1., 1., 1.],
@@ -187,7 +188,7 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
     (sampleGray, resultGrayWindow, setGenerationDoneMask, padded_window, 
         padded_mask, resultRGBWindow) = initialize_texture_synthesis(origRGBSample, window_size, kernel_size)
 
-    sample_dilated_edge, sample_reduced, sample_inverted = pm.sampleBreak(origRGBSample, semantic_mask)
+    #sample_dilated_edge, sample_reduced, sample_inverted = pm.sampleBreak(origRGBSample, semantic_mask)
     #sample = sample_dilated_edge
     #setGenerationDoneMask = setGenerationDoneMask + generat_mask
     generationSize= totalIncompletePixels(generat_mask)
@@ -227,15 +228,18 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
                 resultRGBWindow[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
                 
                 if visualize:
-                    cv2.imshow('synthesis window', resultRGBWindow)
+                    img = cv2.resize(resultRGBWindow, (0, 0), fx=4, fy=4)
+                    cv2.imshow('synthesis window', img)
+                    
                     key = cv2.waitKey(1) 
                     if key == 27:
                         cv2.destroyAllWindows()
                         return resultRGBWindow
 
     if visualize:
-        cv2.imshow('synthesis window', resultRGBWindow)
-        #cv2.waitKey(0)
+        img = cv2.resize(resultRGBWindow, (0, 0), fx=4, fy=4)
+        cv2.imshow('synthesis window', img)
+        cv2.waitKey(0)
         cv2.destroyAllWindows()
 
     return resultRGBWindow
@@ -268,24 +272,47 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+def loadDataBase():
+    #Desktop I3
+    TRAIN_CSV = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train1090.csv'
+    IMAGES_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train\images'
+    MASK_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\masks10-90'
+
+    df_train = pd.read_csv(TRAIN_CSV)
+    fileNamesList = df_train.iloc[0:100,0]
+    imagesList = pm.loadImages(IMAGES_DIR, fileNamesList)
+    masksList  = pm.loadImages(MASK_DIR,  fileNamesList)
+    patchesDB = pm.buildPatchesDB(masksList, imagesList)
+    return patchesDB
+
+
 def main():
     args = parse_args()
     #args.sample_path='examples/161.jpg'
     #args.out_path = 'result/161_out.jpg'
     #args.window_height = 100
     #args.window_width = 100
+    loadPatch = True
 
-    sample = cv2.imread(args.sample_path)
-    if sample is None:
-        raise ValueError('Unable to read image from sample_path.')
-    
-    if args.sample_semantic_mask_path != "":
-        sample_semantic_mask = cv2.imread(args.sample_semantic_mask_path)
-        sample_semantic_mask = cv2.cvtColor(sample_semantic_mask, cv2.COLOR_BGR2GRAY) 
-        if sample_semantic_mask is None:
-            raise ValueError('Unable to read image from sample_path.')
+    if loadPatch:
+        patchesDB = loadDataBase()
+        img = pm.searchNearestKey(patchesDB, 15)
+        cv2.imshow('synthesis window', img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+        sample = img
+        sample_semantic_mask = sample
     else:
-         sample_semantic_mask = sample
+        sample = cv2.imread(args.sample_path)
+        if sample is None:
+            raise ValueError('Unable to read image from sample_path.')
+        if args.sample_semantic_mask_path != "":
+            sample_semantic_mask = cv2.imread(args.sample_semantic_mask_path)
+            sample_semantic_mask = cv2.cvtColor(sample_semantic_mask, cv2.COLOR_BGR2GRAY) 
+            if sample_semantic_mask is None:
+                raise ValueError('Unable to read image from sample_path.')
+        else:
+            sample_semantic_mask = sample
             
     if args.generat_mask_path != "none":
         generat_mask = cv2.imread(args.generat_mask_path)
@@ -303,8 +330,6 @@ def main():
     generat_mask = dilated_edge
 
     tic = time.time() 
-    toc = time.time()
-    print ("Tempo de processamento:" , toc - tic);
     synthesized_texture = synthesize_texture(origRGBSample=sample, 
                                              semantic_mask = sample_semantic_mask,
                                              generat_mask = generat_mask,
@@ -316,7 +341,7 @@ def main():
 
     # save result
     filename = "result/" + str(uuid.uuid4())[:8] + ".jpg"
-    cv2.imwrite(filename, synthesized_texture)
+    #cv2.imwrite(filename, synthesized_texture)
 
 if __name__ == '__main__':
     main()

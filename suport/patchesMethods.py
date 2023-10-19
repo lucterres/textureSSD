@@ -131,7 +131,7 @@ def cropPatch(original, x1, x2, y1, y2):
 
     return original[y1:y2, x1:x2]
 
-def probHough(mask, original, tresh=20, minPoints=30, maxGap=5):
+def probHough(mask, original, tresh=20, minPoints=30, maxGap=5, sort = False):
     probabLines = original.copy()
     edges = cv2.Canny(mask, 100, 200)
     # Probabilistic Line Transform
@@ -148,7 +148,7 @@ def probHough(mask, original, tresh=20, minPoints=30, maxGap=5):
             patch = cropPatch (original, x1, x2, y1, y2)
             dbPatches.append([angle ,patch])
     #show3Images(original,mask, probabLines)
-    #dbPatches.sort(key=lambda x: x[0])
+    if sort: dbPatches.sort(key=lambda x: x[0])
     return dbPatches,probabLines
 
 #search nearest key in ordered patches
