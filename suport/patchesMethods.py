@@ -134,7 +134,9 @@ def cropPatch(original, x1, x2, y1, y2):
 class Patch:
     def __init__(self,line,sample):
         self.line = line
-        self.angle = self.calc_angle()
+        x1,y1,x2,y2 = line
+        self.angle = int(-np.arctan2(y2 - y1, x2 - x1) * 180. / np.pi)
+        #self.calc_angle()
         x1, x2 = sortingCoords(line[0], line[2])
         y1, y2 = sortingCoords(line[1], line[3])
         self.image = cropPatch (sample, x1, x2, y1, y2)
@@ -142,12 +144,7 @@ class Patch:
         return self.line[key], self.image
     def __str__(self):
         return str(self.line)
-    def calc_angle(self):
-        x1 = self.line[0]
-        x2 = self.line[2]
-        y1 = self.line[1]
-        y2 = self.line[3]
-        return int(-np.arctan2(y2 - y1, x2 - x1) * 180. / np.pi)
+
     
 def probHough(mask, original, tresh=20, minPoints=30, maxGap=5, sort = False):
     probabLines = original.copy()
