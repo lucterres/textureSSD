@@ -186,7 +186,7 @@ def loadImages(path, imageList):
     loadedImages = []
     for filename in imageList:
         img = cv2.imread(path + '\\' + filename+ '.png') 
-        if img is not None:
+        if img is not None: 
             loadedImages.append(img)
     return loadedImages
 

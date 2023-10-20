@@ -280,8 +280,8 @@ def loadDataBase():
 
     #ES00004605
     TRAIN_CSV = r'G:\_phd\dataset\tgs-salt\saltMaskOk.csv'
-    IMAGES_DIR = r'G:\_phd\dataset\tgs-salt\train\masks'
-    MASK_DIR= r'G:\_phd\dataset\tgs-salt\train\images' 
+    IMAGES_DIR = r'G:\_phd\dataset\tgs-salt\train\images'
+    MASK_DIR= r'G:\_phd\dataset\tgs-salt\train\masks' 
 
     df_train = pd.read_csv(TRAIN_CSV)
     fileNamesList = df_train.iloc[0:100,0]
@@ -302,7 +302,9 @@ def main():
     if loadPatch:
         patchesDB = loadDataBase()
         img = pm.searchNearestKey(patchesDB, 15)
-        cv2.imshow('synthesis window', img)
+        img = cv2.resize(img, (0, 0), fx=4, fy=4) 
+        cv2.imshow('Synthesis', img)
+        cv2.moveWindow('Synthesis', 400, 900)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         sample = img
@@ -346,7 +348,7 @@ def main():
 
     # save result
     filename = "result/" + str(uuid.uuid4())[:8] + ".jpg"
-    #cv2.imwrite(filename, synthesized_texture)
+    cv2.imwrite(filename, synthesized_texture)
 
 if __name__ == '__main__':
     main()
