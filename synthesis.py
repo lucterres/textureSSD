@@ -186,24 +186,29 @@ def initialize_texture_synthesis(original_sample, window_size, kernel_size):
     return sample, window, mask, padded_window, padded_mask, result_window
 
 def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
+    
+    # create the interface edge dilated 
     dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
     
-
+    #build patches database to find the nearest patch according to angle
     patchesDB = loadDataBase()    
 
+    #patches - discover generation masks segments and angles 
     patches, linesImage = pm.probHough(generat_mask, generat_mask, tresh = 20, minPoints=15, maxGap=10, sort=False)
 
+    completeMask = generat_mask.copy() #later we will complete the generation mask
+    # but first step is to generate the edge zone
     generat_mask = dilated_edge
-
-    #iterate over patches
-    # if patches not null
+    
+    #iterate over patches or angle segments in the edge of generation mask
+    # if patches not null - one first example 
     if patches is not None:
         p = patches[0]
         angle = p.angle
         line = p.line
         origRGBSample = pm.searchNearestKey(patchesDB, angle)
         x1,y1,x2,y2 = line
-        #set 0 to generat_mask columns from y1 to y2
+        #set 0 to generat_mask columns from point x1 to x2
         patchMask = generat_mask.copy()
         if x1 < x2:
             patchMask[:,0:x1] = 0
@@ -211,7 +216,6 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
         else:
             patchMask[:,0:x2] = 0
             patchMask[:,x1:] = 0
-
 
     (sampleGray, resultGrayWindow, setGenerationDoneMask, padded_window, 
         padded_mask, resultRGBWindow) = initialize_texture_synthesis(origRGBSample, window_size, kernel_size)
