@@ -191,7 +191,7 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
     #sample_dilated_edge, sample_reduced, sample_inverted = pm.sampleBreak(origRGBSample, semantic_mask)
     #sample = sample_dilated_edge
     #setGenerationDoneMask = setGenerationDoneMask + generat_mask
-    generationSize= totalIncompletePixels(generat_mask)
+    generationSize = totalIncompletePixels(generat_mask)
 
     # Synthesize texture until all pixels in the window are filled.
     while totalIncompletePixels(setGenerationDoneMask)>generationSize:
