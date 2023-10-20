@@ -81,14 +81,15 @@ def dispArrayImages(patches):
         for i in range(n):
             patch = patches[i]
             patch.angle
-            if (n<10): axs[i].set_title(patch.angle)
+            if (n<40): axs[i].set_title(patch.angle)
             axs[i].imshow(cv2.cvtColor(patch.image, cv2.COLOR_BGR2RGB))
             axs[i].axis('off')
         plt.show()
     if n == 1:
+        patch = patches[0]
         plt.figure(figsize=(10,10))
-        plt.title(patches[0][0])
-        plt.imshow(cv2.cvtColor(patches[0][1], cv2.COLOR_BGR2RGB))
+        plt.title(patch.angle)
+        plt.imshow(cv2.cvtColor(patch.image, cv2.COLOR_BGR2RGB))
         plt.axis('off')
         plt.show()
 
@@ -105,7 +106,6 @@ def showImages(imagesList):
         plt.imshow(cv2.cvtColor(imagesList[0], cv2.COLOR_BGR2RGB))
         plt.axis('off')
         plt.show()
-
 	
 def sortingCoords(x1,x2):
     if x1 > x2:
@@ -147,10 +147,8 @@ class Patch:
         x2 = self.line[2]
         y1 = self.line[1]
         y2 = self.line[3]
-        return int(np.arctan2(y2 - y1, x2 - x1) * 180. / np.pi)
+        return int(-np.arctan2(y2 - y1, x2 - x1) * 180. / np.pi)
     
-        
-
 def probHough(mask, original, tresh=20, minPoints=30, maxGap=5, sort = False):
     probabLines = original.copy()
     edges = cv2.Canny(mask, 100, 200)
@@ -175,11 +173,12 @@ def searchNearestKey(patches, key):
     n = len(patches)
     if n > 1:
         for i in range(n):
-            if key <= patches[i][0]:
-                return patches[i][1]
-        return patches[n-1][0],patches[n-1][1]
+            patch = patches[i]
+            if key <= patch.angle:
+                return patch.image
+        return patches[n-1].angle,patches[n-1].image
     if n == 1:
-        return patches[0][0],patches[0][1]
+        return patches[0].angle,patches[0].image
     return None
      
 #load a list of images from files
