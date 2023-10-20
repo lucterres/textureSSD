@@ -280,8 +280,8 @@ def loadDataBase():
 
     #ES00004605
     TRAIN_CSV = r'G:\_phd\dataset\tgs-salt\saltMaskOk.csv'
-    masksPath = r'G:\_phd\dataset\tgs-salt\train\masks'
-    imagesPath= r'G:\_phd\dataset\tgs-salt\train\images' 
+    IMAGES_DIR = r'G:\_phd\dataset\tgs-salt\train\masks'
+    MASK_DIR= r'G:\_phd\dataset\tgs-salt\train\images' 
 
     df_train = pd.read_csv(TRAIN_CSV)
     fileNamesList = df_train.iloc[0:100,0]
