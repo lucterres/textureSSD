@@ -191,7 +191,7 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
     #sample_dilated_edge, sample_reduced, sample_inverted = pm.sampleBreak(origRGBSample, semantic_mask)
     #sample = sample_dilated_edge
     #setGenerationDoneMask = setGenerationDoneMask + generat_mask
-    generationSize = totalIncompletePixels(generat_mask)
+    generationSize= totalIncompletePixels(generat_mask)
 
     # Synthesize texture until all pixels in the window are filled.
     while totalIncompletePixels(setGenerationDoneMask)>generationSize:
@@ -278,10 +278,10 @@ def loadDataBase():
     IMAGES_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train\images'
     MASK_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\masks10-90'
 
-    #ES00004605
+    # ES00004605
     TRAIN_CSV = r'G:\_phd\dataset\tgs-salt\saltMaskOk.csv'
-    IMAGES_DIR = r'G:\_phd\dataset\tgs-salt\train\images'
-    MASK_DIR= r'G:\_phd\dataset\tgs-salt\train\masks' 
+    IMAGES_DIR= r'G:\_phd\dataset\tgs-salt\train\images' 
+    MASK_DIR = r'G:\_phd\dataset\tgs-salt\train\masks'
 
     df_train = pd.read_csv(TRAIN_CSV)
     fileNamesList = df_train.iloc[0:100,0]
@@ -289,7 +289,6 @@ def loadDataBase():
     masksList  = pm.loadImages(MASK_DIR,  fileNamesList)
     patchesDB = pm.buildPatchesDB(masksList, imagesList)
     return patchesDB
-
 
 def main():
     args = parse_args()
@@ -302,9 +301,7 @@ def main():
     if loadPatch:
         patchesDB = loadDataBase()
         img = pm.searchNearestKey(patchesDB, 15)
-        img = cv2.resize(img, (0, 0), fx=4, fy=4) 
-        cv2.imshow('Synthesis', img)
-        cv2.moveWindow('Synthesis', 400, 900)
+        cv2.imshow('synthesis window', img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         sample = img
@@ -348,7 +345,7 @@ def main():
 
     # save result
     filename = "result/" + str(uuid.uuid4())[:8] + ".jpg"
-    cv2.imwrite(filename, synthesized_texture)
+    #cv2.imwrite(filename, synthesized_texture)
 
 if __name__ == '__main__':
     main()
