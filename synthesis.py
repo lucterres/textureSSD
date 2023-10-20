@@ -194,7 +194,7 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
     patches, linesImage = pm.probHough(generat_mask, generat_mask, tresh = 20, minPoints=15, maxGap=10, sort=False)
 
     generat_mask = dilated_edge
-    
+
     #iterate over patches
     # if patches not null
     if patches is not None:
@@ -371,7 +371,7 @@ def main():
 
     # save result
     filename = "result/" + str(uuid.uuid4())[:8] + ".jpg"
-    #cv2.imwrite(filename, synthesized_texture)
+    cv2.imwrite(filename, synthesized_texture)
 
 if __name__ == '__main__':
     main()
