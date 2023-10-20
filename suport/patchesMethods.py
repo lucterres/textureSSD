@@ -107,16 +107,23 @@ def showImages(imagesList):
         plt.axis('off')
         plt.show()
 	
-def sortingCoords(x1,x2):
-    if x1 > x2:
-        return x2, x1
+   
+def swap(a,b):
+    if a > b:
+        return b, a
     else:
-        return x1, x2
+        return a, b
     
 def cropPatch(original, x1, x2, y1, y2):
     #get image dimensions
+    height,width = original.shape[:2]
     plus = 15   
-    height,width,c     = original.shape
+
+    if x1 > x2:
+        x1, x2 = swap(x1,x2)
+    if y1 > y2:
+        y1, y2 = swap(y1,y2)
+
     x1-=5
     x2+=5
     y1-=plus
@@ -136,29 +143,27 @@ class Patch:
         self.line = line
         x1,y1,x2,y2 = line
         self.angle = int(-np.arctan2(y2 - y1, x2 - x1) * 180. / np.pi)
-        #self.calc_angle()
-        x1, x2 = sortingCoords(line[0], line[2])
-        y1, y2 = sortingCoords(line[1], line[3])
-        self.image = cropPatch (sample, x1, x2, y1, y2)
-    def __getitem__(self, key):
-        return self.line[key], self.image
-    def __str__(self):
-        return str(self.line)
+        self.image = sample
 
-    
+def showLines(original, lines):
+    for line in lines:
+        x1,y1,x2,y2 = line
+        cv2.line(original, (x1, y1), (x2, y2), (0, 255, 0), 1, cv2.LINE_AA)
+
+# Probabilistic Hough Transform 
 def probHough(mask, original, tresh=20, minPoints=30, maxGap=5, sort = False):
     probabLines = original.copy()
     edges = cv2.Canny(mask, 100, 200)
-    # Probabilistic Line Transform
     linesP = cv2.HoughLinesP(edges, 1, np.pi / 180, tresh, None, minPoints, maxGap)
     dbPatches = []
     if linesP is not None:
         for i in range(0, len(linesP)):
-            li = linesP[i][0]
-            # Draw the probabilistic lines
-            cv2.line(probabLines, (li[0], li[1]), (li[2], li[3]), (0, 255, 0), 1, cv2.LINE_AA)
-            dbPatches.append(Patch(li,original))
-        
+            line = linesP[i][0]
+            # Draw the probabilistic 
+            x,y,x2,y2 = line
+            cv2.line(probabLines, (x, y), (x2, y2), (0, 255, 0), 1, cv2.LINE_AA)
+            imgpatch = cropPatch (original, x, x2, y, y2)
+            dbPatches.append(Patch(line,imgpatch))
         #sort dbPatches by angle
         if sort: dbPatches.sort(key=lambda x: x.angle)
         #show3Images(original,mask, probabLines)

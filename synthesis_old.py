@@ -157,14 +157,12 @@ def initialize_texture_synthesis(original_sample, window_size, kernel_size):
     mask = np.zeros((h, w), dtype=np.float64)
 
     # Initialize window with random seed from sample
-    # TODO get seed from center of sample
     sh, sw = original_sample.shape[:2]
     ih = np.random.randint(sh-3+1)
     iw = np.random.randint(sw-3+1)
     seed = sample[ih:ih+3, iw:iw+3]
 
     # Place seed in center of window
-    # TODO find center of semanticzone 
     # ph, pw = (h//2)-1, (w//2)-1
     # Place seed inside edge zone
     ph,pw = 62,50
@@ -186,40 +184,14 @@ def initialize_texture_synthesis(original_sample, window_size, kernel_size):
     return sample, window, mask, padded_window, padded_mask, result_window
 
 def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
-    dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
-    
-
-    patchesDB = loadDataBase()    
-
-    patches, linesImage = pm.probHough(generat_mask, generat_mask, tresh = 20, minPoints=15, maxGap=10, sort=False)
-
-    generat_mask = dilated_edge
-    
-    #iterate over patches
-    # if patches not null
-    if patches is not None:
-        p = patches[0]
-        angle = p.angle
-        line = p.line
-        origRGBSample = pm.searchNearestKey(patchesDB, angle)
-        x1,y1,x2,y2 = line
-        #set 0 to generat_mask columns from y1 to y2
-        patchMask = generat_mask.copy()
-        if x1 < x2:
-            patchMask[:,0:x1] = 0
-            patchMask[:,x2:] = 0
-        else:
-            patchMask[:,0:x2] = 0
-            patchMask[:,x1:] = 0
-
-
+    global gif_count
     (sampleGray, resultGrayWindow, setGenerationDoneMask, padded_window, 
         padded_mask, resultRGBWindow) = initialize_texture_synthesis(origRGBSample, window_size, kernel_size)
 
     #sample_dilated_edge, sample_reduced, sample_inverted = pm.sampleBreak(origRGBSample, semantic_mask)
     #sample = sample_dilated_edge
     #setGenerationDoneMask = setGenerationDoneMask + generat_mask
-    generationSize= totalIncompletePixels(patchMask)
+    generationSize= totalIncompletePixels(generat_mask)
 
     # Synthesize texture until all pixels in the window are filled.
     while totalIncompletePixels(setGenerationDoneMask)>generationSize:
@@ -230,7 +202,7 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
         neighboring_indices = permute_neighbors(setGenerationDoneMask, neighboring_indices)
         
         for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
-            if (patchMask[ch, cw] > 0.0):
+            if (generat_mask[ch, cw] > 0.0):
                 """
                 if generat_mask[ch, cw]==1.0: # 
                     sample=sampleZone0
@@ -266,8 +238,7 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
 
     if visualize:
         img = cv2.resize(resultRGBWindow, (0, 0), fx=4, fy=4)
-        cv2.imshow('synthesis', img)
-        cv2.moveWindow('synthesis', 400, 400)
+        cv2.imshow('synthesis window', img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -321,14 +292,16 @@ def loadDataBase():
 
 def main():
     args = parse_args()
-    loadPatch = False
+    #args.sample_path='examples/161.jpg'
+    #args.out_path = 'result/161_out.jpg'
+    #args.window_height = 100
+    #args.window_width = 100
+    loadPatch = True
 
     if loadPatch:
         patchesDB = loadDataBase()
-        img = pm.searchNearestKey(patchesDB, 75)
-        img = cv2.resize(img, (0, 0), fx=4, fy=4)
-        cv2.imshow('synthesis', img)
-        cv2.moveWindow('synthesis', 400, 400)
+        img = pm.searchNearestKey(patchesDB, 15)
+        cv2.imshow('synthesis window', img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         sample = img
@@ -357,7 +330,8 @@ def main():
 
     validate_args(args)
 
-
+    dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
+    generat_mask = dilated_edge
 
     tic = time.time() 
     synthesized_texture = synthesize_texture(origRGBSample=sample, 
