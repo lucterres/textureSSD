@@ -179,6 +179,15 @@ def init1     (original_sample, window_size, kernel_size):
     mask = padded_mask[win:-win, win:-win]
 
     return sample, window, mask, padded_window, padded_mask, result_window
+def update(original_sample):
+    # Convert original to sample representation.
+    sample = cv2.cvtColor(original_sample, cv2.COLOR_BGR2GRAY)
+    
+    # Convert sample to floating point and normalize to the range [0., 1.]
+    sample = sample.astype(np.float64)
+    sample = sample / 255.
+    return sample
+
     
 def initialize(original_sample, window_size, kernel_size):
     # Convert original to sample representation.
@@ -237,72 +246,75 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
     completeMask = generat_mask.copy() #later we will complete the generation mask
     
-    (sampleGray,
-     resultGrayW,
-     doneWindow,
-     padded_window,
-     padded_mask,
-     resultRGBW) = init1(origRGBSample, window_size, kernel_size)
-
+    sampleGray=0
+    resultGrayW=0
+    doneWindow=0
+    padded_window=0
+    padded_mask=0
+    resultRGBW=0
+    start = True
+    
     #iterate over patches and angle segments
     if genSegments is not None: # if patches not null makePatchMask
         controlMask = np.zeros(generat_mask.shape)
-        for p in reversed(genSegments):
+        for p in (genSegments):
             # but first step is to generate the edge zone
             generat_mask = dilated_edge
-            p = genSegments[0]  #one first example of patch
+            #p = genSegments[0]  #one first example of patch
             origRGBSample = pm.searchNearestKey(samplesPatchesDB, p.angle)
             x1,y1,x2,y2 = p.line
             patchMask = pm.makePatchMask(generat_mask, x1, x2)
             controlMask = controlMask + patchMask
+            if start:
+                    (sampleGray, resultGrayW, doneWindow, padded_window, 
+                    padded_mask, resultRGBW) = initialize(origRGBSample, window_size, kernel_size)
+                    start = False
+            else:
+                sampleGray = update(origRGBSample)
+                # Synthesize texture until all pixels in the window are filled.
+            while nCompletePix(controlMask)>nCompletePix(doneWindow):
+                # Get neighboring indices
+                neighboring_indices = get_neighboring_pixel_indices(doneWindow)
+                # Permute and sort neighboring indices by quantity of 8-connected neighbors.
+                neighboring_indices = permute_neighbors(doneWindow, neighboring_indices)
+                # Iterate over neighboring indices.      
+                for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
+                    if (controlMask[ch, cw] > 0.0):
+                        """
+                        if generat_mask[ch, cw]==1.0: # 
+                            sample=sampleZone0
+                        if generat_mask[ch, cw]==2.0: # 
+                            sample=sampleEdge
+                        if generat_mask[ch, cw]==3.0: # 
+                            sample=sampleZone1     
+                        """                                   
+                        windowPatchSlice = padded_window[ch:ch+kernel_size, cw:cw+kernel_size]
+                        maskPatchSlice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
+
+                        # Compute SSD for the current pixel neighborhood and select an index with low error.
+                        ssd = normalized_ssd(sampleGray, windowPatchSlice, maskPatchSlice)
+                        indices = get_candidate_indices(ssd)
+                        selected_index = select_pixel_index(ssd, indices)
+
+                        # Translate index to accommodate padding.
+                        selected_index = (selected_index[0] + kernel_size // 2, selected_index[1] + kernel_size // 2)
+
+                        # Set windows and mask.
+                        resultGrayW[ch, cw] = sampleGray[selected_index]
+                        doneWindow[ch, cw] = 1
+                        resultRGBW[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
+                        
+                        if visualize:
+                            showResult(resultRGBW)
+                            key = cv2.waitKey(1) 
+                            if key == 27:
+                                cv2.destroyAllWindows()
+                                return resultRGBW
+            cv2.waitKey(0)
     else:
         print("Error: no patches found for this image")
         return None
-    
-    (sampleGray, resultGrayW, doneWindow, padded_window, 
-        padded_mask, resultRGBW) = initialize(origRGBSample, window_size, kernel_size)
-    
 
-
-    # Synthesize texture until all pixels in the window are filled.
-    while nCompletePix(patchMask)>nCompletePix(doneWindow):
-        # Get neighboring indices
-        neighboring_indices = get_neighboring_pixel_indices(doneWindow)
-        # Permute and sort neighboring indices by quantity of 8-connected neighbors.
-        neighboring_indices = permute_neighbors(doneWindow, neighboring_indices)
-        # Iterate over neighboring indices.      
-        for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
-            if (patchMask[ch, cw] > 0.0):
-                """
-                if generat_mask[ch, cw]==1.0: # 
-                    sample=sampleZone0
-                if generat_mask[ch, cw]==2.0: # 
-                    sample=sampleEdge
-                if generat_mask[ch, cw]==3.0: # 
-                    sample=sampleZone1     
-                """                                   
-                windowPatchSlice = padded_window[ch:ch+kernel_size, cw:cw+kernel_size]
-                maskPatchSlice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
-
-                # Compute SSD for the current pixel neighborhood and select an index with low error.
-                ssd = normalized_ssd(sampleGray, windowPatchSlice, maskPatchSlice)
-                indices = get_candidate_indices(ssd)
-                selected_index = select_pixel_index(ssd, indices)
-
-                # Translate index to accommodate padding.
-                selected_index = (selected_index[0] + kernel_size // 2, selected_index[1] + kernel_size // 2)
-
-                # Set windows and mask.
-                resultGrayW[ch, cw] = sampleGray[selected_index]
-                doneWindow[ch, cw] = 1
-                resultRGBW[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
-                
-                if visualize:
-                    showResult(resultRGBW)
-                    key = cv2.waitKey(1) 
-                    if key == 27:
-                        cv2.destroyAllWindows()
-                        return resultRGBW
 
     if visualize:
         showResult(resultRGBW)
