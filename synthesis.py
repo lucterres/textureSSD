@@ -132,6 +132,54 @@ def nCompletePix(mask):
     num_completed = np.count_nonzero(mask)
     return num_completed
 
+def init1     (original_sample, window_size, kernel_size):
+    # Convert original to sample representation.
+    sample = cv2.cvtColor(original_sample, cv2.COLOR_BGR2GRAY)
+    
+    # Convert sample to floating point and normalize to the range [0., 1.]
+    sample = sample.astype(np.float64)
+    sample = sample / 255.
+
+    # Generate window
+    window = np.zeros(window_size, dtype=np.float64) # dtype=np.float64)
+
+    # Generate output window
+    if original_sample.ndim == 2:
+        result_window = np.zeros_like(window, dtype=np.uint8)
+    else:
+        result_window = np.zeros(window_size + (3,), dtype=np.uint8)
+
+    # Generate window mask
+    h, w = window.shape
+    mask = np.zeros((h, w), dtype=np.float64)
+
+    # Initialize window with random seed from sample     # TODO get seed from center of sample
+    sh, sw = original_sample.shape[:2]
+    ih = np.random.randint(sh-3+1)
+    iw = np.random.randint(sw-3+1)
+    seed = sample[ih:ih+3, iw:iw+3]
+
+    # Place seed in center of window # TODO Place seed in center of mask target zone
+    # ph, pw = (h//2)-1, (w//2)-1
+    # Place seed inside edge zone
+    ph,pw = 62,50
+    window[ph:ph+3, pw:pw+3] = seed
+    mask[ph:ph+3, pw:pw+3] = 1
+    result_window[ph:ph+3, pw:pw+3] = original_sample[ih:ih+3, iw:iw+3]
+
+    # Obtain padded versions of window and mask
+    win = kernel_size//2
+    padded_window = cv2.copyMakeBorder(window, 
+                                       top=win, bottom=win, left=win, right=win, borderType=cv2.BORDER_CONSTANT, value=0.)
+    padded_mask = cv2.copyMakeBorder(mask,
+                                     top=win, bottom=win, left=win, right=win, borderType=cv2.BORDER_CONSTANT, value=0.)
+    
+    # Obtain views of the padded window and mask
+    window = padded_window[win:-win, win:-win]
+    mask = padded_mask[win:-win, win:-win]
+
+    return sample, window, mask, padded_window, padded_mask, result_window
+    
 def initialize(original_sample, window_size, kernel_size):
     # Convert original to sample representation.
     sample = cv2.cvtColor(original_sample, cv2.COLOR_BGR2GRAY)
@@ -153,15 +201,13 @@ def initialize(original_sample, window_size, kernel_size):
     h, w = window.shape
     mask = np.zeros((h, w), dtype=np.float64)
 
-    # Initialize window with random seed from sample
-    # TODO get seed from center of sample
+    # Initialize window with random seed from sample     # TODO get seed from center of sample
     sh, sw = original_sample.shape[:2]
     ih = np.random.randint(sh-3+1)
     iw = np.random.randint(sw-3+1)
     seed = sample[ih:ih+3, iw:iw+3]
 
-    # Place seed in center of window
-    # TODO find center of semanticzone 
+    # Place seed in center of window # TODO Place seed in center of mask target zone
     # ph, pw = (h//2)-1, (w//2)-1
     # Place seed inside edge zone
     ph,pw = 62,50
@@ -183,37 +229,48 @@ def initialize(original_sample, window_size, kernel_size):
     return sample, window, mask, padded_window, padded_mask, result_window
 
 def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
-    
     # discover generation segments and angles 
     genSegments,l = pm.probHough(generat_mask, generat_mask, tresh = 20, minPoints=15, maxGap=10, sort=False)
     # build patches database to find the nearest patch according to angle
-    samplesPatchesDB = loadDataBase()    
+    samplesPatchesDB = pm.loadDataBase()    
     # create the interface edge dilated 
     dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
     completeMask = generat_mask.copy() #later we will complete the generation mask
-    # but first step is to generate the edge zone
-    generat_mask = dilated_edge
+    
+    (sampleGray,
+     resultGrayW,
+     doneWindow,
+     padded_window,
+     padded_mask,
+     resultRGBW) = init1(origRGBSample, window_size, kernel_size)
+
     #iterate over patches and angle segments
     if genSegments is not None: # if patches not null makePatchMask
-        for p in genSegments:
+        controlMask = np.zeros(generat_mask.shape)
+        for p in reversed(genSegments):
+            # but first step is to generate the edge zone
+            generat_mask = dilated_edge
             p = genSegments[0]  #one first example of patch
             origRGBSample = pm.searchNearestKey(samplesPatchesDB, p.angle)
             x1,y1,x2,y2 = p.line
-            patchMask = makePatchMask(generat_mask, x1, x2)
+            patchMask = pm.makePatchMask(generat_mask, x1, x2)
+            controlMask = controlMask + patchMask
     else:
         print("Error: no patches found for this image")
         return None
+    
     (sampleGray, resultGrayW, doneWindow, padded_window, 
         padded_mask, resultRGBW) = initialize(origRGBSample, window_size, kernel_size)
+    
+
 
     # Synthesize texture until all pixels in the window are filled.
     while nCompletePix(patchMask)>nCompletePix(doneWindow):
         # Get neighboring indices
         neighboring_indices = get_neighboring_pixel_indices(doneWindow)
-
         # Permute and sort neighboring indices by quantity of 8-connected neighbors.
         neighboring_indices = permute_neighbors(doneWindow, neighboring_indices)
-        
+        # Iterate over neighboring indices.      
         for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
             if (patchMask[ch, cw] > 0.0):
                 """
@@ -253,22 +310,10 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
         cv2.destroyAllWindows()
     return resultRGBW
 
-def makePatchMask(generat_mask, x1, x2):
-    patchMask = generat_mask.copy()
-    #set 0 to generat_mask columns from point x1 to x2
-    if x1 < x2:
-        patchMask[:,0:x1] = 0
-        patchMask[:,x2:] = 0
-    else:
-        patchMask[:,0:x2] = 0
-        patchMask[:,x1:] = 0
-    return patchMask
-
 def showResult(resultRGBWindow):
     img = cv2.resize(resultRGBWindow, (0, 0), fx=4, fy=4)
     cv2.imshow('synthesis', img)
     cv2.moveWindow('synthesis', 400, 400)
-
 
 def validate_args(args):
     wh, ww = args.window_height, args.window_width
@@ -297,28 +342,7 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def loadDataBase():
-    
-    #define localização dos diretórios de imagens
-    inHouse=True
-    
-    if inHouse:
-        #Desktop I3
-        TRAIN_CSV = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train1090.csv'
-        IMAGES_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train\images'
-        MASK_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\masks10-90'
-    else:
-        # ES00004605
-        TRAIN_CSV = r'G:\_phd\dataset\tgs-salt\saltMaskOk.csv'
-        IMAGES_DIR= r'G:\_phd\dataset\tgs-salt\train\images' 
-        MASK_DIR = r'G:\_phd\dataset\tgs-salt\train\masks'
 
-    df_train = pd.read_csv(TRAIN_CSV)
-    fileNamesList = df_train.iloc[0:100,0]
-    imagesList = pm.loadImages(IMAGES_DIR, fileNamesList)
-    masksList  = pm.loadImages(MASK_DIR,  fileNamesList)
-    patchesDB = pm.buildPatchesDB(masksList, imagesList)
-    return patchesDB
 
 def main():
     args = parse_args()
@@ -347,12 +371,12 @@ def main():
     validate_args(args)
 
     tic = time.time() 
-    synthesized_texture = synthesize(origRGBSample=sample, 
-                                             semantic_mask = sample_semantic_mask,
-                                             generat_mask = generat_mask,
-                                             window_size=(args.window_height, args.window_width), 
-                                             kernel_size=args.kernel_size, 
-                                             visualize=args.visualize)
+    synthesized_texture= synthesize(origRGBSample=sample, 
+                                    semantic_mask = sample_semantic_mask,
+                                    generat_mask = generat_mask,
+                                    window_size=(args.window_height, args.window_width), 
+                                    kernel_size=args.kernel_size, 
+                                    visualize=args.visualize)
     toc = time.time()
     print ("Tempo de processamento:" , toc - tic);
 

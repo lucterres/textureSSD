@@ -5,6 +5,39 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+def loadDataBase():
+    #define localização dos diretórios de imagens
+    inHouse=True
+    
+    if inHouse:
+        #Desktop I3
+        TRAIN_CSV = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train1090.csv'
+        IMAGES_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train\images'
+        MASK_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\masks10-90'
+    else:
+        # ES00004605
+        TRAIN_CSV = r'G:\_phd\dataset\tgs-salt\saltMaskOk.csv'
+        IMAGES_DIR= r'G:\_phd\dataset\tgs-salt\train\images' 
+        MASK_DIR = r'G:\_phd\dataset\tgs-salt\train\masks'
+
+    df_train = pd.read_csv(TRAIN_CSV)
+    fileNamesList = df_train.iloc[0:100,0]
+    imagesList = loadImages(IMAGES_DIR, fileNamesList)
+    masksList  = loadImages(MASK_DIR,  fileNamesList)
+    patchesDB = buildPatchesDB(masksList, imagesList)
+    return patchesDB
+
+def makePatchMask(generat_mask, x1, x2):
+    patchMask = generat_mask.copy()
+    #set 0 to generat_mask columns from point x1 to x2
+    if x1 < x2:
+        patchMask[:,0:x1] = 0
+        patchMask[:,x2:] = 0
+    else:
+        patchMask[:,0:x2] = 0
+        patchMask[:,x1:] = 0
+    return patchMask
+
 def incomplete(mask):
     # The texture can be synthesized while the mask has unfilled entries.
     mh, mw = mask.shape[:2]
