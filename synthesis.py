@@ -127,13 +127,10 @@ def permute_neighbors(pixel_mask, neighbors):
 
     return permuted_neighbors
 
-def numIncompletPix(mask):
+def nCompletePix(mask):
     # The texture can be synthesized while the mask has unfilled entries.
-    mh, mw = mask.shape[:2]
     num_completed = np.count_nonzero(mask)
-    num_incomplete = (mh * mw) - num_completed
-    
-    return num_incomplete
+    return num_completed
 
 def initialize(original_sample, window_size, kernel_size):
     # Convert original to sample representation.
@@ -198,23 +195,24 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     generat_mask = dilated_edge
     #iterate over patches and angle segments
     if genSegments is not None: # if patches not null makePatchMask
-        p = genSegments[0]  #one first example of patch
-        origRGBSample = pm.searchNearestKey(samplesPatchesDB, p.angle)
-        x1,y1,x2,y2 = p.line
-        patchMask = makePatchMask(generat_mask, x1, x2)
+        for p in genSegments:
+            p = genSegments[0]  #one first example of patch
+            origRGBSample = pm.searchNearestKey(samplesPatchesDB, p.angle)
+            x1,y1,x2,y2 = p.line
+            patchMask = makePatchMask(generat_mask, x1, x2)
     else:
         print("Error: no patches found for this image")
         return None
-    (sampleGray, resultGrayW, controlDoneWindow, padded_window, 
+    (sampleGray, resultGrayW, doneWindow, padded_window, 
         padded_mask, resultRGBW) = initialize(origRGBSample, window_size, kernel_size)
-    generationSize = numIncompletPix(patchMask)
+
     # Synthesize texture until all pixels in the window are filled.
-    while numIncompletPix(controlDoneWindow)>generationSize:
+    while nCompletePix(patchMask)>nCompletePix(doneWindow):
         # Get neighboring indices
-        neighboring_indices = get_neighboring_pixel_indices(controlDoneWindow)
+        neighboring_indices = get_neighboring_pixel_indices(doneWindow)
 
         # Permute and sort neighboring indices by quantity of 8-connected neighbors.
-        neighboring_indices = permute_neighbors(controlDoneWindow, neighboring_indices)
+        neighboring_indices = permute_neighbors(doneWindow, neighboring_indices)
         
         for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
             if (patchMask[ch, cw] > 0.0):
@@ -239,7 +237,7 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
 
                 # Set windows and mask.
                 resultGrayW[ch, cw] = sampleGray[selected_index]
-                controlDoneWindow[ch, cw] = 1
+                doneWindow[ch, cw] = 1
                 resultRGBW[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
                 
                 if visualize:

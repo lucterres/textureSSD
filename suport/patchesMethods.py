@@ -50,31 +50,8 @@ def create_Masks(mask):
 
     return dilated_edge, zone0, zone1, fullmask
 
-def show3Images(original, standart, probabilistic):
-    plt.figure(figsize=(10,10))
-    plt.subplot(131),plt.imshow(original,cmap = 'gray')
-    plt.title('Original'), plt.xticks([]), plt.yticks([])
-    plt.axis('off')
-    plt.subplot(132),plt.imshow(standart,cmap = 'gray')
-    plt.title('mask'), plt.xticks([]), plt.yticks([])
-    plt.axis('off')
-    plt.subplot(133),plt.imshow(probabilistic,cmap = 'gray')
-    plt.title('Probabilistic'), plt.xticks([]), plt.yticks([])
-    plt.axis('off')
-    plt.show()
-
-def show2Images(original, transformed):
-    plt.figure(figsize=(10,10))
-    plt.subplot(121),plt.imshow(original,cmap = 'gray')
-    plt.title('Original'), plt.xticks([]), plt.yticks([])
-    plt.axis('off')
-    plt.subplot(122),plt.imshow(transformed,cmap = 'gray')
-    plt.title('Transformed'), plt.xticks([]), plt.yticks([])
-    plt.axis('off')
-    plt.show()    
-
 # Display an array of images
-def dispArrayImages(patches):
+def dispPatchesClass(patches):
     n = len(patches)
     if n > 1:
         fig, axs = plt.subplots(1, n , figsize=(10, 10))
@@ -94,16 +71,19 @@ def dispArrayImages(patches):
         plt.show()
 
 #show all images in imagesList
-def showImages(imagesList):
-    n = len(imagesList)
+def showImages(images, imagesTitle):
+    n = len(images)
     if n > 1:
-        fig, axs = plt.subplots(1, n , figsize=(5, 5))
-        for i in range(n):
-            axs[i].imshow(cv2.cvtColor(imagesList[i], cv2.COLOR_BGR2RGB))
-            axs[i].axis('off')
-        plt.show()
+            fig, axs = plt.subplots(1, n , figsize=(5, 5))
+            for i in range(n):
+                axs[i].imshow(images[i],cmap = 'gray')
+                axs[i].set_title(imagesTitle[i])
+                axs[i].axis('off')
+            plt.show()
     if n == 1:
-        plt.imshow(cv2.cvtColor(imagesList[0], cv2.COLOR_BGR2RGB))
+        plt.figure(figsize=(5,5))
+        plt.title(imagesTitle[0])
+        plt.imshow(images[0],cmap = 'gray')
         plt.axis('off')
         plt.show()
 	
