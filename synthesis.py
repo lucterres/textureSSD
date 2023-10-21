@@ -127,7 +127,7 @@ def permute_neighbors(pixel_mask, neighbors):
 
     return permuted_neighbors
 
-def totalIncompletePixels(mask):
+def numIncompletPix(mask):
     # The texture can be synthesized while the mask has unfilled entries.
     mh, mw = mask.shape[:2]
     num_completed = np.count_nonzero(mask)
@@ -135,7 +135,7 @@ def totalIncompletePixels(mask):
     
     return num_incomplete
 
-def initialize_texture_synthesis(original_sample, window_size, kernel_size):
+def initialize(original_sample, window_size, kernel_size):
     # Convert original to sample representation.
     sample = cv2.cvtColor(original_sample, cv2.COLOR_BGR2GRAY)
     
@@ -185,53 +185,36 @@ def initialize_texture_synthesis(original_sample, window_size, kernel_size):
 
     return sample, window, mask, padded_window, padded_mask, result_window
 
-def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
+def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
     
+    # discover generation segments and angles 
+    genSegments,l = pm.probHough(generat_mask, generat_mask, tresh = 20, minPoints=15, maxGap=10, sort=False)
+    # build patches database to find the nearest patch according to angle
+    samplesPatchesDB = loadDataBase()    
     # create the interface edge dilated 
     dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
-    
-    #build patches database to find the nearest patch according to angle
-    patchesDB = loadDataBase()    
-
-    #patches - discover generation masks segments and angles 
-    patches, linesImage = pm.probHough(generat_mask, generat_mask, tresh = 20, minPoints=15, maxGap=10, sort=False)
-
     completeMask = generat_mask.copy() #later we will complete the generation mask
     # but first step is to generate the edge zone
     generat_mask = dilated_edge
-    
-    #iterate over patches or angle segments in the edge of generation mask
-    # if patches not null - one first example 
-    if patches is not None:
-        p = patches[0]
-        angle = p.angle
-        line = p.line
-        origRGBSample = pm.searchNearestKey(patchesDB, angle)
-        x1,y1,x2,y2 = line
-        #set 0 to generat_mask columns from point x1 to x2
-        patchMask = generat_mask.copy()
-        if x1 < x2:
-            patchMask[:,0:x1] = 0
-            patchMask[:,x2:] = 0
-        else:
-            patchMask[:,0:x2] = 0
-            patchMask[:,x1:] = 0
-
-    (sampleGray, resultGrayWindow, setGenerationDoneMask, padded_window, 
-        padded_mask, resultRGBWindow) = initialize_texture_synthesis(origRGBSample, window_size, kernel_size)
-
-    #sample_dilated_edge, sample_reduced, sample_inverted = pm.sampleBreak(origRGBSample, semantic_mask)
-    #sample = sample_dilated_edge
-    #setGenerationDoneMask = setGenerationDoneMask + generat_mask
-    generationSize= totalIncompletePixels(patchMask)
-
+    #iterate over patches and angle segments
+    if genSegments is not None: # if patches not null makePatchMask
+        p = genSegments[0]  #one first example of patch
+        origRGBSample = pm.searchNearestKey(samplesPatchesDB, p.angle)
+        x1,y1,x2,y2 = p.line
+        patchMask = makePatchMask(generat_mask, x1, x2)
+    else:
+        print("Error: no patches found for this image")
+        return None
+    (sampleGray, resultGrayW, controlDoneWindow, padded_window, 
+        padded_mask, resultRGBW) = initialize(origRGBSample, window_size, kernel_size)
+    generationSize = numIncompletPix(patchMask)
     # Synthesize texture until all pixels in the window are filled.
-    while totalIncompletePixels(setGenerationDoneMask)>generationSize:
+    while numIncompletPix(controlDoneWindow)>generationSize:
         # Get neighboring indices
-        neighboring_indices = get_neighboring_pixel_indices(setGenerationDoneMask)
+        neighboring_indices = get_neighboring_pixel_indices(controlDoneWindow)
 
         # Permute and sort neighboring indices by quantity of 8-connected neighbors.
-        neighboring_indices = permute_neighbors(setGenerationDoneMask, neighboring_indices)
+        neighboring_indices = permute_neighbors(controlDoneWindow, neighboring_indices)
         
         for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
             if (patchMask[ch, cw] > 0.0):
@@ -255,27 +238,38 @@ def synthesize_texture(origRGBSample, semantic_mask, generat_mask, window_size, 
                 selected_index = (selected_index[0] + kernel_size // 2, selected_index[1] + kernel_size // 2)
 
                 # Set windows and mask.
-                resultGrayWindow[ch, cw] = sampleGray[selected_index]
-                setGenerationDoneMask[ch, cw] = 1
-                resultRGBWindow[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
+                resultGrayW[ch, cw] = sampleGray[selected_index]
+                controlDoneWindow[ch, cw] = 1
+                resultRGBW[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
                 
                 if visualize:
-                    img = cv2.resize(resultRGBWindow, (0, 0), fx=4, fy=4)
-                    cv2.imshow('synthesis window', img)
-                    
+                    showResult(resultRGBW)
                     key = cv2.waitKey(1) 
                     if key == 27:
                         cv2.destroyAllWindows()
-                        return resultRGBWindow
+                        return resultRGBW
 
     if visualize:
-        img = cv2.resize(resultRGBWindow, (0, 0), fx=4, fy=4)
-        cv2.imshow('synthesis', img)
-        cv2.moveWindow('synthesis', 400, 400)
+        showResult(resultRGBW)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+    return resultRGBW
 
-    return resultRGBWindow
+def makePatchMask(generat_mask, x1, x2):
+    patchMask = generat_mask.copy()
+    #set 0 to generat_mask columns from point x1 to x2
+    if x1 < x2:
+        patchMask[:,0:x1] = 0
+        patchMask[:,x2:] = 0
+    else:
+        patchMask[:,0:x2] = 0
+        patchMask[:,x1:] = 0
+    return patchMask
+
+def showResult(resultRGBWindow):
+    img = cv2.resize(resultRGBWindow, (0, 0), fx=4, fy=4)
+    cv2.imshow('synthesis', img)
+    cv2.moveWindow('synthesis', 400, 400)
 
 
 def validate_args(args):
@@ -306,15 +300,20 @@ def parse_args():
     return args
 
 def loadDataBase():
-    #Desktop I3
-    TRAIN_CSV = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train1090.csv'
-    IMAGES_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train\images'
-    MASK_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\masks10-90'
-
-    # ES00004605
-    TRAIN_CSV = r'G:\_phd\dataset\tgs-salt\saltMaskOk.csv'
-    IMAGES_DIR= r'G:\_phd\dataset\tgs-salt\train\images' 
-    MASK_DIR = r'G:\_phd\dataset\tgs-salt\train\masks'
+    
+    #define localização dos diretórios de imagens
+    inHouse=True
+    
+    if inHouse:
+        #Desktop I3
+        TRAIN_CSV = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train1090.csv'
+        IMAGES_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train\images'
+        MASK_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\masks10-90'
+    else:
+        # ES00004605
+        TRAIN_CSV = r'G:\_phd\dataset\tgs-salt\saltMaskOk.csv'
+        IMAGES_DIR= r'G:\_phd\dataset\tgs-salt\train\images' 
+        MASK_DIR = r'G:\_phd\dataset\tgs-salt\train\masks'
 
     df_train = pd.read_csv(TRAIN_CSV)
     fileNamesList = df_train.iloc[0:100,0]
@@ -325,29 +324,17 @@ def loadDataBase():
 
 def main():
     args = parse_args()
-    loadPatch = False
-
-    if loadPatch:
-        patchesDB = loadDataBase()
-        img = pm.searchNearestKey(patchesDB, 75)
-        img = cv2.resize(img, (0, 0), fx=4, fy=4)
-        cv2.imshow('synthesis', img)
-        cv2.moveWindow('synthesis', 400, 400)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-        sample = img
-        sample_semantic_mask = sample
-    else:
-        sample = cv2.imread(args.sample_path)
-        if sample is None:
+    sample = cv2.imread(args.sample_path)
+    if sample is None:
+        raise ValueError('Unable to read image from sample_path.')
+    
+    if args.sample_semantic_mask_path != "":
+        sample_semantic_mask = cv2.imread(args.sample_semantic_mask_path)
+        sample_semantic_mask = cv2.cvtColor(sample_semantic_mask, cv2.COLOR_BGR2GRAY) 
+        if sample_semantic_mask is None:
             raise ValueError('Unable to read image from sample_path.')
-        if args.sample_semantic_mask_path != "":
-            sample_semantic_mask = cv2.imread(args.sample_semantic_mask_path)
-            sample_semantic_mask = cv2.cvtColor(sample_semantic_mask, cv2.COLOR_BGR2GRAY) 
-            if sample_semantic_mask is None:
-                raise ValueError('Unable to read image from sample_path.')
-        else:
-            sample_semantic_mask = sample
+    else:
+        sample_semantic_mask = sample
             
     if args.generat_mask_path != "none":
         generat_mask = cv2.imread(args.generat_mask_path)
@@ -361,10 +348,8 @@ def main():
 
     validate_args(args)
 
-
-
     tic = time.time() 
-    synthesized_texture = synthesize_texture(origRGBSample=sample, 
+    synthesized_texture = synthesize(origRGBSample=sample, 
                                              semantic_mask = sample_semantic_mask,
                                              generat_mask = generat_mask,
                                              window_size=(args.window_height, args.window_width), 
@@ -375,7 +360,7 @@ def main():
 
     # save result
     filename = "result/" + str(uuid.uuid4())[:8] + ".jpg"
-    cv2.imwrite(filename, synthesized_texture)
+    #cv2.imwrite(filename, synthesized_texture)
 
 if __name__ == '__main__':
     main()
