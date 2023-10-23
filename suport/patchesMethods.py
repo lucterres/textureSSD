@@ -5,6 +5,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+# Rotaciona a imagem em torno do centro
+def rotateImage(img, angle):
+    # Calcula a matriz de rotação
+    M = cv2.getRotationMatrix2D((img.shape[1] / 2, img.shape[0] / 2), angle, 1)
+    # Aplica a transformação afim à imagem
+    rotated = cv2.warpAffine(img, M, (img.shape[1], img.shape[0]))
+    # Exibe a imagem rotacionada
+    return rotated
+
 def loadDataBase():
     #define localização dos diretórios de imagens
     inHouse=True
