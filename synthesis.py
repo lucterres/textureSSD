@@ -241,7 +241,7 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     # discover generation segments and angles 
     genSegments,l = pm.probHough(generat_mask, generat_mask, tresh = 20, minPoints=15, maxGap=10, sort=False)
     # build patches database to find the nearest patch according to angle
-    samplesPatchesDB = pm.loadDataBase()    
+    samplesPatchesDB = pm.loadDataBase(600,2000)    
     # create the interface edge dilated 
     dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
     completeMask = generat_mask.copy() #later we will complete the generation mask
@@ -262,9 +262,12 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
             generat_mask = dilated_edge
             #p = genSegments[0]  #one first example of patch
             origRGBSample = pm.searchNearestKey(samplesPatchesDB, p.angle)
+            inspect(origRGBSample)
             x1,y1,x2,y2 = p.line
             patchMask = pm.makePatchMask(generat_mask, x1, x2)
             controlMask = controlMask + patchMask
+            inspect(patchMask)
+            inspect(controlMask)
             if start:
                     (sampleGray, resultGrayW, doneWindow, padded_window, 
                     padded_mask, resultRGBW) = initialize(origRGBSample, window_size, kernel_size)
@@ -318,13 +321,17 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
         print("Error: no patches found for this image")
         return None
 
-
     if visualize:
-        showResult(resultRGBW)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        inspect(resultRGBW)
+
     return resultRGBW
 
+def inspect(img):  
+    print(img.shape)
+    showResult(img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    
 def showResult(resultRGBWindow):
     img = cv2.resize(resultRGBWindow, (0, 0), fx=4, fy=4)
     cv2.imshow('synthesis', img)

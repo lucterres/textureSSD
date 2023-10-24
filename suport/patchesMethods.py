@@ -14,9 +14,9 @@ def rotateImage(img, angle):
     # Exibe a imagem rotacionada
     return rotated
 
-def loadDataBase():
+def loadDataBase(samples=200, treshold=100):
     #define localização dos diretórios de imagens
-    inHouse=True
+    inHouse=False
     
     if inHouse:
         #Desktop I3
@@ -30,10 +30,10 @@ def loadDataBase():
         MASK_DIR = r'G:\_phd\dataset\tgs-salt\train\masks'
 
     df_train = pd.read_csv(TRAIN_CSV)
-    fileNamesList = df_train.iloc[0:100,0]
+    fileNamesList = df_train.iloc[0:samples,0]
     imagesList = loadImages(IMAGES_DIR, fileNamesList)
     masksList  = loadImages(MASK_DIR,  fileNamesList)
-    patchesDB = buildPatchesDB(masksList, imagesList)
+    patchesDB = buildPatchesDB(masksList, imagesList, treshold)
     return patchesDB
 
 def makePatchMask(generat_mask, x1, x2):
@@ -214,7 +214,7 @@ def loadImages(path, imageList):
             loadedImages.append(img)
     return loadedImages
 
-def buildPatchesDB(masksList, imagesList):
+def buildPatchesDB(masksList, imagesList, treshold=100):
     #iterate over imagesList
     patchesList = []
     for i in range(len(imagesList)):
@@ -224,7 +224,9 @@ def buildPatchesDB(masksList, imagesList):
         #dispArrayImages(patches)
         #append elements of patches to patchesList
         for p in imagePatches:
-            patchesList.append(p)
+            x,y = p.image.shape[:2]
+            if x*y > treshold:
+                patchesList.append(p)
     #sort patches by angle
     patchesList.sort(key=lambda x: x.angle)
     return patchesList
