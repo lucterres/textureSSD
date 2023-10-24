@@ -258,7 +258,7 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     if genSegments is not None: # if patches not null makePatchMask
         controlMask = np.zeros(generat_mask.shape)
         for p in (genSegments):
-            # but first step is to generate the edge zone
+            # but first step is to generate the edge zone 
             generat_mask = dilated_edge
             #p = genSegments[0]  #one first example of patch
             origRGBSample = pm.searchNearestKey(samplesPatchesDB, p.angle)
@@ -270,7 +270,10 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
                     padded_mask, resultRGBW) = initialize(origRGBSample, window_size, kernel_size)
                     start = False
             else:
-                sampleGray = update(origRGBSample)
+                rotated = pm.rotateImage(sampleGray,57)
+                rotated = rotated.astype(np.float64)
+                rotated = rotated / 255.
+                #update(rotated)
                 # Synthesize texture until all pixels in the window are filled.
             while nCompletePix(controlMask)>nCompletePix(doneWindow):
                 # Get neighboring indices
