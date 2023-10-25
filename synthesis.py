@@ -132,70 +132,16 @@ def nCompletePix(mask):
     num_completed = np.count_nonzero(mask)
     return num_completed
 
-def init1     (original_sample, window_size, kernel_size):
-    # Convert original to sample representation.
-    sample = cv2.cvtColor(original_sample, cv2.COLOR_BGR2GRAY)
-    
-    # Convert sample to floating point and normalize to the range [0., 1.]
-    sample = sample.astype(np.float64)
-    sample = sample / 255.
-
-    # Generate window
-    window = np.zeros(window_size, dtype=np.float64) # dtype=np.float64)
-
-    # Generate output window
-    if original_sample.ndim == 2:
-        result_window = np.zeros_like(window, dtype=np.uint8)
-    else:
-        result_window = np.zeros(window_size + (3,), dtype=np.uint8)
-
-    # Generate window mask
-    h, w = window.shape
-    mask = np.zeros((h, w), dtype=np.float64)
-
-    # Initialize window with random seed from sample     # TODO get seed from center of sample
-    sh, sw = original_sample.shape[:2]
-    ih = np.random.randint(sh-3+1)
-    iw = np.random.randint(sw-3+1)
-    seed = sample[ih:ih+3, iw:iw+3]
-
-    # Place seed in center of window # TODO Place seed in center of mask target zone
-    # ph, pw = (h//2)-1, (w//2)-1
-    # Place seed inside edge zone
-    ph,pw = 62,50
-    window[ph:ph+3, pw:pw+3] = seed
-    mask[ph:ph+3, pw:pw+3] = 1
-    result_window[ph:ph+3, pw:pw+3] = original_sample[ih:ih+3, iw:iw+3]
-
-    # Obtain padded versions of window and mask
-    win = kernel_size//2
-    padded_window = cv2.copyMakeBorder(window, 
-                                       top=win, bottom=win, left=win, right=win, borderType=cv2.BORDER_CONSTANT, value=0.)
-    padded_mask = cv2.copyMakeBorder(mask,
-                                     top=win, bottom=win, left=win, right=win, borderType=cv2.BORDER_CONSTANT, value=0.)
-    
-    # Obtain views of the padded window and mask
-    window = padded_window[win:-win, win:-win]
-    mask = padded_mask[win:-win, win:-win]
-
-    return sample, window, mask, padded_window, padded_mask, result_window
+# Convert original to sample representation.
 def update(original_sample):
-    # Convert original to sample representation.
     sample = cv2.cvtColor(original_sample, cv2.COLOR_BGR2GRAY)
-    
     # Convert sample to floating point and normalize to the range [0., 1.]
     sample = sample.astype(np.float64)
     sample = sample / 255.
     return sample
-
     
-def initialize(original_sample, window_size, kernel_size):
-    # Convert original to sample representation.
-    sample = cv2.cvtColor(original_sample, cv2.COLOR_BGR2GRAY)
-    
-    # Convert sample to floating point and normalize to the range [0., 1.]
-    sample = sample.astype(np.float64)
-    sample = sample / 255.
+def initialize(original_sample, window_size, kernel_size, controlMask):
+    sample = update(original_sample)
 
     # Generate window
     window = np.zeros(window_size, dtype=np.float64) # dtype=np.float64)
@@ -206,23 +152,35 @@ def initialize(original_sample, window_size, kernel_size):
     else:
         result_window = np.zeros(window_size + (3,), dtype=np.uint8)
 
+    # Initialize window with random seed from sample     
+    sh, sw = original_sample.shape[:2]
+    #ih = np.random.randint(sh-3+1)
+    #iw = np.random.randint(sw-3+1)
+    # get seed from center of sample
+    ih = (sh//2)-3+1
+    iw = (sw//2)-3+1
+    seed = sample[ih:ih+3, iw:iw+3]
+
+
     # Generate window mask
     h, w = window.shape
     mask = np.zeros((h, w), dtype=np.float64)
-
-    # Initialize window with random seed from sample     # TODO get seed from center of sample
-    sh, sw = original_sample.shape[:2]
-    ih = np.random.randint(sh-3+1)
-    iw = np.random.randint(sw-3+1)
-    seed = sample[ih:ih+3, iw:iw+3]
-
-    # Place seed in center of window # TODO Place seed in center of mask target zone
-    # ph, pw = (h//2)-1, (w//2)-1
-    # Place seed inside edge zone
-    ph,pw = 62,50
-    window[ph:ph+3, pw:pw+3] = seed
-    mask[ph:ph+3, pw:pw+3] = 1
-    result_window[ph:ph+3, pw:pw+3] = original_sample[ih:ih+3, iw:iw+3]
+    
+    inside = True
+    if inside: # Place seed inside mask target zone
+        #random choose one pixel of controlMAsk == 1
+        ph, pw = findPixel(controlMask)
+        window[ph:ph+3, pw:pw+3] = seed
+        mask[ph:ph+3, pw:pw+3] = 1
+        result_window[ph:ph+3, pw:pw+3] = original_sample[ih:ih+3, iw:iw+3]
+    else:
+        # Place seed in center of window 
+        # ph, pw = (h//2)-1, (w//2)-1
+        # Place seed inside edge zone
+        ph,pw = 62,50
+        window[ph:ph+3, pw:pw+3] = seed
+        mask[ph:ph+3, pw:pw+3] = 1
+        result_window[ph:ph+3, pw:pw+3] = original_sample[ih:ih+3, iw:iw+3]
 
     # Obtain padded versions of window and mask
     win = kernel_size//2
@@ -236,6 +194,15 @@ def initialize(original_sample, window_size, kernel_size):
     mask = padded_mask[win:-win, win:-win]
 
     return sample, window, mask, padded_window, padded_mask, result_window
+
+def findPixel(controlMask):
+    sh, sw = controlMask.shape[:2]
+    ph = np.random.randint(sh)
+    pw = np.random.randint(sw)
+    while controlMask[ph,pw] == 0.0:
+        ph = np.random.randint(sh)
+        pw = np.random.randint(sw)
+    return ph,pw
 
 def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
     # discover generation segments and angles 
@@ -253,6 +220,7 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     padded_mask=0
     resultRGBW=0
     start = True
+    rotate = False
     
     #iterate over patches and angle segments
     if genSegments is not None: # if patches not null makePatchMask
@@ -270,13 +238,13 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
             inspect(controlMask)
             if start:
                     (sampleGray, resultGrayW, doneWindow, padded_window, 
-                    padded_mask, resultRGBW) = initialize(origRGBSample, window_size, kernel_size)
+                    padded_mask, resultRGBW) = initialize(origRGBSample, window_size, kernel_size,controlMask)
                     start = False
             else:
-                rotated = pm.rotateImage(sampleGray,57)
-                rotated = rotated.astype(np.float64)
-                rotated = rotated / 255.
-                #update(rotated)
+                if rotate:
+                    sampleGray = pm.rotateImage(sampleGray,57)
+                else: 
+                    sampleGray=update(origRGBSample)
                 # Synthesize texture until all pixels in the window are filled.
             while nCompletePix(controlMask)>nCompletePix(doneWindow):
                 # Get neighboring indices
@@ -363,8 +331,6 @@ def parse_args():
     parser.add_argument('--visualize', required=False, action='store_true', help='Visualize the synthesis process')
     args = parser.parse_args()
     return args
-
-
 
 def main():
     args = parse_args()
