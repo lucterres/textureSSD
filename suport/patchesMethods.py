@@ -16,7 +16,7 @@ def rotateImage(img, angle):
 
 def loadDataBase(samples=200, treshold=100):
     #define localização dos diretórios de imagens
-    inHouse=True
+    inHouse=False
     
     if inHouse:
         #Desktop I3
@@ -38,7 +38,7 @@ def loadDataBase(samples=200, treshold=100):
 
 def makePatchMask(generat_mask, x1, x2):
     patchMask = generat_mask.copy()
-    #set 0 to generat_mask columns from point x1 to x2
+    #set 0 to generat_mask columns from point x1 to x2 - the outside of the patch
     if x1 < x2:
         patchMask[:,0:x1] = 0
         patchMask[:,x2:] = 0

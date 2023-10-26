@@ -169,7 +169,7 @@ def initialize(original_sample, window_size, kernel_size, controlMask):
     inside = True
     if inside: # Place seed inside mask target zone
         #random choose one pixel of controlMAsk == 1
-        ph, pw = findPixel(controlMask)
+        ph, pw = findInsideMaskPixel(controlMask)
         window[ph:ph+3, pw:pw+3] = seed
         mask[ph:ph+3, pw:pw+3] = 1
         result_window[ph:ph+3, pw:pw+3] = original_sample[ih:ih+3, iw:iw+3]
@@ -195,7 +195,7 @@ def initialize(original_sample, window_size, kernel_size, controlMask):
 
     return sample, window, mask, padded_window, padded_mask, result_window
 
-def findPixel(controlMask):
+def findInsideMaskPixel(controlMask):
     sh, sw = controlMask.shape[:2]
     ph = np.random.randint(sh)
     pw = np.random.randint(sw)
@@ -206,7 +206,7 @@ def findPixel(controlMask):
 
 def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
     # discover generation segments and angles 
-    genSegments,l = pm.probHough(generat_mask, generat_mask, tresh = 20, minPoints=15, maxGap=10, sort=False)
+    genSegments,l = pm.probHough(generat_mask, generat_mask, tresh = 10, minPoints=15, maxGap=10, sort=False)
     # build patches database to find the nearest patch according to angle
     samplesPatchesDB = pm.loadDataBase(600,2000)    
     # create the interface edge dilated 
