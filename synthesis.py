@@ -161,7 +161,6 @@ def initialize(original_sample, window_size, kernel_size, controlMask):
     iw = (sw//2)-3+1
     seed = sample[ih:ih+3, iw:iw+3]
 
-
     # Generate window mask
     h, w = window.shape
     mask = np.zeros((h, w), dtype=np.float64)
@@ -222,19 +221,27 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     start = True
     rotate = False
     
+    # first step is to generate the edge zone 
+    generat_mask = dilated_edge
+    
     #iterate over patches and angle segments
     if genSegments is not None: # if patches not null makePatchMask
         controlMask = np.zeros(generat_mask.shape)
         for p in (genSegments):
-            # but first step is to generate the edge zone 
-            generat_mask = dilated_edge
-            #p = genSegments[0]  #one first example of patch
+            # first step is to generate the edge zone 
             origRGBSample = pm.searchNearestKey(samplesPatchesDB, p.angle)
             inspect(origRGBSample)
             x1,y1,x2,y2 = p.line
             patchMask = pm.makePatchMask(generat_mask, x1, x2)
             controlMask = controlMask + patchMask
             inspect(patchMask)
+            inspect(controlMask)
+            # Verifica pixels marcados na janela de síntese.
+            y_indices, x_indices = np.where(controlMask > 0)
+            # Encontre o valor mínimo de X
+            min_x = np.min(x_indices)
+            max_x = np.max(x_indices)
+            controlMask = pm.makePatchMask(generat_mask, min_x, max_x)
             inspect(controlMask)
             if start:
                     (sampleGray, resultGrayW, doneWindow, padded_window, 
@@ -370,7 +377,7 @@ def main():
 
     # save result
     filename = "result/" + str(uuid.uuid4())[:8] + ".jpg"
-    #cv2.imwrite(filename, synthesized_texture)
+    cv2.imwrite(filename, synthesized_texture)
 
 if __name__ == '__main__':
     main()

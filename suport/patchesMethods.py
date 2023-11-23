@@ -16,7 +16,7 @@ def rotateImage(img, angle):
 
 def loadDataBase(samples=200, treshold=100):
     #define localização dos diretórios de imagens
-    inHouse=False
+    inHouse=True
     
     if inHouse:
         #Desktop I3
