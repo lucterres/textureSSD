@@ -16,7 +16,7 @@ def rotateImage(img, angle):
 
 def loadDataBase(samples=200, treshold=100):
     #define localização dos diretórios de imagens
-    inHouse=True
+    inHouse=False
     
     if inHouse:
         #Desktop I3
@@ -63,10 +63,10 @@ def load(path):
 def sampleBreak(rGBsample, mask):
     sample = cv2.cvtColor(rGBsample, cv2.COLOR_BGR2GRAY)
     dilated_edge, zone0, zone1, fullmask = create_Masks(mask)
-    sample_dilated_edge = sample * dilated_edge
-    sample_reduced  = sample * zone0
-    sample_inverted = sample * zone1
-    return sample_dilated_edge, sample_reduced, sample_inverted
+    sEdge = sample * dilated_edge.astype(np.uint8)
+    sZ0   = sample * zone0.astype(np.uint8)
+    sZ1   = sample * zone1.astype(np.uint8)
+    return sEdge, sZ0, sZ1
 
 # Calculating Masks
 def create_Masks(mask):
@@ -113,17 +113,17 @@ def dispPatchesClass(patches):
         plt.show()
 
 #show all images in imagesList
-def showImages(images, imagesTitle):
+def showImages(images, imagesTitle,size=(5,5)):
     n = len(images)
     if n > 1:
-            fig, axs = plt.subplots(1, n , figsize=(5, 5))
+            fig, axs = plt.subplots(1, n , figsize=size)
             for i in range(n):
                 axs[i].imshow(images[i],cmap = 'gray')
                 axs[i].set_title(imagesTitle[i])
                 axs[i].axis('off')
             plt.show()
     if n == 1:
-        plt.figure(figsize=(5,5))
+        plt.figure(figsize=size)
         plt.title(imagesTitle[0])
         plt.imshow(images[0],cmap = 'gray')
         plt.axis('off')

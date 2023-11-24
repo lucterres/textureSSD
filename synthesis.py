@@ -21,6 +21,8 @@ Example:
 
 __author__ = 'Maxwell Goldberg'
 
+INSPECT  = False
+
 import argparse
 import cv2
 import numpy as np
@@ -134,11 +136,9 @@ def nCompletePix(mask):
 
 # Convert original to sample representation.
 def update(original_sample):
-    sample = cv2.cvtColor(original_sample, cv2.COLOR_BGR2GRAY)
+    sample =  cv2.cvtColor(original_sample, cv2.COLOR_BGR2GRAY)
     # Convert sample to floating point and normalize to the range [0., 1.]
-    sample = sample.astype(np.float64)
-    sample = sample / 255.
-    return sample
+    return sample.astype(np.float64)/ 255.
     
 def initialize(original_sample, window_size, kernel_size, controlMask):
     sample = update(original_sample)
@@ -204,13 +204,69 @@ def findInsideMaskPixel(controlMask):
     return ph,pw
 
 def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
+    # Convert original to sample representation.
+
+    def fillSample():
+        # Synthesize texture until all pixels in the window are filled.
+        while nCompletePix(controlMask)>nCompletePix(doneWindow):
+            # Get neighboring indices
+            neighboring_indices = get_neighboring_pixel_indices(doneWindow)
+            # Permute and sort neighboring indices by quantity of 8-connected neighbors.
+            neighboring_indices = permute_neighbors(doneWindow, neighboring_indices)
+            # Iterate over neighboring indices.      
+            for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
+                if (controlMask[ch, cw] > 0.0):
+                    """
+                    if generat_mask[ch, cw]==1.0: # 
+                        sample=sampleZone0
+                    if generat_mask[ch, cw]==2.0: # 
+                        sample=sampleEdge
+                    if generat_mask[ch, cw]==3.0: # 
+                        sample=sampleZone1     
+                    """                                   
+                    windowPatchSlice = padded_window[ch:ch+kernel_size, cw:cw+kernel_size]
+                    maskPatchSlice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
+
+                    # Compute SSD for the current pixel neighborhood and select an index with low error.
+                    ssd = normalized_ssd(sampleGray, windowPatchSlice, maskPatchSlice)
+                    indices = get_candidate_indices(ssd)
+                    selected_index = select_pixel_index(ssd, indices)
+
+                    # Translate index to accommodate padding.
+                    selected_index = (selected_index[0] + kernel_size // 2, selected_index[1] + kernel_size // 2)
+
+                    # Set windows and mask.
+                    resultGrayW[ch, cw] = sampleGray[selected_index]
+                    doneWindow[ch, cw] = 1
+                    resultRGBW[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
+                    
+                    if visualize:
+                        showResult(resultRGBW)
+                        key = cv2.waitKey(1) 
+                        if key == 27:
+                            cv2.destroyAllWindows()
+                            return resultRGBW
+                        
     # discover generation segments and angles 
     genSegments,l = pm.probHough(generat_mask, generat_mask, tresh = 10, minPoints=15, maxGap=10, sort=False)
+    #iterate over patches and angle segments
+    if genSegments is None: # if patches not null makePatchMask
+        print("Error: no patches found for this image")
+        return None
+
+
     # build patches database to find the nearest patch according to angle
     samplesPatchesDB = pm.loadDataBase(600,2000)    
     # create the interface edge dilated 
     dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
+    zones = [dilated_edge, zone0, zone1, fullmask]
+    inspect(fullmask, "fullmask")
+    inspect(dilated_edge, "edge")
+    inspect(zone0, "zone0")
+    inspect(zone1, "zone1" )
+
     completeMask = generat_mask.copy() #later we will complete the generation mask
+    original_sample = origRGBSample.copy()
     
     sampleGray=0
     resultGrayW=0
@@ -223,94 +279,80 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     
     # first step is to generate the edge zone 
     generat_mask = dilated_edge
+    controlMask = np.zeros(generat_mask.shape)
+    for p in (genSegments):
+        # Iterate over patches and angle segments
+        origRGBSample = pm.searchNearestKey(samplesPatchesDB, p.angle)
+        inspect(origRGBSample, "origRGBSample")
+        x1,y1,x2,y2 = p.line
+        patchMask = pm.makePatchMask(generat_mask, x1, x2)
+        controlMask = controlMask + patchMask
+        inspect(patchMask, "patchMask")
+        inspect(controlMask, "controlMask")
+        # Verifica pixels marcados na janela de síntese.
+        y_indices, x_indices = np.where(controlMask > 0)
+        # Encontre o valor mínimo de X
+        min_x = np.min(x_indices)
+        max_x = np.max(x_indices)
+        controlMask = pm.makePatchMask(generat_mask, min_x, max_x)
+        inspect(controlMask, "controlMask expanded")
+        if start:
+                (sampleGray, resultGrayW, doneWindow, padded_window, 
+                padded_mask, resultRGBW) = initialize(origRGBSample, window_size, kernel_size,controlMask)
+                start = False
+        else:
+            if rotate:
+                sampleGray = pm.rotateImage(sampleGray,57)
+            else: 
+                sampleGray=update(origRGBSample)
+        fillSample()
+
+
+    inspect(original_sample, "Sample")
+    inspect(semantic_mask, "semantic_mask")
+    sampleEdge, sampleZ1, sampleZ0 = pm.sampleBreak(original_sample, semantic_mask)
+    inspect(sampleZ1, "Sample Z1")
+
+    # second step is to generate the zone1
+    origRGBSample = sampleZ1
+    sampleGray=origRGBSample.astype(np.float64)/ 255.
+    controlMask = controlMask + zone1
+    inspect(controlMask, "controlMask + zone expanded")
+    inspect(sampleGray, "sampleGray")
+    fillSample()
+
+    # third step is to generate the zone0
+    origRGBSample = sampleZ0
+    inspect(sampleZ0, "Sample Z0")
+    sampleGray=origRGBSample.astype(np.float64)/ 255.
+    controlMask = controlMask + zone0
+    inspect(controlMask, "controlMask + zone expanded")
     
-    #iterate over patches and angle segments
-    if genSegments is not None: # if patches not null makePatchMask
-        controlMask = np.zeros(generat_mask.shape)
-        for p in (genSegments):
-            # first step is to generate the edge zone 
-            origRGBSample = pm.searchNearestKey(samplesPatchesDB, p.angle)
-            inspect(origRGBSample)
-            x1,y1,x2,y2 = p.line
-            patchMask = pm.makePatchMask(generat_mask, x1, x2)
-            controlMask = controlMask + patchMask
-            inspect(patchMask)
-            inspect(controlMask)
-            # Verifica pixels marcados na janela de síntese.
-            y_indices, x_indices = np.where(controlMask > 0)
-            # Encontre o valor mínimo de X
-            min_x = np.min(x_indices)
-            max_x = np.max(x_indices)
-            controlMask = pm.makePatchMask(generat_mask, min_x, max_x)
-            inspect(controlMask)
-            if start:
-                    (sampleGray, resultGrayW, doneWindow, padded_window, 
-                    padded_mask, resultRGBW) = initialize(origRGBSample, window_size, kernel_size,controlMask)
-                    start = False
-            else:
-                if rotate:
-                    sampleGray = pm.rotateImage(sampleGray,57)
-                else: 
-                    sampleGray=update(origRGBSample)
-                # Synthesize texture until all pixels in the window are filled.
-            while nCompletePix(controlMask)>nCompletePix(doneWindow):
-                # Get neighboring indices
-                neighboring_indices = get_neighboring_pixel_indices(doneWindow)
-                # Permute and sort neighboring indices by quantity of 8-connected neighbors.
-                neighboring_indices = permute_neighbors(doneWindow, neighboring_indices)
-                # Iterate over neighboring indices.      
-                for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
-                    if (controlMask[ch, cw] > 0.0):
-                        """
-                        if generat_mask[ch, cw]==1.0: # 
-                            sample=sampleZone0
-                        if generat_mask[ch, cw]==2.0: # 
-                            sample=sampleEdge
-                        if generat_mask[ch, cw]==3.0: # 
-                            sample=sampleZone1     
-                        """                                   
-                        windowPatchSlice = padded_window[ch:ch+kernel_size, cw:cw+kernel_size]
-                        maskPatchSlice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
+    inspect(sampleGray, "sampleGray")
+    fillSample()
 
-                        # Compute SSD for the current pixel neighborhood and select an index with low error.
-                        ssd = normalized_ssd(sampleGray, windowPatchSlice, maskPatchSlice)
-                        indices = get_candidate_indices(ssd)
-                        selected_index = select_pixel_index(ssd, indices)
+    # fourth step is to complete the full mask
+    controlMask = controlMask + fullmask
+    inspect(controlMask, "controlMask + fullmask expanded")
+    fillSample
 
-                        # Translate index to accommodate padding.
-                        selected_index = (selected_index[0] + kernel_size // 2, selected_index[1] + kernel_size // 2)
-
-                        # Set windows and mask.
-                        resultGrayW[ch, cw] = sampleGray[selected_index]
-                        doneWindow[ch, cw] = 1
-                        resultRGBW[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
-                        
-                        if visualize:
-                            showResult(resultRGBW)
-                            key = cv2.waitKey(1) 
-                            if key == 27:
-                                cv2.destroyAllWindows()
-                                return resultRGBW
-            cv2.waitKey(0)
-    else:
-        print("Error: no patches found for this image")
-        return None
-
+    cv2.waitKey(0)
     if visualize:
-        inspect(resultRGBW)
+        inspect(resultRGBW, "Sinthesys" )
 
     return resultRGBW
 
-def inspect(img):  
-    print(img.shape)
-    showResult(img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    
-def showResult(resultRGBWindow):
-    img = cv2.resize(resultRGBWindow, (0, 0), fx=4, fy=4)
-    cv2.imshow('synthesis', img)
-    cv2.moveWindow('synthesis', 400, 400)
+def inspect(img,title=None):  
+    if INSPECT:
+        print(img.shape)
+        showResult(img,title)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+     
+def showResult(resultRGBWindow, title=None):
+    img = cv2.resize(resultRGBWindow, (0, 0), fx=8, fy=8)
+    cv2.imshow(title, img)
+    cv2.moveWindow(title, 300, 200)
 
 def validate_args(args):
     wh, ww = args.window_height, args.window_width
