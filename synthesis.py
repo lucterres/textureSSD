@@ -338,6 +338,7 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
 
     cv2.waitKey(0)
     if visualize:
+        inspect(controlMask, "final controlMask")
         inspect(resultRGBW, "Sinthesys" )
 
     return resultRGBW
