@@ -62,17 +62,17 @@ def load(path):
 # divide sample into diferent templates zones
 def sampleBreak(rGBsample, mask):
     sample = cv2.cvtColor(rGBsample, cv2.COLOR_BGR2GRAY)
-    dilated_edge, zone0, zone1, fullmask = create_Masks(mask, dilatedEdge=False)
+    dilated_edge, zone0, zone1, fullmask = create_Masks(mask, dilatedEdge=True, size=3)
     sEdge = sample * dilated_edge.astype(np.uint8)
     sZ0   = sample * zone0.astype(np.uint8)
     sZ1   = sample * zone1.astype(np.uint8)
     return sEdge, sZ0, sZ1
 
 # Calculating Masks
-def create_Masks(mask, dilatedEdge=True):
+def create_Masks(mask, dilatedEdge=True, size=11):
     # edge definition
     edge = cv2.Canny(mask,100,200)
-    kernel = np.ones((11,11))
+    kernel = np.ones((size,size))
     if dilatedEdge:
         edge = cv2.dilate(edge, kernel, iterations=1)
     inv_edge     = cv2.bitwise_not(edge)

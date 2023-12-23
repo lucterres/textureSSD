@@ -12,13 +12,11 @@
             "console": "integratedTerminal",
             "args": [
                 "--visualize",
-                "--sample_path=tgs_salt/1bd1c8c771.png", 
-                "--sample_semantic_mask_path=tgs_salt/1bd1c8c771Mask.png" ,
-                "--generat_mask_path=tgs_salt/0bdd44d530Mask.png" , //  0c19639aebMask
-                "--out_path=result/1bd1c8c771.jpg" ,
+                "--sample_path=tgs_salt/0a1742c740.png", // source image
+                "--sample_semantic_mask_path=tgs_salt/0a1742c740Mask.png" , // source image context mask
+                "--generat_mask_path=tgs_salt/0bdd44d530Mask.png" , //  0c19639aebMask  1bd1c8c771Mask // genration context mask target
                 "--window_height=101",
                 "--window_width=101"
-                   
             ],
             "justMyCode": true
         }

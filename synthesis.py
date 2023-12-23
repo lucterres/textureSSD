@@ -260,7 +260,7 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     # create the interface edge dilated 
     dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
     zones = [dilated_edge, zone0, zone1, fullmask]
-    inspect(fullmask, "fullmask")
+    #inspect(fullmask, "fullmask")
     inspect(dilated_edge, "edge")
     inspect(zone0, "zone0")
     inspect(zone1, "zone1" )
