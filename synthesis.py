@@ -306,6 +306,12 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
             else: 
                 sampleGray=update(origRGBSample)
         fillSample()
+    # complete edge zone with the last sample patch
+    controlMask = dilated_edge
+    inspect(controlMask, "controlMask")
+    inspect(sampleGray, "sampleGray")
+    fillSample()
+    
 
 
     inspect(original_sample, "Sample")
