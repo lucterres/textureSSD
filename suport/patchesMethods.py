@@ -62,19 +62,20 @@ def load(path):
 # divide sample into diferent templates zones
 def sampleBreak(rGBsample, mask):
     sample = cv2.cvtColor(rGBsample, cv2.COLOR_BGR2GRAY)
-    dilated_edge, zone0, zone1, fullmask = create_Masks(mask)
+    dilated_edge, zone0, zone1, fullmask = create_Masks(mask, dilatedEdge=False)
     sEdge = sample * dilated_edge.astype(np.uint8)
     sZ0   = sample * zone0.astype(np.uint8)
     sZ1   = sample * zone1.astype(np.uint8)
     return sEdge, sZ0, sZ1
 
 # Calculating Masks
-def create_Masks(mask):
+def create_Masks(mask, dilatedEdge=True):
     # edge definition
-    edges = cv2.Canny(mask,100,200)
+    edge = cv2.Canny(mask,100,200)
     kernel = np.ones((11,11))
-    dilated_edge = cv2.dilate(edges, kernel, iterations=1)
-    inv_edge     = cv2.bitwise_not(dilated_edge)
+    if dilatedEdge:
+        edge = cv2.dilate(edge, kernel, iterations=1)
+    inv_edge     = cv2.bitwise_not(edge)
 
     # Inverting the mask 
     mask_inverted = cv2.bitwise_not(mask)
@@ -82,15 +83,15 @@ def create_Masks(mask):
     # Normalize to the range [0., 1.]
     mask = mask.astype(np.float64) / 255.
     mask_inverted = mask_inverted.astype(np.float64) / 255.
-    dilated_edge = dilated_edge.astype(np.float64) / 255.
+    edge = edge.astype(np.float64) / 255.
     inv_edge     = inv_edge.astype(np.float64) / 255.
 
     zone0 = mask * inv_edge
     zone1 = mask_inverted * inv_edge
 
-    fullmask = zone0*1 + dilated_edge*2 +zone1*3
+    fullmask = zone0*1 + edge*2 +zone1*3
 
-    return dilated_edge, zone0, zone1, fullmask
+    return edge, zone0, zone1, fullmask
 
 # Display an array of images
 def dispPatchesClass(patches):

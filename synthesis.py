@@ -21,14 +21,14 @@ Example:
 
 __author__ = 'Maxwell Goldberg'
 
-INSPECT  = False
+INSPECT  = True
 
 import argparse
 import cv2
 import numpy as np
 import time
 import uuid
-import pandas as pd
+import pandas as pd 
 import suport.patchesMethods as pm
 
 EIGHT_CONNECTED_NEIGHBOR_KERNEL = np.array([[1., 1., 1.],

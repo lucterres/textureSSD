@@ -14,7 +14,7 @@
                 "--visualize",
                 "--sample_path=tgs_salt/1bd1c8c771.png", 
                 "--sample_semantic_mask_path=tgs_salt/1bd1c8c771Mask.png" ,
-                "--generat_mask_path=tgs_salt/0c19639aebMask.png" , 
+                "--generat_mask_path=tgs_salt/0bdd44d530Mask.png" , //  0c19639aebMask
                 "--out_path=result/1bd1c8c771.jpg" ,
                 "--window_height=101",
                 "--window_width=101"
