@@ -93,7 +93,7 @@ def create_Masks(mask, dilatedEdge=True, size=11):
 
     return edge, zone0, zone1, fullmask
 
-# Display an array of images
+# Display an array of objects type image/patches
 def dispPatchesClass(patches):
     n = len(patches)
     if n > 1:

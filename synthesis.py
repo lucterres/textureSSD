@@ -254,16 +254,16 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
         print("Error: no patches found for this image")
         return None
 
-
     # build patches database to find the nearest patch according to angle
-    samplesPatchesDB = pm.loadDataBase(600,2000)    
+    samplesPatchesDB = pm.loadDataBase() #(600,2000)    
     # create the interface edge dilated 
     dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
     zones = [dilated_edge, zone0, zone1, fullmask]
     #inspect(fullmask, "fullmask")
-    inspect(dilated_edge, "edge")
-    inspect(zone0, "zone0")
-    inspect(zone1, "zone1" )
+    #inspect(generat_mask, "generat_mask")
+    #inspect(dilated_edge, "edge")
+    #inspect(zone0, "zone0")
+    #inspect(zone1, "zone1" )
 
     completeMask = generat_mask.copy() #later we will complete the generation mask
     original_sample = origRGBSample.copy()
@@ -312,7 +312,6 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     inspect(sampleGray, "sampleGray")
     fillSample()
     
-
 
     inspect(original_sample, "Sample")
     inspect(semantic_mask, "semantic_mask")
