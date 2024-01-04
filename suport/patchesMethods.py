@@ -120,11 +120,12 @@ def showImages(images, imagesTitle,size=(5,5)):
             fig, axs = plt.subplots(1, n , figsize=size)
             for i in range(n):
                 axs[i].imshow(images[i],cmap = 'gray')
-                axs[i].set_title(imagesTitle[i])
+                if len(imagesTitle) > 0: axs[i].set_title(imagesTitle[i])
                 axs[i].axis('off')
             plt.show()
     if n == 1:
         plt.figure(figsize=size)
+        if len(imagesTitle)==1 : plt.title(imagesTitle[0])
         plt.title(imagesTitle[0])
         plt.imshow(images[0],cmap = 'gray')
         plt.axis('off')
