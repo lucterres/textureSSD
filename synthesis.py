@@ -280,11 +280,12 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     # first step is to generate the edge zone 
     generat_mask = dilated_edge
     controlMask = np.zeros(generat_mask.shape)
-    for p in (genSegments):
+    for s in (genSegments):
         # Iterate over patches and angle segments
-        origRGBSample = pm.searchNearestKey(samplesPatchesDB, p.angle)
+        #origRGBSample = pm.searchNearestPatchByAngle(samplesPatchesDB, s.angle)
+        origRGBSample = pm.searchNearestPatchByAngleAndHistogram(samplesPatchesDB, s.angle, origRGBSample)
         inspect(origRGBSample, "origRGBSample")
-        x1,y1,x2,y2 = p.line
+        x1,y1,x2,y2 = s.line
         patchMask = pm.makePatchMask(generat_mask, x1, x2)
         controlMask = controlMask + patchMask
         inspect(patchMask, "patchMask")

@@ -194,19 +194,77 @@ def probHough(mask, original, tresh=20, minPoints=30, maxGap=5, sort = False):
         # if sort: dbPatches.sort(key=lambda x: x[0])
     return dbPatches,probabLines
 
+
+def searchAnglesinRange(patchesDB, angle, threshold):
+    """
+    Search for angles within a specified threshold in the patchesDB.
+
+    Parameters:
+    - patchesDB (list): List of patches from the database.
+    - angle (float): The target angle to search for.
+    - threshold (float): The threshold to determine the range of angles to search within.
+
+    Returns:
+    - list: List of patches with angles within the specified threshold.
+    """
+    result = []
+    for patch in patchesDB:
+        if abs(patch.angle - angle) <= threshold:
+            result.append(patch)
+    return result
+
+
+
 #search nearest key in ordered patches
-def searchNearestKey(patches, key):
+def searchNearestPatchByAngle(patches, angle):
     n = len(patches)
     if n > 1:
         for i in range(n):
             patch = patches[i]
-            if key <= patch.angle:
+            if angle <= patch.angle:
                 return patch.image
         return patches[n-1].angle,patches[n-1].image
     if n == 1:
         return patches[0].angle,patches[0].image
     return None
-     
+
+def searchNearestPatchByAngleAndHistogram(samplesPatchesDB, angle, imgRGB):
+    vecImages = searchAnglesinRange(samplesPatchesDB, angle, threshold=5)
+    l = len(vecImages)
+    if l > 5:
+        p = identify_nearest_histogram(vecImages,imgRGB)
+        return p.image
+    else :
+        print("Not enough samples")
+        return None
+    
+
+
+# identify nearest patch from image using calcHist
+def identify_nearest_histogram(patchList, image):
+    if len(patchList) == 0:
+        print("Empty list")
+        return None
+    h = (cv2.calcHist([image], [0], None, [256], [0,256]))
+    original = cv2.normalize(h, h, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
+    maxCorrelation = -1  # initial value
+    nearestPatch = None  # result patch
+    
+    for p in patchList:
+        i = p.image
+        # Calcular os histogramas
+        h = (cv2.calcHist([i], [0], None, [256], [0,256]))
+        # Normalizar os histogramas
+        h = cv2.normalize(h, h, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
+        # Comparar os histogramas de cada imagem com imagem original
+        correlation = cv2.compareHist(original, h , cv2.HISTCMP_CORREL)
+        if correlation > maxCorrelation:
+            maxCorrelation = correlation
+            nearestPatch = p
+
+    return nearestPatch
+
+
 #load a list of images from files
 def loadImages(path, imageList):
     loadedImages = []
