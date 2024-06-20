@@ -241,7 +241,8 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
                     resultRGBW[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
                     
                     if visualize:
-                        showResult(resultRGBW)
+                        showResult(resultRGBW, "generation")
+                        showResult(doneWindow, "done Window",900,200)
                         key = cv2.waitKey(1) 
                         if key == 27:
                             cv2.destroyAllWindows()
@@ -312,7 +313,7 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     inspect(controlMask, "controlMask")
     inspect(sampleGray, "sampleGray")
     fillSample()
-    
+
 
     inspect(original_sample, "Sample")
     inspect(semantic_mask, "semantic_mask")
@@ -329,11 +330,10 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
 
     # third step is to generate the zone0
     origRGBSample = sampleZ0
-    inspect(sampleZ0, "Sample Z0")
     sampleGray=origRGBSample.astype(np.float64)/ 255.
     controlMask = controlMask + zone0
+    inspect(sampleZ0, "Sample Z0")
     inspect(controlMask, "controlMask + zone expanded")
-    
     inspect(sampleGray, "sampleGray")
     fillSample()
 
@@ -356,10 +356,10 @@ def inspect(img,title=None):
         cv2.waitKey(0)
         cv2.destroyAllWindows()
      
-def showResult(resultRGBWindow, title=None):
+def showResult(resultRGBWindow, title=None,coluna=50,linha=200):
     img = cv2.resize(resultRGBWindow, (0, 0), fx=8, fy=8)
     cv2.imshow(title, img)
-    cv2.moveWindow(title, 300, 200)
+    cv2.moveWindow(title, coluna, linha)
 
 def validate_args(args):
     wh, ww = args.window_height, args.window_width

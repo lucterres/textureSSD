@@ -37,3 +37,11 @@ original_sample = cv2.imread("args.sample_path")   #-  original image, the sourc
                  # oringinal sample image size
 
 # generat_mask  -  mask to generate, same result windows size 
+
+
+# patch mask - fragment to syntehtize
+
+# control mask - mask to control the synthesis
+
+# control mask expansion - new control mask expansion with no interruptions
+

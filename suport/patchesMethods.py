@@ -64,9 +64,13 @@ def sampleBreak(rGBsample, mask):
     sample = cv2.cvtColor(rGBsample, cv2.COLOR_BGR2GRAY)
     dilated_edge, zone0, zone1, fullmask = create_Masks(mask, dilatedEdge=True, size=3)
     sEdge = sample * dilated_edge.astype(np.uint8)
-    sZ0   = sample * zone0.astype(np.uint8)
-    sZ1   = sample * zone1.astype(np.uint8)
-    return sEdge, sZ0, sZ1
+    sZ1   = sample * zone0.astype(np.uint8)
+    sZ2   = sample * zone1.astype(np.uint8)
+    #zone1Comp = cv2.bitwise_not(zone1)
+    #blank = np.ones_like(sZ1)
+    #zone1Comp= zone1Comp * blank
+    #sZ2 = sZ2 + zone1Comp """
+    return sEdge, sZ1, sZ2
 
 # Calculating Masks
 def create_Masks(mask, dilatedEdge=True, size=11):
@@ -119,7 +123,7 @@ def showImages(images, imagesTitle,size=(5,5)):
     if n > 1:
             fig, axs = plt.subplots(1, n , figsize=size)
             for i in range(n):
-                axs[i].imshow(images[i],cmap = 'gray')
+                axs[i].imshow(images[i],cmap= 'gray')
                 if len(imagesTitle) > 0: axs[i].set_title(imagesTitle[i])
                 axs[i].axis('off')
             plt.show()
