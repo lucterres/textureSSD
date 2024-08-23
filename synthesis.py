@@ -21,12 +21,13 @@ Example:
 
 __author__ = 'Maxwell Goldberg'
 
-INSPECT  = True
+INSPECT  = False
 
 import argparse
 import cv2
+import largestinteriorrectangle as lir
 import numpy as np
-import time
+import time 
 import uuid
 import pandas as pd 
 import suport.patchesMethods as pm
@@ -241,13 +242,13 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
                     resultRGBW[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
                     
                     if visualize:
-                        showResult(resultRGBW, "generation")
-                        showResult(doneWindow, "done Window",900,200)
+                        showResult(resultRGBW, "generation",1970,100)
+                        showResult(doneWindow, "done Window",900+1920,100)
                         key = cv2.waitKey(1) 
                         if key == 27:
                             cv2.destroyAllWindows()
                             return resultRGBW
-                        
+
     # discover generation segments and angles 
     genSegments,l = pm.probHough(generat_mask, generat_mask, tresh = 10, minPoints=15, maxGap=10, sort=False)
     #iterate over patches and angle segments
@@ -277,7 +278,7 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     resultRGBW=0
     start = True
     rotate = False
-    
+
     # first step is to generate the edge zone 
     generat_mask = dilated_edge
     controlMask = np.zeros(generat_mask.shape)
@@ -308,6 +309,7 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
             else: 
                 sampleGray=update(origRGBSample)
         fillSample()
+        
     # complete edge zone with the last sample patch
     controlMask = dilated_edge
     inspect(controlMask, "controlMask")
@@ -318,10 +320,11 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     inspect(original_sample, "Sample")
     inspect(semantic_mask, "semantic_mask")
     sampleEdge, sampleZ1, sampleZ0 = pm.sampleBreak(original_sample, semantic_mask)
+    inspect(sampleZ1, "sampleZ1")
     inspect(sampleZ1, "Sample Z1")
-
     # second step is to generate the zone1
-    origRGBSample = sampleZ1
+    origRGBSample = extractBiggestSquare(sampleZ1)
+    inspect(origRGBSample, "Biggest Square in Z1")
     sampleGray=origRGBSample.astype(np.float64)/ 255.
     controlMask = controlMask + zone1
     inspect(controlMask, "controlMask + zone expanded")
@@ -329,10 +332,13 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     fillSample()
 
     # third step is to generate the zone0
-    origRGBSample = sampleZ0
+
+    # Find the biggest square filled in sampleZ0
+    origRGBSample = extractBiggestSquare(sampleZ0)
     sampleGray=origRGBSample.astype(np.float64)/ 255.
     controlMask = controlMask + zone0
     inspect(sampleZ0, "Sample Z0")
+    inspect(origRGBSample, "Biggest Square in Z0")
     inspect(controlMask, "controlMask + zone expanded")
     inspect(sampleGray, "sampleGray")
     fillSample()
@@ -349,14 +355,27 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
 
     return resultRGBW
 
+def extractBiggestSquare(sampleZ0):
+    _, mask = cv2.threshold(sampleZ0, 0, 255, cv2.THRESH_BINARY)
+
+    contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+    contour = np.array([contours[0][:, 0, :]])
+    inner_bb = lir.lir(contour)
+
+    cropped_img = sampleZ0[inner_bb[1]:inner_bb[1] + inner_bb[3],
+                  inner_bb[0]:inner_bb[0] + inner_bb[2]]
+
+    return cropped_img
+
 def inspect(img,title=None):  
     if INSPECT:
         print(img.shape)
-        showResult(img,title)
+        showResult(img,title,1970,200)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
      
 def showResult(resultRGBWindow, title=None,coluna=50,linha=200):
+    #coluna no segundo monitor
     img = cv2.resize(resultRGBWindow, (0, 0), fx=8, fy=8)
     cv2.imshow(title, img)
     cv2.moveWindow(title, coluna, linha)
