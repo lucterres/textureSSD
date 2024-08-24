@@ -4,3 +4,4 @@ examples/
 ```
 .ipynb_checkpoints/
 *.pyc
+locals.py
