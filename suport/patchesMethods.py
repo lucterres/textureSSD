@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import locals
 
+
 # Rotaciona a imagem em torno do centro
 def rotateImage(img, angle):
     # Calcula a matriz de rotação
