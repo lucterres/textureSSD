@@ -17,17 +17,27 @@ def rotateImage(img, angle):
 def loadDataBase(samples=200, treshold=100):
     #define localização dos diretórios de imagens
     inHouse=False
-    
+    inES0004605=False
+    inNote=True
+   
     if inHouse:
         #Desktop I3
-        TRAIN_CSV = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train1090.csv'
-        IMAGES_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\train\images'
-        MASK_DIR = r'D:\_0Luciano\_0PHD\datasets\tgs-salt\masks10-90'
-    else:
-        # ES00004605
-        TRAIN_CSV = r'G:\_phd\dataset\tgs-salt\saltMaskOk.csv'
-        IMAGES_DIR= r'G:\_phd\dataset\tgs-salt\train\images' 
-        MASK_DIR = r'G:\_phd\dataset\tgs-salt\train\masks'
+        housepath=r'D:\_0Luciano\_0PHD\datasets\tgs-sal'
+        TRAIN_CSV = housepath + r'\train1090.csv'
+        IMAGES_DIR = housepath + r'\train\images'
+        MASK_DIR = housepath + r'\masks10-90'
+    
+    if inNote:
+        notePath = r'D:\\_phd\datasets\\tgsSalt\\'
+        TRAIN_CSV = notePath + r'train1090.csv'
+        IMAGES_DIR = notePath + r'train\\images'
+        MASK_DIR =  notePath + r'train\\masks'
+    
+    if inES0004605:
+        esPath = r'G:\\_phd\dataset\\tgs-salt\\'
+        TRAIN_CSV = esPath + 'saltMaskOk.csv'
+        IMAGES_DIR= esPath + r'train\\images' 
+        MASK_DIR = esPath + r'train\\masks'
 
     df_train = pd.read_csv(TRAIN_CSV)
     fileNamesList = df_train.iloc[0:samples,0]
@@ -63,6 +73,7 @@ def load(path):
 def sampleBreak(rGBsample, mask):
     sample = cv2.cvtColor(rGBsample, cv2.COLOR_BGR2GRAY)
     dilated_edge, zone0, zone1, fullmask = create_Masks(mask, dilatedEdge=True, size=3)
+    
     sEdge = sample * dilated_edge.astype(np.uint8)
     sZ1   = sample * zone0.astype(np.uint8)
     sZ2   = sample * zone1.astype(np.uint8)
