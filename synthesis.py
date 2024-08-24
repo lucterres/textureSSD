@@ -316,7 +316,6 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     inspect(sampleGray, "sampleGray")
     fillSample()
 
-
     inspect(original_sample, "Sample")
     inspect(semantic_mask, "semantic_mask")
     sampleEdge, sampleZ1, sampleZ0 = pm.sampleBreak(original_sample, semantic_mask)
