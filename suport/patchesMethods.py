@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import locals
+import suport.locals as locals
 
 
 # Rotaciona a imagem em torno do centro
