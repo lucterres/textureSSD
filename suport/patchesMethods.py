@@ -20,11 +20,11 @@ def loadDataBase(samples=200, treshold=100):
     #define localização dos diretórios de imagens
   
     if locals.inHouseAMD:
-        #Desktop I3
-        housepath=r'D:\_0Luciano\_0PHD\datasets\tgs-sal'
-        TRAIN_CSV = housepath + r'\train1090.csv'
-        IMAGES_DIR = housepath + r'\train\images'
-        MASK_DIR = housepath + r'\masks10-90'
+        #Desktop I3 
+        housepath=r'D:\\_PHD\datasets\\tgs-salt\\'
+        TRAIN_CSV = housepath + r'saltMaskOk.csv'
+        IMAGES_DIR= housepath + r'train\\images' 
+        MASK_DIR = housepath + r'train\\masks'
 
 
     if locals.inHouse:
@@ -34,13 +34,6 @@ def loadDataBase(samples=200, treshold=100):
         IMAGES_DIR = housepath + r'\train\images'
         MASK_DIR = housepath + r'\masks10-90'
     
-    if locals.inHouse:
-        #Desktop I3
-        housepath=r'D:\_0Luciano\_0PHD\datasets\tgs-sal'
-        TRAIN_CSV = housepath + r'\train1090.csv'
-        IMAGES_DIR = housepath + r'\train\images'
-        MASK_DIR = housepath + r'\masks10-90'
-
     if locals.inNote:
         notePath = r'D:\\_phd\datasets\\tgsSalt\\'
         TRAIN_CSV = notePath + r'train1090.csv'
