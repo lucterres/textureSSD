@@ -243,7 +243,7 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
                     
                     if visualize:
                         showResult(resultRGBW, "generation",50,100)
-                        showResult(doneWindow, "done Window",900,100)
+                        #showResult(doneWindow, "done Window",900,100)
                         key = cv2.waitKey(1) 
                         if key == 27:
                             cv2.destroyAllWindows()
