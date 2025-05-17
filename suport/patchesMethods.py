@@ -26,25 +26,12 @@ def loadDataBase(samples=200, treshold=100):
         IMAGES_DIR= housepath + r'train\\images' 
         MASK_DIR = housepath + r'train\\masks'
 
-
-    if locals.inHouse:
-        #Desktop I3
-        housepath=r'D:\_0Luciano\_0PHD\datasets\tgs-sal'
-        TRAIN_CSV = housepath + r'\train1090.csv'
-        IMAGES_DIR = housepath + r'\train\images'
-        MASK_DIR = housepath + r'\masks10-90'
-    
-    if locals.inNote:
-        notePath = r'D:\\_phd\datasets\\tgsSalt\\'
-        TRAIN_CSV = notePath + r'train1090.csv'
-        IMAGES_DIR = notePath + r'train\\images'
-        MASK_DIR =  notePath + r'train\\masks'
-    
-    if locals.inES0004605:
-        esPath = r'G:\\_phd\dataset\\tgs-salt\\'
-        TRAIN_CSV = esPath + 'saltMaskOk.csv'
-        IMAGES_DIR= esPath + r'train\\images' 
-        MASK_DIR = esPath + r'train\\masks'
+    if locals.in8700G:
+        #Desktop 8700g - D:\dataset\tgs-salt
+        housepath=r'D:\\datasets\\tgs-salt\\'
+        TRAIN_CSV = housepath + r'saltMaskOk.csv'
+        IMAGES_DIR= housepath + r'train\\images' 
+        MASK_DIR = housepath + r'train\\masks'
 
     df_train = pd.read_csv(TRAIN_CSV)
     fileNamesList = df_train.iloc[0:samples,0]
