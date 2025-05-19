@@ -42,8 +42,8 @@ def loadDataBase(samples=200, treshold=100):
         MASK_DIR = housepath + r'\masks10-90'
 
     if locals.inNote:
-        notePath = r'D:\\_phd\datasets\\tgsSalt\\'
-        TRAIN_CSV = notePath + r'train1090.csv'
+        notePath = r'D:\\dataset\\tgs-Salt\\'
+        TRAIN_CSV = notePath + 'saltMaskOk.csv'  # r'train1090.csv'   #"D:\dataset\tgs-salt\saltMaskOk.csv"
         IMAGES_DIR = notePath + r'train\\images'
         MASK_DIR =  notePath + r'train\\masks'
     
