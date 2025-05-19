@@ -242,8 +242,8 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
                     resultRGBW[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
                     
                     if visualize:
-                        showResult(resultRGBW, "generation",1970,100)
-                        showResult(doneWindow, "done Window",900+1920,100)
+                        showResult(resultRGBW, "generation",50,100)
+                        #showResult(doneWindow, "done Window",900,100)
                         key = cv2.waitKey(1) 
                         if key == 27:
                             cv2.destroyAllWindows()
@@ -369,7 +369,7 @@ def extractBiggestSquare(sampleZ0):
 def inspect(img,title=None):  
     if INSPECT:
         print(img.shape)
-        showResult(img,title,1970,200)
+        showResult(img,title,70,200)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
      

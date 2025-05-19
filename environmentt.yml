@@ -1,9 +1,7 @@
 name: lir
 channels:
   - defaults
-  - http://ticepnexus.ep.petrobras.com.br:8081/nexus/repository/conda-pytorch/
-  - http://ticepnexus.ep.petrobras.com.br:8081/nexus/repository/conda-nvidia/
-  - http://ticepnexus.ep.petrobras.com.br:8081/nexus/repository/conda-forge/
+  - conda-forge
 dependencies:
   - aom=3.9.1=he0c23c2_0
   - asttokens=2.4.1=pyhd8ed1ab_0
