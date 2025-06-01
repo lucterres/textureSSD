@@ -37,6 +37,8 @@ def psnr(imageA, imageB):
 def mae(imageA, imageB):
     return np.mean(np.abs(imageA.astype("float") - imageB.astype("float")))
 
+#Euclidean distance based on the Local Binary Pattern
+
 #calcula o RMSE entre duas imagens
 def rmse(imageA, imageB):
     return np.sqrt(mse(imageA, imageB))
