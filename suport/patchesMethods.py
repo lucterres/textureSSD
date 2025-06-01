@@ -28,7 +28,7 @@ def loadDataBase(samples=200, treshold=100):
 
     if locals.in8700G:
         #Desktop 8700g - D:\dataset\tgs-salt
-        housepath=r'D:\\datasets\\tgs-salt\\'
+        housepath=r'D:\\dataset\\tgs-salt\\'
         TRAIN_CSV = housepath + r'saltMaskOk.csv'
         IMAGES_DIR= housepath + r'train\\images' 
         MASK_DIR = housepath + r'train\\masks'
