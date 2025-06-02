@@ -261,11 +261,11 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     # create the interface edge dilated 
     dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
     zones = [dilated_edge, zone0, zone1, fullmask]
-    #inspect(fullmask, "fullmask")
-    #inspect(generat_mask, "generat_mask")
-    #inspect(dilated_edge, "edge")
-    #inspect(zone0, "zone0")
-    #inspect(zone1, "zone1" )
+    inspect(fullmask, "fullmask")
+    inspect(generat_mask, "generat_mask")
+    inspect(dilated_edge, "edge")
+    inspect(zone0, "zone0")
+    inspect(zone1, "zone1" )
 
     completeMask = generat_mask.copy() #later we will complete the generation mask
     original_sample = origRGBSample.copy()
@@ -318,8 +318,8 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
 
     inspect(original_sample, "Sample")
     inspect(semantic_mask, "semantic_mask")
-    sampleEdge, sampleZ1, sampleZ0 = pm.sampleBreak(original_sample, semantic_mask)
-    inspect(sampleZ1, "sampleZ1")
+    sampleEdge, sampleZ0, sampleZ1 = pm.sampleBreak(original_sample, semantic_mask)
+    inspect(sampleZ0, "sample Z0")
     inspect(sampleZ1, "Sample Z1")
     # second step is to generate the zone1
     origRGBSample = extractBiggestSquare(sampleZ1)

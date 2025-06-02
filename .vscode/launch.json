@@ -13,9 +13,9 @@
             "console": "integratedTerminal",
             "args": [
                 "--visualize",
-                "--sample_path=tgs_salt/0a1742c740.png", // source image
-                "--sample_semantic_mask_path=tgs_salt/0a1742c740Mask.png" , // source image context mask
-                "--generat_mask_path=tgs_salt/0bdd44d530Mask.png" , 
+                "--sample_path=tgs_salt/1bd1c8c771.png", // source image
+                "--sample_semantic_mask_path=tgs_salt/1bd1c8c771Mask.png" , // source image context mask
+                "--generat_mask_path=tgs_salt/1bd1c8c771Mask.png" , 
                 "--window_height=101",
                 "--window_width=101"
             ],
