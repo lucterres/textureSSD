@@ -31,6 +31,9 @@ import time
 import uuid
 import pandas as pd 
 import suport.patchesMethods as pm
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 
 EIGHT_CONNECTED_NEIGHBOR_KERNEL = np.array([[1., 1., 1.],
                                             [1., 0., 1.],
@@ -204,6 +207,23 @@ def findInsideMaskPixel(controlMask):
         pw = np.random.randint(sw)
     return ph,pw
 
+def compareOriginalAndSinthesys(original_sample, resultRGBW):
+    # Calculate metrics
+    from metrics import mse, ssim, lbp_distance
+    # compute the MSE between the two images
+    m = mse(original_sample, resultRGBW)
+    # compute the SSIM between the two images
+    s = ssim(original_sample, resultRGBW)
+    # compute euclidean distance
+    euclidean_distance = lbp_distance(original_sample, resultRGBW)
+
+    # Create a DataFrame to display the results
+    metrics = pd.DataFrame({
+        'Metric': ['MSE', 'SSIM', 'Euclidean Distance'],
+        'Value': [m, s, euclidean_distance]
+    })
+    print(metrics)
+    
 def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
     # Convert original to sample representation.
 
@@ -351,7 +371,14 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     if visualize:
         inspect(controlMask, "final controlMask")
         inspect(resultRGBW, "Sinthesys" )
+    
+    pm.showImages(images=[original_sample,resultRGBW], imagesTitle=["Original","Synthetic"],size=(10,10)) 
 
+    
+    # compare original and synthesized texture
+    compareOriginalAndSinthesys(original_sample, resultRGBW)
+
+  
     return resultRGBW
 
 def extractBiggestSquare(sampleZ0):
@@ -445,6 +472,7 @@ def main():
     # save result
     filename = "result/" + str(uuid.uuid4())[:8] + ".jpg"
     cv2.imwrite(filename, synthesized_texture)
+    print(f'Synthesized texture saved to {filename}')
 
 if __name__ == '__main__':
     main()

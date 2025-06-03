@@ -1,3 +1,13 @@
+# This module provides functions to compute various image similarity metrics
+# such as Mean Squared Error (MSE), Structural Similarity Index (SSIM),
+# Peak Signal-to-Noise Ratio (PSNR), Mean Absolute Error (MAE), Root Mean Squared Error (RMSE),
+# and Local Binary Pattern (LBP) distance.
+# Each function takes two images as input and returns the computed metric.
+# The images should be in grayscale format for these calculations.
+# The metrics can be used to evaluate the similarity between two images,
+# which is useful in various applications such as image processing, computer vision, and machine learning.
+
+
 # calcule o mse entre duas imagens
 import cv2
 import numpy as np  
@@ -10,7 +20,7 @@ def mse(imageA, imageB):
     # return the MSE, the lower the error, the more "similar"
     # the two images are
     return err
-# calcule o Índice de Similaridade Estrutural (SSIM) entre duas imagens
+# Índice de Similaridade Estrutural (SSIM) entre duas imagens
 def ssim(imageA, imageB):
     C1 = (0.01 * 255) ** 2
     C2 = (0.03 * 255) ** 2
@@ -51,14 +61,6 @@ def lbp_distance(imageA, imageB):
     lbpB = cv2.normalize(lbpB, lbpB).flatten()
     return np.linalg.norm(lbpA - lbpB)
 
-# This module provides functions to compute various image similarity metrics
-# such as Mean Squared Error (MSE), Structural Similarity Index (SSIM),
-# Peak Signal-to-Noise Ratio (PSNR), Mean Absolute Error (MAE), Root Mean Squared Error (RMSE),
-# and Local Binary Pattern (LBP) distance.
-# Each function takes two images as input and returns the computed metric.
-# The images should be in grayscale format for these calculations.
-# The metrics can be used to evaluate the similarity between two images,
-# which is useful in various applications such as image processing, computer vision, and machine learning.
 
 
 # one function to demonstrate the usage of the metrics
