@@ -375,11 +375,6 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     
     pm.showImages(images=[original_sample,resultRGBW], imagesTitle=["Original","Synthetic"],size=(10,10)) 
 
-    
-    # compare original and synthesized texture
-    compareOriginalAndSinthesys(original_sample, resultRGBW)
-
-  
     return resultRGBW
 
 def extractBiggestSquare(sampleZ0):
@@ -474,6 +469,8 @@ def main():
     filename = "result/" + str(uuid.uuid4())[:8] + ".jpg"
     cv2.imwrite(filename, synthesized_texture)
     print(f'Synthesized texture saved to {filename}')
+        # compare original and synthesized texture
+    compareOriginalAndSinthesys(sample, synthesized_texture)
 
 if __name__ == '__main__':
     main()
