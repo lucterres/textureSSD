@@ -226,6 +226,7 @@ def compareOriginalAndSinthesys(original_sample, resultRGBW):
     
 def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
     # Convert original to sample representation.
+    print ("Starting texture synthesis...")
 
     def fillSample():
         # Synthesize texture until all pixels in the window are filled.

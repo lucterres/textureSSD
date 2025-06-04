@@ -86,7 +86,7 @@ def sampleBreak(rGBsample, mask):
     return sEdge, sZ1, sZ2
 
 # Calculating Masks
-def create_Masks(mask, dilatedEdge=True, size=11):
+def create_Masks(mask, dilatedEdge=True, size=5):
     # edge definition
     edge = cv2.Canny(mask,100,200)
     kernel = np.ones((size,size))
