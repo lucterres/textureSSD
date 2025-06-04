@@ -21,7 +21,7 @@ def mse(imageA, imageB):
     # the two images are
     return err
 # Índice de Similaridade Estrutural (SSIM) entre duas imagens
-def ssim(imageA, imageB):
+def dssim(imageA, imageB):
     C1 = (0.01 * 255) ** 2
     C2 = (0.03 * 255) ** 2
 
@@ -33,8 +33,10 @@ def ssim(imageA, imageB):
     sigmaAB = cv2.GaussianBlur(imageA.astype("float") * imageB.astype("float"), (11, 11), 1.5) - muA * muB
 
     ssim_map = ((2 * muA * muB + C1) * (2 * sigmaAB + C2)) / ((muA ** 2 + muB ** 2 + C1) * (sigmaA + sigmaB + C2))
-    
-    return np.mean(ssim_map)
+    ssim=np.mean(ssim_map)
+    dssim = (1 - ssim) / 2  # Convert SSIM to DSSIM
+    return dssim  # Return DSSIM instead of SSIM for better interpretation
+
 # calcula o PSNR entre duas imagens
 def psnr(imageA, imageB):
     mse_value = mse(imageA, imageB)
@@ -81,7 +83,7 @@ def main():
     print(f"MSE: {m}")
 
     # compute the SSIM between the two images
-    s = ssim(imageA, imageB)
+    s = dssim(imageA, imageB)
 
     print(f"SSIM: {s}")
 
@@ -118,7 +120,7 @@ def main():
             image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             # compute the metrics for each image
             m = mse(image_gray, imageA)
-            s = ssim(image_gray, imageA)
+            s = dssim(image_gray, imageA)
             p = psnr(image_gray, imageA)
             a = mae(image_gray, imageA)
             r = rmse(image_gray, imageA)

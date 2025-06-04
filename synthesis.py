@@ -18,10 +18,11 @@ Example:
         $ python synthesis.py --sample_path=[input path] --out_path=[output path] --visualize
 
 '''
+# based on original work of 'Maxwell Goldberg'
+__author__ = 'Luciano Terres' 
 
-__author__ = 'Maxwell Goldberg'
 
-INSPECT  = False
+INSPECT  = True
 
 import argparse
 import cv2
@@ -207,20 +208,20 @@ def findInsideMaskPixel(controlMask):
         pw = np.random.randint(sw)
     return ph,pw
 
-def compareOriginalAndSinthesys(original_sample, resultRGBW):
+def analizeMetrics(original_sample, resultRGBW):
     # Calculate metrics
-    from metrics import mse, ssim, lbp_distance
+    from metrics import mse, dssim, lbp_distance
     # compute the MSE between the two images
     m = mse(original_sample, resultRGBW)
     # compute the SSIM between the two images
-    s = ssim(original_sample, resultRGBW)
+    s = dssim(original_sample, resultRGBW)
     # compute euclidean distance
     euclidean_distance = lbp_distance(original_sample, resultRGBW)
 
     # Create a DataFrame to display the results
     metrics = pd.DataFrame({
-        'Metric': ['MSE', 'SSIM', 'Euclidean Distance'],
-        'Value': [m, s, euclidean_distance]
+        'Metric': ['MSE', 'Euclidean Distance' , 'SSIM'],
+        'Value': [m, euclidean_distance, s]
     })
     print(metrics)
     
@@ -368,12 +369,11 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     inspect(controlMask, "controlMask + fullmask expanded")
     fillSample
 
-    cv2.waitKey(0)
+    #cv2.waitKey(0)
     if visualize:
         inspect(controlMask, "final controlMask")
         inspect(resultRGBW, "Sinthesys" )
-    
-    pm.showImages(images=[original_sample,resultRGBW], imagesTitle=["Original","Synthetic"],size=(10,10)) 
+   
 
     return resultRGBW
 
@@ -466,11 +466,13 @@ def main():
     print ("Tempo de processamento:" , toc - tic);
 
     # save result
-    filename = "result/" + str(uuid.uuid4())[:8] + ".jpg"
+    randomName = str(uuid.uuid4())[:8]
+    filename = "result/" + randomName  + ".jpg"
     cv2.imwrite(filename, synthesized_texture)
     print(f'Synthesized texture saved to {filename}')
-        # compare original and synthesized texture
-    compareOriginalAndSinthesys(sample, synthesized_texture)
+    # compare original and synthesized texture
+    analizeMetrics(sample, synthesized_texture)
+    pm.showImages(images=[sample,synthesized_texture], imagesTitle=[args.sample_path,randomName],size=(10,10)) 
 
 if __name__ == '__main__':
     main()
