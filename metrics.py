@@ -11,6 +11,7 @@
 # calcule o mse entre duas imagens
 import cv2
 import numpy as np  
+from skimage.feature import local_binary_pattern
 def mse(imageA, imageB):
     # the 'Mean Squared Error' between the two images is the
     # sum of the squared difference between the two images
@@ -21,7 +22,7 @@ def mse(imageA, imageB):
     # the two images are
     return err
 # Índice de Similaridade Estrutural (SSIM) entre duas imagens
-def dssim(imageA, imageB):
+def ssim(imageA, imageB):
     C1 = (0.01 * 255) ** 2
     C2 = (0.03 * 255) ** 2
 
@@ -33,8 +34,11 @@ def dssim(imageA, imageB):
     sigmaAB = cv2.GaussianBlur(imageA.astype("float") * imageB.astype("float"), (11, 11), 1.5) - muA * muB
 
     ssim_map = ((2 * muA * muB + C1) * (2 * sigmaAB + C2)) / ((muA ** 2 + muB ** 2 + C1) * (sigmaA + sigmaB + C2))
-    ssim=np.mean(ssim_map)
-    dssim = (1 - ssim) / 2  # Convert SSIM to DSSIM
+    return np.mean(ssim_map)
+
+def dssim(imageA, imageB):
+    similarity = ssim(imageA, imageB)
+    dssim = (1 - similarity) / 2  # Convert SSIM to DSSIM
     return dssim  # Return DSSIM instead of SSIM for better interpretation
 
 # calcula o PSNR entre duas imagens
@@ -63,88 +67,59 @@ def lbp_distance(imageA, imageB):
     lbpB = cv2.normalize(lbpB, lbpB).flatten()
     return np.linalg.norm(lbpA - lbpB)
 
+# compute LBP  using four neighbors, distance 1, and tile size of 64 pixels.
+# Note: The LBP distance function assumes that the images are already in grayscale.
+# If the images are not in grayscale, they should be converted before calling this function.
+# This module provides a set of functions to compute various image similarity metrics.
+def compute_lbp(image, P=4, R=1, tile_size=64):
+    """
+    Compute LBP for the image using four neighbors, distance 1, and tile size of 64 pixels.
+    Returns a list of LBP histograms for each tile.
+    """
+    h, w = image.shape
+    lbp_histograms = []
+    for y in range(0, h, tile_size):
+        for x in range(0, w, tile_size):
+            tile = image[y:y+tile_size, x:x+tile_size]
+            if tile.shape[0] < tile_size or tile.shape[1] < tile_size:
+                continue  # skip incomplete tiles
+            lbp = local_binary_pattern(tile, P, R, method='uniform')
+            hist, _ = np.histogram(lbp.ravel(), bins=np.arange(0, P + 3), range=(0, P + 2))
+            hist = hist.astype("float")
+            hist /= (hist.sum() + 1e-6)  # normalize
+            lbp_histograms.append(hist)
 
 
-# one function to demonstrate the usage of the metrics
+# Calcula a distância euclidiana média entre os histogramas LBP de tiles 64x64, usando 4 vizinhos e raio 1
+def lbp_tile_distance(imageA, imageB, P=4, R=1, tile_size=64):
+    """
+    Calcula a distância euclidiana média entre os histogramas LBP de tiles correspondentes
+    das duas imagens, usando 4 vizinhos, raio 1 e tile size 64.
+    As imagens devem estar em escala de cinza e ter o mesmo tamanho.
+    """
+    h, w = imageA.shape
+    dist_total = 0
+    count = 0
+    for y in range(0, h, tile_size):
+        for x in range(0, w, tile_size):
+            tileA = imageA[y:y+tile_size, x:x+tile_size]
+            tileB = imageB[y:y+tile_size, x:x+tile_size]
+            if tileA.shape != (tile_size, tile_size) or tileB.shape != (tile_size, tile_size):
+                continue  # pula tiles incompletos
+            lbpA = local_binary_pattern(tileA, P, R, method='uniform')
+            lbpB = local_binary_pattern(tileB, P, R, method='uniform')
+            # Histograma LBP
+            histA, _ = np.histogram(lbpA.ravel(), bins=np.arange(0, P + 3), range=(0, P + 2))
+            histB, _ = np.histogram(lbpB.ravel(), bins=np.arange(0, P + 3), range=(0, P + 2))
+            # Normaliza
+            histA = histA.astype('float') / (histA.sum() + 1e-6)
+            histB = histB.astype('float') / (histB.sum() + 1e-6)
+            dist_total += np.linalg.norm(histA - histB)
+            count += 1
+    return dist_total / count if count > 0 else None
 
-
-
-def main():
-    # load the two input images
-    imageA = cv2.imread("image1.png")
-    imageB = cv2.imread("image2.png")
-
-    # convert the images to grayscale
-    imageA = cv2.cvtColor(imageA, cv2.COLOR_BGR2GRAY)
-    imageB = cv2.cvtColor(imageB, cv2.COLOR_BGR2GRAY)
-
-    # compute the MSE between the two images
-    m = mse(imageA, imageB)
-    print(f"MSE: {m}")
-
-    # compute the SSIM between the two images
-    s = dssim(imageA, imageB)
-
-    print(f"SSIM: {s}")
-
-    # compute the PSNR between the two images
-    p = psnr(imageA, imageB)
-    print(f"PSNR: {p}")
-
-    # compute the MAE between the two images
-    a = mae(imageA, imageB)
-    print(f"MAE: {a}")
-    # compute the RMSE between the two images
-    r = rmse(imageA, imageB)
-
-    print(f"RMSE: {r}")
-
-    # compute the LBP distance between the two images
-    l = lbp_distance(imageA, imageB)
-    print(f"LBP Distance: {l}")
-
-    #percorre as imagens de um diretorio e calcule a média do diretório
-    import os
-    directory = "images"
-    mse_list = []
-    ssim_list = []
-    psnr_list = []
-    mae_list = []
-    rmse_list = []
-    lbp_list = []
-
-    for filename in os.listdir(directory):
-        if filename.endswith(".png") or filename.endswith(".jpg"):
-            image_path = os.path.join(directory, filename)
-            image = cv2.imread(image_path)
-            image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            # compute the metrics for each image
-            m = mse(image_gray, imageA)
-            s = dssim(image_gray, imageA)
-            p = psnr(image_gray, imageA)
-            a = mae(image_gray, imageA)
-            r = rmse(image_gray, imageA)
-            l = lbp_distance(image_gray, imageA)
-
-            mse_list.append(m)
-            ssim_list.append(s)
-            psnr_list.append(p)
-            mae_list.append(a)
-            rmse_list.append(r)
-            lbp_list.append(l)
-
-            print(f"Metrics for {filename}:")
-            print(f"MSE: {m}, SSIM: {s}, PSNR: {p}, MAE: {a}, RMSE: {r}, LBP Distance: {l}")
-
-    if mse_list:
-        print("\nAverage metrics for directory:")
-        print(f"Mean MSE: {np.mean(mse_list)}")
-        print(f"Mean SSIM: {np.mean(ssim_list)}")
-        print(f"Mean PSNR: {np.mean(psnr_list)}")
-        print(f"Mean MAE: {np.mean(mae_list)}")
-        print(f"Mean RMSE: {np.mean(rmse_list)}")
-        print(f"Mean LBP Distance: {np.mean(lbp_list)}")
-
-if __name__ == "__main__":
-    main()
-
+# Exemplo de uso:
+# imageA = cv2.imread('img1.png', 0)
+# imageB = cv2.imread('img2.png', 0)
+# dist = lbp_tile_distance(imageA, imageB)
+# print(f"LBP tile distance: {dist}")
