@@ -210,13 +210,13 @@ def findInsideMaskPixel(controlMask):
 
 def analizeMetrics(original_sample, resultRGBW):
     # Calculate metrics
-    from metrics import mse, dssim, lbp_distance
+    from metrics import mse, dssim, lbp_tile_distance
     # compute the MSE between the two images
     m = mse(original_sample, resultRGBW)
     # compute the SSIM between the two images
     s = dssim(original_sample, resultRGBW)
     # compute euclidean distance
-    euclidean_distance = lbp_distance(original_sample, resultRGBW)
+    euclidean_distance = lbp_tile_distance(original_sample, resultRGBW)
 
     # Create a DataFrame to display the results
     metrics = pd.DataFrame({

@@ -61,12 +61,12 @@ def rmse(imageA, imageB):
     return np.sqrt(mse(imageA, imageB))
 
 #calcula o Euclidean distance based on the Local Binary Pattern (LBP) entre duas imagens
-def lbp_distance(imageA, imageB):
+""" def lbp_distance(imageA, imageB):
     lbpA = cv2.calcHist([imageA], [0], None, [256], [0, 256])
     lbpB = cv2.calcHist([imageB], [0], None, [256], [0, 256])
     lbpA = cv2.normalize(lbpA, lbpA).flatten()
     lbpB = cv2.normalize(lbpB, lbpB).flatten()
-    return np.linalg.norm(lbpA - lbpB)
+    return np.linalg.norm(lbpA - lbpB) """
 
 # compute LBP  using four neighbors, distance 1, and tile size of 64 pixels.
 # Note: The LBP distance function assumes that the images are already in grayscale.
