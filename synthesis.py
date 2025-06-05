@@ -22,7 +22,7 @@ Example:
 __author__ = 'Luciano Terres' 
 
 
-INSPECT  = True
+INSPECT  = False
 
 import argparse
 import cv2
@@ -220,7 +220,7 @@ def analizeMetrics(original_sample, resultRGBW):
 
     # Create a DataFrame to display the results
     metrics = pd.DataFrame({
-        'Metric': ['MSE', 'Euclidean Distance' , 'SSIM'],
+        'Metric': ['MSE', 'DLBP' , 'DSSIM'],
         'Value': [m, euclidean_distance, s]
     })
     print(metrics)
