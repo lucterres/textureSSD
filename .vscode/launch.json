@@ -12,10 +12,10 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": [
-                "--visualize",
-                "--sample_path=tgs_salt/1d798aa5d5.png", // source image
-                "--sample_semantic_mask_path=tgs_salt/1d798aa5d5Mask.png" , // source image context mask
-                "--generat_mask_path=tgs_salt/1d798aa5d5Mask.png" , 
+                //"--visualize",
+                "--sample_path=tgs_salt/2a6477aee8.png", // source image
+                "--sample_semantic_mask_path=tgs_salt/2a6477aee8Mask.png" , // source image context mask
+                "--generat_mask_path=tgs_salt/2a6477aee8Mask.png" , 
                 "--window_height=101",
                 "--window_width=101"
             ],
