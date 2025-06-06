@@ -23,7 +23,7 @@ def mse(imageA, imageB):
     # the two images are
     return err
 # Índice de Similaridade Estrutural (SSIM) entre duas imagens
-def ssim(imageA, imageB):
+def _ssim(imageA, imageB):
     C1 = (0.01 * 255) ** 2
     C2 = (0.03 * 255) ** 2
 
@@ -38,7 +38,7 @@ def ssim(imageA, imageB):
     return np.mean(ssim_map)
 
 def dssim(imageA, imageB):
-    similarity = ssim(imageA, imageB)
+    similarity = _ssim(imageA, imageB)
     dssim = (1 - similarity) / 2  # Convert SSIM to DSSIM
     return dssim  # Return DSSIM instead of SSIM for better interpretation
 
