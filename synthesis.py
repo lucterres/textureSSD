@@ -472,7 +472,7 @@ def main():
     print(f'Synthesized texture saved to {filename}')
     # compare original and synthesized texture
     analizeMetrics(sample, synthesized_texture)
-    pm.showImages(images=[sample,synthesized_texture], imagesTitle=[args.sample_path,randomName],size=(10,10)) 
+    #pm.showImages(images=[sample,synthesized_texture], imagesTitle=[args.sample_path,randomName],size=(10,10)) 
 
 if __name__ == '__main__':
     main()
