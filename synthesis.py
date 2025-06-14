@@ -471,8 +471,10 @@ def main():
     cv2.imwrite(filename, synthesized_texture)
     print(f'Synthesized texture saved to {filename}')
     # compare original and synthesized texture
-    analizeMetrics(sample, synthesized_texture)
-    #pm.showImages(images=[sample,synthesized_texture], imagesTitle=[args.sample_path,randomName],size=(10,10)) 
+    graysample = cv2.cvtColor(sample, cv2.COLOR_BGR2GRAY)
+    synthesized_texture = cv2.cvtColor(synthesized_texture, cv2.COLOR_BGR2GRAY)
+    analizeMetrics(graysample, synthesized_texture)
+    pm.showImages(images=[sample,synthesized_texture], imagesTitle=[args.sample_path,randomName],size=(10,10)) 
 
 if __name__ == '__main__':
     main()
