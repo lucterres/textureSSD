@@ -1,0 +1,12 @@
+# run_timestamp;2025-09-13T10:16:58
+# sample_path;tgs_salt/2a6477aee8.png
+# sample_semantic_mask_path;tgs_salt/2a6477aee8Mask.png
+# generat_mask_path;tgs_salt/2a6477aee8Mask.png
+# window_height;101
+# window_width;101
+# kernel_size;11
+# visualize;False
+# iterations;1
+# --- métricas por iteração ---
+iteration;output_file;time_sec;mse;dssim;lbp_distance
+1;result/d881c340.jpg;31.730237;1130.170768;0.376649;0.083083

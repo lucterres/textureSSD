@@ -36,6 +36,7 @@ import os
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 from datetime import datetime
+import traceback
 
 
 EIGHT_CONNECTED_NEIGHBOR_KERNEL = np.array([[1., 1., 1.],
@@ -371,7 +372,7 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     # fourth step is to complete the full mask
     controlMask = controlMask + fullmask
     inspect(controlMask, "controlMask + fullmask expanded")
-    fillSample
+    fillSample()
 
     #cv2.waitKey(0)
     if visualize:
@@ -459,66 +460,83 @@ def main():
 
     validate_args(args)
 
-    # Repeat synthesis 10 times and record timings
+    # Repeat synthesis n times and record timings
     os.makedirs("result", exist_ok=True)
+    # Create a unique subfolder for this run (timestamp + short uuid)
+    run_id = datetime.now().strftime('%Y%m%d_%H%M%S') + '_' + str(uuid.uuid4())[:8]
+    run_dir = os.path.join('result', f'run_{run_id}')
+    os.makedirs(run_dir, exist_ok=True)
+    print(f"Resultados desta execução serão salvos em: {run_dir}")
     durations = []
     metrics_rows = []  # collect per-iteration metrics
-    for i in range(3):
-        tic = time.time()
-        synthesized_texture = synthesize(origRGBSample=sample,
-                                         semantic_mask=sample_semantic_mask,
-                                         generat_mask=generat_mask,
-                                         window_size=(args.window_height, args.window_width),
-                                         kernel_size=args.kernel_size,
-                                         visualize=args.visualize)
-        toc = time.time()
-        dur = toc - tic
-        durations.append(dur)
-        print(f"Iteração {i+1}/10 - Tempo de processamento: {dur:.3f}s")
+    n = 50 # could be parameterized later
+    metrics_csv_path = None
+    i = -1  # track iteration for error reporting
+    try:
+        for i in range(n):
+            tic = time.time()
+            synthesized_texture = synthesize(origRGBSample=sample,
+                                             semantic_mask=sample_semantic_mask,
+                                             generat_mask=generat_mask,
+                                             window_size=(args.window_height, args.window_width),
+                                             kernel_size=args.kernel_size,
+                                             visualize=args.visualize)
+            toc = time.time()
+            dur = toc - tic
+            durations.append(dur)
+            print(f"Iteração {i+1}/{n} - Tempo de processamento: {dur:.3f}s")
 
-        # save result of this iteration
+            # save result of this iteration
+            randomName = str(uuid.uuid4())[:8]
+            filename = os.path.join(run_dir, f"{randomName}.jpg")
+            cv2.imwrite(filename, synthesized_texture)
+            print(f'Iteração {i+1}: textura sintetizada salva em {filename}')
+
+            # Analyze metrics for this iteration (optional: could skip for speed)
+            graysample = cv2.cvtColor(sample, cv2.COLOR_BGR2GRAY)
+            synthesized_gray = cv2.cvtColor(synthesized_texture, cv2.COLOR_BGR2GRAY)
+            m, lbp_dist, dssim_val = analizeMetrics(graysample, synthesized_gray)
+            metrics_rows.append({
+                'iteration': i+1,
+                'output_file': filename,
+                'time_sec': dur,
+                'mse': m,
+                'dssim': dssim_val,
+                'lbp_distance': lbp_dist
+            })
+    except Exception as e:
+        print(f"Erro durante a iteração {i+1} (loop interrompido): {e}")
+        traceback.print_exc()
+    finally:
+        if durations:
+            print(f"Tempo médio ({len(durations)} execuções bem-sucedidas): {np.mean(durations):.3f}s | Desvio padrão: {np.std(durations):.3f}s")
+        else:
+            print("Nenhuma execução bem-sucedida para calcular estatísticas.")
+
+        # Persist metrics to CSV (even if partial)
+        # calcule as estatísticas min, max, mean, stddev, q125, median, q75
+        
+        metrics_df = pd.DataFrame(metrics_rows)
         randomName = str(uuid.uuid4())[:8]
-        filename = f"result/{randomName}.jpg"
-        cv2.imwrite(filename, synthesized_texture)
-        print(f'Iteração {i+1}: textura sintetizada salva em {filename}')
-
-        # Analyze metrics for this iteration (optional: could skip for speed)
-        graysample = cv2.cvtColor(sample, cv2.COLOR_BGR2GRAY)
-        synthesized_gray = cv2.cvtColor(synthesized_texture, cv2.COLOR_BGR2GRAY)
-        m, lbp_dist, dssim_val = analizeMetrics(graysample, synthesized_gray)
-        metrics_rows.append({
-            'iteration': i+1,
-            'output_file': filename,
-            'time_sec': dur,
-            'mse': m,
-            'dssim': dssim_val,
-            'lbp_distance': lbp_dist
-        })
-
-    print(f"Tempo médio (10 execuções): {np.mean(durations):.3f}s | Desvio padrão: {np.std(durations):.3f}s")
-    # Show last synthesized result beside original
-    # pm.showImages(images=[sample, synthesized_gray], imagesTitle=[args.sample_path, 'last_run'], size=(10,10)) 
-
-    # Persist metrics to CSV
-    metrics_df = pd.DataFrame(metrics_rows)
-    metrics_csv_path = "result/run_metrics.csv"
-    # Use semicolon as separator (common in PT-BR locales)
-    run_ts = datetime.now().isoformat(timespec='seconds')
-    # Escreve parâmetros da rodada no topo do arquivo apenas uma vez.
-    with open(metrics_csv_path, 'w', encoding='utf-8', newline='') as f:
-        f.write(f"# run_timestamp;{run_ts}\n")
-        f.write(f"# sample_path;{args.sample_path}\n")
-        f.write(f"# sample_semantic_mask_path;{args.sample_semantic_mask_path or 'N/A'}\n")
-        f.write(f"# generat_mask_path;{args.generat_mask_path or 'N/A'}\n")
-        f.write(f"# window_height;{args.window_height}\n")
-        f.write(f"# window_width;{args.window_width}\n")
-        f.write(f"# kernel_size;{args.kernel_size}\n")
-        f.write(f"# visualize;{args.visualize}\n")
-        f.write(f"# iterations;{len(durations)}\n")
-        # Linha em branco para separar cabeçalho das métricas
-        f.write("# --- métricas por iteração ---\n")
-        metrics_df.to_csv(f, sep=';', index=False, float_format='%.6f')
-    print(f"Metric results with parameters saved to {metrics_csv_path}")
+        metrics_csv_path = os.path.join(run_dir, f"run_metrics_{randomName}.csv")
+        run_ts = datetime.now().isoformat(timespec='seconds')
+        with open(metrics_csv_path, 'w', encoding='utf-8', newline='') as f:
+            f.write(f"# run_dir;{run_dir}\n")
+            f.write(f"# run_timestamp;{run_ts}\n")
+            f.write(f"# sample_path;{args.sample_path}\n")
+            f.write(f"# sample_semantic_mask_path;{args.sample_semantic_mask_path or 'N/A'}\n")
+            f.write(f"# generat_mask_path;{args.generat_mask_path or 'N/A'}\n")
+            f.write(f"# window_height;{args.window_height}\n")
+            f.write(f"# window_width;{args.window_width}\n")
+            f.write(f"# kernel_size;{args.kernel_size}\n")
+            f.write(f"# visualize;{args.visualize}\n")
+            f.write(f"# iterations_requested;{n}\n")
+            f.write(f"# iterations_completed;{len(durations)}\n")
+            if i >= 0 and len(durations) < n:
+                f.write(f"# interrupted_iteration;{i+1}\n")
+            f.write("# --- métricas por iteração ---\n")
+            metrics_df.to_csv(f, sep=';', index=False, float_format='%.6f')
+        print(f"Metric results (parciais ou completos) salvos em {metrics_csv_path}")
 
 if __name__ == '__main__':
     main()

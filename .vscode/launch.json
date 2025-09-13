@@ -13,9 +13,9 @@
             "console": "integratedTerminal",
             "args": [
                 //"--visualize",
-                "--sample_path=tgs_salt/2a6477aee8.png", // source image 2a6477aee8
-                "--sample_semantic_mask_path=tgs_salt/2a6477aee8Mask.png" , // source image context mask
-                "--generat_mask_path=tgs_salt/2a6477aee8Mask.png" , 
+                "--sample_path=tgs_salt/0bdd44d530.png", // source image 2a6477aee8 0bdd44d530 1bd1c8c771
+                "--sample_semantic_mask_path=tgs_salt/0bdd44d530Mask.png" , // source image context mask
+                "--generat_mask_path=tgs_salt/0bdd44d530Mask.png" , // esboço de geração - sketch mask  "--output_dir=results", // output directory
                 "--window_height=101",
                 "--window_width=101"
             ],
