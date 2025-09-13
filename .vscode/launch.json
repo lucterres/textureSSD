@@ -13,7 +13,7 @@
             "console": "integratedTerminal",
             "args": [
                 //"--visualize",
-                "--sample_path=tgs_salt/2a6477aee8.png", // source image
+                "--sample_path=tgs_salt/2a6477aee8.png", // source image 2a6477aee8
                 "--sample_semantic_mask_path=tgs_salt/2a6477aee8Mask.png" , // source image context mask
                 "--generat_mask_path=tgs_salt/2a6477aee8Mask.png" , 
                 "--window_height=101",

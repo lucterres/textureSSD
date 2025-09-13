@@ -32,8 +32,10 @@ import time
 import uuid
 import pandas as pd 
 import suport.patchesMethods as pm
+import os
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+from datetime import datetime
 
 
 EIGHT_CONNECTED_NEIGHBOR_KERNEL = np.array([[1., 1., 1.],
@@ -219,11 +221,13 @@ def analizeMetrics(original_sample, resultRGBW):
     euclidean_distance = lbp_tile_distance(original_sample, resultRGBW)
 
     # Create a DataFrame to display the results
-    metrics = pd.DataFrame({
+    metrics_df = pd.DataFrame({
         'Metric': ['MSE', 'DLBP' , 'DSSIM'],
         'Value': [m, euclidean_distance, s]
     })
-    print(metrics)
+    print(metrics_df)
+    # Return raw values for programmatic usage
+    return m, euclidean_distance, s
     
 def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
     # Convert original to sample representation.
@@ -439,7 +443,7 @@ def main():
         sample_semantic_mask = cv2.imread(args.sample_semantic_mask_path)
         sample_semantic_mask = cv2.cvtColor(sample_semantic_mask, cv2.COLOR_BGR2GRAY) 
         if sample_semantic_mask is None:
-            raise ValueError('Unable to read image from sample_path.')
+            raise ValueError('Unable to read image from sample_semantic_mask.')
     else:
         sample_semantic_mask = sample
             
@@ -447,7 +451,7 @@ def main():
         generat_mask = cv2.imread(args.generat_mask_path)
         generat_mask = cv2.cvtColor(generat_mask, cv2.COLOR_BGR2GRAY) 
         if generat_mask is None:
-            raise ValueError('Unable to read image from sample_path.')
+            raise ValueError('Unable to read image from generat_mask.')
     else:
         idim = args.window_height
         jdim = args.window_width
@@ -455,26 +459,66 @@ def main():
 
     validate_args(args)
 
-    tic = time.time() 
-    synthesized_texture= synthesize(origRGBSample=sample, 
-                                    semantic_mask = sample_semantic_mask,
-                                    generat_mask = generat_mask,
-                                    window_size=(args.window_height, args.window_width), 
-                                    kernel_size=args.kernel_size, 
-                                    visualize=args.visualize)
-    toc = time.time()
-    print ("Tempo de processamento:" , toc - tic);
+    # Repeat synthesis 10 times and record timings
+    os.makedirs("result", exist_ok=True)
+    durations = []
+    metrics_rows = []  # collect per-iteration metrics
+    for i in range(3):
+        tic = time.time()
+        synthesized_texture = synthesize(origRGBSample=sample,
+                                         semantic_mask=sample_semantic_mask,
+                                         generat_mask=generat_mask,
+                                         window_size=(args.window_height, args.window_width),
+                                         kernel_size=args.kernel_size,
+                                         visualize=args.visualize)
+        toc = time.time()
+        dur = toc - tic
+        durations.append(dur)
+        print(f"Iteração {i+1}/10 - Tempo de processamento: {dur:.3f}s")
 
-    # save result
-    randomName = str(uuid.uuid4())[:8]
-    filename = "result/" + randomName  + ".jpg"
-    cv2.imwrite(filename, synthesized_texture)
-    print(f'Synthesized texture saved to {filename}')
-    # compare original and synthesized texture
-    graysample = cv2.cvtColor(sample, cv2.COLOR_BGR2GRAY)
-    synthesized_texture = cv2.cvtColor(synthesized_texture, cv2.COLOR_BGR2GRAY)
-    analizeMetrics(graysample, synthesized_texture)
-    pm.showImages(images=[sample,synthesized_texture], imagesTitle=[args.sample_path,randomName],size=(10,10)) 
+        # save result of this iteration
+        randomName = str(uuid.uuid4())[:8]
+        filename = f"result/{randomName}.jpg"
+        cv2.imwrite(filename, synthesized_texture)
+        print(f'Iteração {i+1}: textura sintetizada salva em {filename}')
+
+        # Analyze metrics for this iteration (optional: could skip for speed)
+        graysample = cv2.cvtColor(sample, cv2.COLOR_BGR2GRAY)
+        synthesized_gray = cv2.cvtColor(synthesized_texture, cv2.COLOR_BGR2GRAY)
+        m, lbp_dist, dssim_val = analizeMetrics(graysample, synthesized_gray)
+        metrics_rows.append({
+            'iteration': i+1,
+            'output_file': filename,
+            'time_sec': dur,
+            'mse': m,
+            'dssim': dssim_val,
+            'lbp_distance': lbp_dist
+        })
+
+    print(f"Tempo médio (10 execuções): {np.mean(durations):.3f}s | Desvio padrão: {np.std(durations):.3f}s")
+    # Show last synthesized result beside original
+    # pm.showImages(images=[sample, synthesized_gray], imagesTitle=[args.sample_path, 'last_run'], size=(10,10)) 
+
+    # Persist metrics to CSV
+    metrics_df = pd.DataFrame(metrics_rows)
+    metrics_csv_path = "result/run_metrics.csv"
+    # Use semicolon as separator (common in PT-BR locales)
+    run_ts = datetime.now().isoformat(timespec='seconds')
+    # Escreve parâmetros da rodada no topo do arquivo apenas uma vez.
+    with open(metrics_csv_path, 'w', encoding='utf-8', newline='') as f:
+        f.write(f"# run_timestamp;{run_ts}\n")
+        f.write(f"# sample_path;{args.sample_path}\n")
+        f.write(f"# sample_semantic_mask_path;{args.sample_semantic_mask_path or 'N/A'}\n")
+        f.write(f"# generat_mask_path;{args.generat_mask_path or 'N/A'}\n")
+        f.write(f"# window_height;{args.window_height}\n")
+        f.write(f"# window_width;{args.window_width}\n")
+        f.write(f"# kernel_size;{args.kernel_size}\n")
+        f.write(f"# visualize;{args.visualize}\n")
+        f.write(f"# iterations;{len(durations)}\n")
+        # Linha em branco para separar cabeçalho das métricas
+        f.write("# --- métricas por iteração ---\n")
+        metrics_df.to_csv(f, sep=';', index=False, float_format='%.6f')
+    print(f"Metric results with parameters saved to {metrics_csv_path}")
 
 if __name__ == '__main__':
     main()

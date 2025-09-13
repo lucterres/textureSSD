@@ -1,0 +1,14 @@
+# run_timestamp;2025-09-13T09:26:18
+# sample_path;tgs_salt/2a6477aee8.png
+# sample_semantic_mask_path;tgs_salt/2a6477aee8Mask.png
+# generat_mask_path;tgs_salt/2a6477aee8Mask.png
+# window_height;101
+# window_width;101
+# kernel_size;11
+# visualize;False
+# iterations;3
+# --- métricas por iteração ---
+iteration;output_file;time_sec;mse;dssim;lbp_distance
+1;result/dd81006c.jpg;27.123419;1380.359475;0.361365;0.096003
+2;result/648069b4.jpg;26.366874;1196.329674;0.379893;0.074437
+3;result/44c7b549.jpg;27.638328;1244.232330;0.366186;0.069560
