@@ -26,9 +26,6 @@ numeric_cols = ['time_sec', 'mse', 'dssim', 'lbp_distance']
 for c in numeric_cols:
     df[c] = pd.to_numeric(df[c], errors='coerce')
 
-# Remove linhas totalmente vazias nas colunas numéricas
-df = df.dropna(subset=numeric_cols, how='all')
-
 # Calcula estatísticas
 stats_df = pd.DataFrame({
     'min': df[numeric_cols].min(),
@@ -44,16 +41,9 @@ stats_df = pd.DataFrame({
 print('\nEstatísticas descritivas por métrica:')
 print(stats_df)
 
-# Estatísticas agregadas em formato long (opcional)
-long_stats = stats_df.reset_index().rename(columns={'index': 'metric'})
-
 # Salva ao lado do CSV original
 out_dir = os.path.dirname(meuarquivo)
 out_path = os.path.join(out_dir, 'summary_stats.csv')
 stats_df.to_csv(out_path, sep=';', float_format='%.6f')
 print(f'Arquivo de estatísticas salvo em: {out_path}')
 
-# Se quiser também salvar versão long:
-out_long = os.path.join(out_dir, 'summary_stats_long.csv')
-long_stats.to_csv(out_long, sep=';', index=False, float_format='%.6f')
-print(f'Formato long salvo em: {out_long}')
