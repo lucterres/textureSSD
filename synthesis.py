@@ -463,7 +463,8 @@ def main():
     # Repeat synthesis n times and record timings
     os.makedirs("result", exist_ok=True)
     # Create a unique subfolder for this run (timestamp + short uuid)
-    run_id = datetime.now().strftime('%Y%m%d_%H%M%S') + '_' + str(uuid.uuid4())[:8]
+    # run_id = nome do sample
+    run_id = os.path.basename(args.sample_path).split('.')[0]
     run_dir = os.path.join('result', f'run_{run_id}')
     os.makedirs(run_dir, exist_ok=True)
     print(f"Resultados desta execução serão salvos em: {run_dir}")
@@ -515,7 +516,7 @@ def main():
 
         # Persist metrics to CSV (even if partial)
         # calcule as estatísticas min, max, mean, stddev, q125, median, q75
-        
+
         metrics_df = pd.DataFrame(metrics_rows)
         randomName = str(uuid.uuid4())[:8]
         metrics_csv_path = os.path.join(run_dir, f"run_metrics_{randomName}.csv")
