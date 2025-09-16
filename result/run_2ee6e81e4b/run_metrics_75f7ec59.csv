@@ -1,0 +1,18 @@
+# run_dir;result\run_2ee6e81e4b
+# run_timestamp;2025-09-15T19:23:26
+# sample_path;tgs_salt/2ee6e81e4b.png
+# sample_semantic_mask_path;tgs_salt/2ee6e81e4bMask.png
+# generat_mask_path;tgs_salt/2ee6e81e4bMask.png
+# window_height;101
+# window_width;101
+# kernel_size;11
+# visualize;False
+# iterations_requested;50
+# iterations_completed;4
+# interrupted_iteration;5
+# --- métricas por iteração ---
+iteration;output_file;time_sec;mse;dssim;lbp_distance
+1;result\run_2ee6e81e4b\fccec08d.jpg;15.847220;538.882463;0.226378;0.235438
+2;result\run_2ee6e81e4b\fae84170.jpg;15.519273;563.172532;0.207635;0.278549
+3;result\run_2ee6e81e4b\51d50a78.jpg;15.208625;512.609842;0.187663;0.252804
+4;result\run_2ee6e81e4b\a52f2d4a.jpg;15.206929;440.331242;0.205845;0.234615

@@ -2,6 +2,7 @@
 # method for line detection
 import cv2
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 import pandas as pd
 import suport.locals as locals
@@ -16,36 +17,81 @@ def rotateImage(img, angle):
     # Exibe a imagem rotacionada
     return rotated
 
-def loadDataBase(samples=200, treshold=100):
-    #define localização dos diretórios de imagens
-  
+def loadDataBase(samples=1000, treshold=100, cache_path=None, rebuild=False):
+    """Load (or build) the patches database.
+
+    Parameters
+    ----------
+    samples : int
+        Number of image/mask pairs to sample for building the DB.
+    treshold : int
+        Minimum area (pixels) for a patch to be included.
+    cache_path : str or None
+        If provided, an .npz file path used to load/save the cached patch list.
+    rebuild : bool
+        If True forces rebuilding the database even if cache exists.
+
+    Returns
+    -------
+    list[Patch]
+        List of Patch objects sorted by angle.
+    """
+    # Try loading from cache first
+    if cache_path and (not rebuild) and os.path.exists(cache_path):
+        try:
+            data = np.load(cache_path, allow_pickle=True)
+            patches_arr = data['patches']
+            patches_list = []
+            for item in patches_arr:
+                # each item is a dict with keys: line, angle, image
+                line = tuple(item['line'])
+                angle = int(item['angle'])
+                image = item['image']
+                p = Patch(line, image)
+                p.angle = angle  # override computed angle for fidelity
+                patches_list.append(p)
+            print(f"Patches DB loaded from cache: {cache_path} ({len(patches_list)} patches)")
+            return patches_list
+        except Exception as e:
+            print(f"Falha ao carregar cache ({cache_path}), reconstruindo. Erro: {e}")
+
+    # Define localização dos diretórios de imagens
     if locals.inHouseAMD:
-        #Desktop I3 
         housepath=r'D:\\_PHD\datasets\\tgs-salt\\'
         TRAIN_CSV = housepath + r'saltMaskOk.csv'
-        IMAGES_DIR= housepath + r'train\\images' 
+        IMAGES_DIR= housepath + r'train\\images'
         MASK_DIR = housepath + r'train\\masks'
-
-    if locals.inNote:    # D:\dataset\tgs-salt
-        #Desktop I3 
+    elif locals.inNote:
         housepath=r'D:\\datasets\\tgs-salt\\'
         TRAIN_CSV = housepath + r'saltMaskOk.csv'
-        IMAGES_DIR= housepath + r'train\\images' 
+        IMAGES_DIR= housepath + r'train\\images'
         MASK_DIR = housepath + r'train\\masks'
-
-
-    if locals.in8700G:
-        #Desktop 8700g - D:\dataset\tgs-salt
+    elif locals.in8700G:
         housepath=r'D:\\dataset\\tgs-salt\\'
         TRAIN_CSV = housepath + r'saltMaskOk.csv'
-        IMAGES_DIR= housepath + r'train\\images' 
+        IMAGES_DIR= housepath + r'train\\images'
         MASK_DIR = housepath + r'train\\masks'
+    else:
+        raise RuntimeError("Nenhum ambiente (locals) configurado para paths de dataset.")
 
     df_train = pd.read_csv(TRAIN_CSV)
     fileNamesList = df_train.iloc[0:samples,0]
     imagesList = loadImages(IMAGES_DIR, fileNamesList)
     masksList  = loadImages(MASK_DIR,  fileNamesList)
     patchesDB = buildPatchesDB(masksList, imagesList, treshold)
+
+    # Save cache if path provided
+    if cache_path:
+        serializable = []
+        for p in patchesDB:
+            serializable.append({
+                'line': np.array(p.line, dtype=np.int32),
+                'angle': p.angle,
+                'image': p.image
+            })
+        np.savez_compressed(cache_path, patches=np.array(serializable, dtype=object))
+        print(f"Patches DB saved to cache: {cache_path} ({len(patchesDB)} patches)")
+
     return patchesDB
 
 def makePatchMask(generat_mask, x1, x2):

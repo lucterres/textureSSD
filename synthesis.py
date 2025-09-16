@@ -230,7 +230,7 @@ def analizeMetrics(original_sample, resultRGBW):
     # Return raw values for programmatic usage
     return m, euclidean_distance, s
     
-def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
+def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize, patches_db=None):
     # Convert original to sample representation.
     print ("Starting texture synthesis...")
 
@@ -283,8 +283,18 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
         print("Error: no patches found for this image")
         return None
 
-    # build patches database to find the nearest patch according to angle
-    samplesPatchesDB = pm.loadDataBase() #(600,2000)    
+    # use provided patches_db (loaded once) or fallback
+    if patches_db is None:
+        try:
+            cache_path = globals().get('runtime_args').patches_cache_path if 'runtime_args' in globals() else 'result/patches_db_cache.npz'
+            rebuild_flag = globals().get('runtime_args').rebuild_patches_db if 'runtime_args' in globals() else False
+            if cache_path == 'none':
+                cache_path = None
+            samplesPatchesDB = pm.loadDataBase(cache_path=cache_path, rebuild=rebuild_flag)
+        except Exception:
+            samplesPatchesDB = pm.loadDataBase()
+    else:
+        samplesPatchesDB = patches_db
     # create the interface edge dilated 
     dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
     zones = [dilated_edge, zone0, zone1, fullmask]
@@ -431,11 +441,17 @@ def parse_args():
     parser.add_argument('--window_width', type=int, required=False, default=50, help='Width of the synthesis window')
     parser.add_argument('--kernel_size', type=int, required=False, default=11, help='One dimension of the square synthesis kernel')
     parser.add_argument('--visualize', required=False, action='store_true', help='Visualize the synthesis process')
+    parser.add_argument('--patches_cache_path', type=str, required=False, default='result/patches_db_cache.npz',
+                        help='Path to cache the patches database (.npz). Use "none" to disable caching.')
+    parser.add_argument('--rebuild_patches_db', action='store_true', help='Force rebuild of patches DB even if cache exists')
+    parser.add_argument('--iterations', type=int, required=False, default=50, help='Number of synthesis iterations (default: 50)')
     args = parser.parse_args()
     return args
 
 def main():
     args = parse_args()
+    # store globally for synthesize() optional cache usage
+    globals()['runtime_args'] = args
     sample = cv2.imread(args.sample_path)
     if sample is None:
         raise ValueError('Unable to read image from sample_path.')
@@ -470,9 +486,26 @@ def main():
     print(f"Resultados desta execução serão salvos em: {run_dir}")
     durations = []
     metrics_rows = []  # collect per-iteration metrics
-    n = 50 # could be parameterized later
+    n = args.iterations  # number of synthesis iterations
     metrics_csv_path = None
     i = -1  # track iteration for error reporting
+    # Load / build patches DB once before loop
+    patches_db = None
+    try:
+        cache_path = args.patches_cache_path
+        rebuild_flag = args.rebuild_patches_db
+        if cache_path == 'none':
+            cache_path = None
+        patches_db = pm.loadDataBase(cache_path=cache_path, rebuild=rebuild_flag)
+        print(f"Patches DB carregado: {len(patches_db)} patches.")
+    except Exception as e:
+        print(f"Falha ao carregar patches DB com cache (fallback para rebuild in-memory): {e}")
+        try:
+            patches_db = pm.loadDataBase()
+        except Exception as ee:
+            print(f"Falha ao construir patches DB sem cache: {ee}")
+            patches_db = None
+
     try:
         for i in range(n):
             tic = time.time()
@@ -481,7 +514,8 @@ def main():
                                              generat_mask=generat_mask,
                                              window_size=(args.window_height, args.window_width),
                                              kernel_size=args.kernel_size,
-                                             visualize=args.visualize)
+                                             visualize=args.visualize,
+                                             patches_db=patches_db)
             toc = time.time()
             dur = toc - tic
             durations.append(dur)
@@ -518,8 +552,14 @@ def main():
         # calcule as estatísticas min, max, mean, stddev, q125, median, q75
 
         metrics_df = pd.DataFrame(metrics_rows)
-        randomName = str(uuid.uuid4())[:8]
-        metrics_csv_path = os.path.join(run_dir, f"run_metrics_{randomName}.csv")
+        #troca randomname por nome da sample
+        sampleName = os.path.splitext(os.path.basename(args.sample_path))[0]
+        metrics_csv_path = os.path.join(run_dir, f"run_metrics_{sampleName}.csv")
+        # se existir o diretorio metrics_csv_path acrescenta um numero no final
+        if os.path.exists(metrics_csv_path):
+            metrics_csv_path = os.path.join(run_dir, f"run_metrics_{sampleName}_a.csv")
+        
+
         run_ts = datetime.now().isoformat(timespec='seconds')
         with open(metrics_csv_path, 'w', encoding='utf-8', newline='') as f:
             f.write(f"# run_dir;{run_dir}\n")
@@ -531,7 +571,7 @@ def main():
             f.write(f"# window_width;{args.window_width}\n")
             f.write(f"# kernel_size;{args.kernel_size}\n")
             f.write(f"# visualize;{args.visualize}\n")
-            f.write(f"# iterations_requested;{n}\n")
+            f.write(f"# iterations_requested;{args.iterations}\n")
             f.write(f"# iterations_completed;{len(durations)}\n")
             if i >= 0 and len(durations) < n:
                 f.write(f"# interrupted_iteration;{i+1}\n")
