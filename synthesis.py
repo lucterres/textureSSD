@@ -513,10 +513,11 @@ def main():
         except Exception as ee:
             print(f"Falha ao construir patches DB sem cache: {ee}")
             patches_db = None
-
+    print ("*****************")
     try:
         for i in range(n):
             tic = time.time()
+            print ("*****************")
             synthesized_texture = synthesize(origRGBSample=sample,
                                              semantic_mask=sample_semantic_mask,
                                              generat_mask=generat_mask,
@@ -578,6 +579,7 @@ def main():
             f.write(f"# iterations_completed;{len(durations)}\n")
             if i >= 0 and len(durations) < n:
                 f.write(f"# interrupted_iteration;{i+1}\n")
+            #TODO gerar estatísticas descritivas
             f.write("# --- métricas por iteração ---\n")
             metrics_df.to_csv(f, sep=';', index=False, float_format='%.6f')
         print(f"Metric results (parciais ou completos) salvos em {metrics_csv_path}")

@@ -1,0 +1,24 @@
+# run_dir;result\run_5f43816c42_2
+# run_timestamp;2025-09-16T09:59:15
+# sample_path;tgs_salt/5f43816c42.png
+# sample_semantic_mask_path;tgs_salt/5f43816c42Mask.png
+# generat_mask_path;tgs_salt/5f43816c42Mask.png
+# window_height;101
+# window_width;101
+# kernel_size;11
+# visualize;False
+# iterations_requested;5
+# iterations_completed;5
+# estatísticas_descritivas:
+# time_sec;count=5;mean=18.179005;stddev=0.056781;min=18.125430;q25=18.128804;median=18.170044;q75=18.212237;max=18.258512
+# mse;count=5;mean=798.177571;stddev=41.312568;min=759.342221;q25=761.798843;median=804.192236;q75=804.805313;max=860.749240
+# dssim;count=5;mean=0.255041;stddev=0.013883;min=0.243698;q25=0.245313;median=0.250982;q75=0.257226;max=0.277985
+# lbp_distance;count=5;mean=0.183021;stddev=0.029163;min=0.148851;q25=0.167382;median=0.184466;q75=0.186975;max=0.227429
+
+# --- métricas por iteração ---
+iteration;output_file;time_sec;mse;dssim;lbp_distance
+1;result\run_5f43816c42_2\24c13295.jpg;18.258512;804.192236;0.257226;0.148851
+2;result\run_5f43816c42_2\cc37c1e6.jpg;18.170044;860.749240;0.277985;0.184466
+3;result\run_5f43816c42_2\f3388d5d.jpg;18.125430;804.805313;0.243698;0.186975
+4;result\run_5f43816c42_2\2a6804ea.jpg;18.212237;761.798843;0.245313;0.167382
+5;result\run_5f43816c42_2\558eda2c.jpg;18.128804;759.342221;0.250982;0.227429
