@@ -478,12 +478,20 @@ def main():
 
     # Repeat synthesis n times and record timings
     os.makedirs("result", exist_ok=True)
-    # Create a unique subfolder for this run (timestamp + short uuid)
+    # Create a unique subfolder for this run 
     # run_id = nome do sample
     run_id = os.path.basename(args.sample_path).split('.')[0]
     run_dir = os.path.join('result', f'run_{run_id}')
-    os.makedirs(run_dir, exist_ok=True)
+    # se existir o diretorio rundir  acrescenta um numero no final
+    if os.path.exists(run_dir):
+        i = 1
+        while os.path.exists(run_dir):
+            run_dir = os.path.join('result', f'run_{run_id}_{i}')
+            i += 1
+    os.makedirs(run_dir, exist_ok=False)
+    print ("*****************")
     print(f"Resultados desta execução serão salvos em: {run_dir}")
+    print ("*****************")
     durations = []
     metrics_rows = []  # collect per-iteration metrics
     n = args.iterations  # number of synthesis iterations
@@ -555,11 +563,6 @@ def main():
         #troca randomname por nome da sample
         sampleName = os.path.splitext(os.path.basename(args.sample_path))[0]
         metrics_csv_path = os.path.join(run_dir, f"run_metrics_{sampleName}.csv")
-        # se existir o diretorio metrics_csv_path acrescenta um numero no final
-        if os.path.exists(metrics_csv_path):
-            metrics_csv_path = os.path.join(run_dir, f"run_metrics_{sampleName}_a.csv")
-        
-
         run_ts = datetime.now().isoformat(timespec='seconds')
         with open(metrics_csv_path, 'w', encoding='utf-8', newline='') as f:
             f.write(f"# run_dir;{run_dir}\n")
