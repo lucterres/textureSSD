@@ -95,3 +95,9 @@ If you use VS Code, several ready-made run profiles can be added (example names)
 These simply toggle the two flags above; adjust paths as needed for your dataset.
 
 ---
+
+### Diagrams
+
+Sequence diagrams of the synthesis pipeline:
+* [Full per-iteration version](documentation/sequence_synthesis_full.md)
+* [Cached patch DB version](documentation/sequence_synthesis_with_cache.md)
