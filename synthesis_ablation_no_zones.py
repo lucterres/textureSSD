@@ -112,9 +112,13 @@ def permute_neighbors(pixel_mask, neighbors):
     return permuted_neighbors
 
 
-def nCompletePix(mask):
+def texture_can_be_synthesized(mask):
+    # The texture can be synthesized while the mask has unfilled entries.
+    mh, mw = mask.shape[:2]
     num_completed = np.count_nonzero(mask)
-    return num_completed
+    num_incomplete = (mh * mw) - num_completed
+    
+    return num_incomplete > 0
 
 
 def update(original_sample):
@@ -133,15 +137,15 @@ def initialize(original_sample, window_size, kernel_size, controlMask):
         result_window = np.zeros(window_size + (3,), dtype=np.uint8)
 
     sh, sw = original_sample.shape[:2]
-    ih = (sh//2)-3+1
-    iw = (sw//2)-3+1
+    ih = np.random.randint(sh-3+1)
+    iw = np.random.randint(sw-3+1)
     seed = sample[ih:ih+3, iw:iw+3]
 
     h, w = window.shape
     mask = np.zeros((h, w), dtype=np.float64)
 
-    # Place seed inside mask target zone
-    ph, pw = findInsideMaskPixel(controlMask)
+    # Place seed in center of window
+    ph, pw = (h//2)-1, (w//2)-1
     window[ph:ph+3, pw:pw+3] = seed
     mask[ph:ph+3, pw:pw+3] = 1
     result_window[ph:ph+3, pw:pw+3] = original_sample[ih:ih+3, iw:iw+3]
@@ -182,60 +186,56 @@ def analizeMetrics(original_sample, resultRGBW):
     return m, euclidean_distance, s
 
 
-def synthesize_ablated(origRGBSample, generat_mask, window_size, kernel_size, visualize):
+def synthesize_ablated(original_sample, window_size, kernel_size, visualize):
     """
     ABLATED VERSION: Single-pass synthesis without zone separation.
     Uses the complete original image as texture source.
     """
     print("Starting ABLATED texture synthesis (no zone separation)...")
 
-    # Use complete original image as texture source (Option A)
-    sampleGray = update(origRGBSample)
-
-    # Create control mask from generation mask (normalized to [0, 1])
-    controlMask = generat_mask.astype(np.float64) / 255. if generat_mask.max() > 1 else generat_mask.astype(np.float64)
+    # Use complete original image as texture source
+    sample = update(original_sample)
 
     # Initialize synthesis
-    _, resultGrayW, doneWindow, padded_window, padded_mask, resultRGBW = initialize(
-        origRGBSample, window_size, kernel_size, controlMask
+    _, window, mask, padded_window, padded_mask, result_window = initialize(
+        original_sample, window_size, kernel_size, None
     )
 
-    # Single-pass synthesis: fill entire mask at once
-    while nCompletePix(controlMask) > nCompletePix(doneWindow):
-        neighboring_indices = get_neighboring_pixel_indices(doneWindow)
-        neighboring_indices = permute_neighbors(doneWindow, neighboring_indices)
+    # Single-pass synthesis: fill entire window
+    while texture_can_be_synthesized(mask):
+        neighboring_indices = get_neighboring_pixel_indices(mask)
+        neighboring_indices = permute_neighbors(mask, neighboring_indices)
 
         for ch, cw in zip(neighboring_indices[0], neighboring_indices[1]):
-            if controlMask[ch, cw] > 0.0:
-                windowPatchSlice = padded_window[ch:ch+kernel_size, cw:cw+kernel_size]
-                maskPatchSlice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
+            window_slice = padded_window[ch:ch+kernel_size, cw:cw+kernel_size]
+            mask_slice = padded_mask[ch:ch+kernel_size, cw:cw+kernel_size]
 
-                # Compute SSD and select best matching pixel
-                ssd = normalized_ssd(sampleGray, windowPatchSlice, maskPatchSlice)
-                indices = get_candidate_indices(ssd)
-                selected_index = select_pixel_index(ssd, indices)
+            # Compute SSD and select best matching pixel
+            ssd = normalized_ssd(sample, window_slice, mask_slice)
+            indices = get_candidate_indices(ssd)
+            selected_index = select_pixel_index(ssd, indices)
 
-                # Translate index to accommodate padding
-                selected_index = (selected_index[0] + kernel_size // 2, selected_index[1] + kernel_size // 2)
+            # Translate index to accommodate padding
+            selected_index = (selected_index[0] + kernel_size // 2, selected_index[1] + kernel_size // 2)
 
-                # Set windows and mask
-                resultGrayW[ch, cw] = sampleGray[selected_index]
-                doneWindow[ch, cw] = 1
-                resultRGBW[ch, cw] = origRGBSample[selected_index[0], selected_index[1]]
+            # Set windows and mask
+            window[ch, cw] = sample[selected_index]
+            mask[ch, cw] = 1
+            result_window[ch, cw] = original_sample[selected_index[0], selected_index[1]]
 
-                if visualize:
-                    showResult(resultRGBW, "Ablated Generation", 50, 100)
-                    key = cv2.waitKey(1)
-                    if key == 27:
-                        cv2.destroyAllWindows()
-                        return resultRGBW
+            if visualize:
+                cv2.imshow('ablated synthesis window', result_window)
+                key = cv2.waitKey(1)
+                if key == 27:
+                    cv2.destroyAllWindows()
+                    return result_window
 
     if visualize:
-        showResult(resultRGBW, "Ablated Synthesis Complete", 50, 100)
+        cv2.imshow('ablated synthesis window', result_window)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
-    return resultRGBW
+    return result_window
 
 
 def inspect(img, title=None):
@@ -326,8 +326,7 @@ def main():
             tic = time.time()
             print("*****************")
             synthesized_texture = synthesize_ablated(
-                origRGBSample=sample,
-                generat_mask=generat_mask,
+                original_sample=sample,
                 window_size=(args.window_height, args.window_width),
                 kernel_size=args.kernel_size,
                 visualize=args.visualize

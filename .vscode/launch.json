@@ -64,10 +64,26 @@
             "console": "integratedTerminal",
             "python": "C:\\Users\\lucia\\miniconda3\\envs\\lir\\python.exe",
             "args": [
+                "--visualize",
                 "--sample_path=examples/1d798aa5d5.png",
                 "--out_path=result/1d798aa5d5_synthesis_2.jpg",
                 "--window_height=101",
                 "--window_width=101"
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Ablation: No Zones",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/synthesis_ablation_no_zones.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--sample_path=tgs_salt/0bdd44d530.png",
+                "--window_height=101",
+                "--window_width=101",
+                "--kernel_size=11",
+                "--iterations=50"
             ],
             "justMyCode": true
         }
