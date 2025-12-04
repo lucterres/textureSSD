@@ -1,0 +1,38 @@
+# ABLATION STUDY: No Zone Separation;;;;;
+# run_dir;result\ablation_no_zones_1bd1c8c771;;;;
+# run_timestamp;2025-12-01T18:20:39;;;;
+# sample_path;tgs_salt/1bd1c8c771.png;;;;
+# generat_mask_path;N/A;;;;
+# window_height;101;;;;
+# window_width;101;;;;
+# kernel_size;11;;;;
+# visualize;False;;;;
+# iterations_requested;20;;;;
+# iterations_completed;20;;;;
+# --- metrics per iteration ---;;;;;
+iteration;output_file;time_sec;mse;dssim;lbp_distance
+1;result\ablation_no_zones_1bd1c8c771\49733465.jpg;93.604129;1006.353495;0.317268;0.119699
+2;result\ablation_no_zones_1bd1c8c771\b8ad3457.jpg;109.642279;1271.768944;0.342857;0.022178
+3;result\ablation_no_zones_1bd1c8c771\fd8a6666.jpg;125.319567;1306.893932;0.311958;0.024174
+4;result\ablation_no_zones_1bd1c8c771\00895513.jpg;124.90238;901.99206;0.225553;0.027285
+5;result\ablation_no_zones_1bd1c8c771\a4d70106.jpg;118.728234;871.745319;0.241557;0.090797
+6;result\ablation_no_zones_1bd1c8c771\446bac49.jpg;119.864273;1459.851191;0.289747;0.031853
+7;result\ablation_no_zones_1bd1c8c771\8d9dfbef.jpg;123.103588;909.819822;0.321779;0.106746
+8;result\ablation_no_zones_1bd1c8c771\2680306b.jpg;123.938276;1391.389276;0.298838;0.094312
+9;result\ablation_no_zones_1bd1c8c771\fb0e7852.jpg;122.504065;805.695912;0.234041;0.182291
+10;result\ablation_no_zones_1bd1c8c771\529b13df.jpg;122.298726;1140.12587;0.340599;0.099442
+11;result\ablation_no_zones_1bd1c8c771\50705d09.jpg;124.826522;1124.131556;0.313567;0.086019
+12;result\ablation_no_zones_1bd1c8c771\0591b8f6.jpg;123.832482;1120.387119;0.302441;0.027112
+13;result\ablation_no_zones_1bd1c8c771\317b54df.jpg;123.521997;566.624253;0.201929;0.131388
+14;result\ablation_no_zones_1bd1c8c771\4d06b601.jpg;121.26208;685.343104;0.232536;0.179519
+15;result\ablation_no_zones_1bd1c8c771\dde27ef2.jpg;126.577434;1375.083129;0.302187;0.055972
+16;result\ablation_no_zones_1bd1c8c771\b30382d9.jpg;124.670939;1096.621606;0.307295;0.072965
+17;result\ablation_no_zones_1bd1c8c771\f2af6976.jpg;124.988743;1344.256151;0.287867;0.058866
+18;result\ablation_no_zones_1bd1c8c771\d64c5b07.jpg;124.107342;965.770513;0.332111;0.133651
+19;result\ablation_no_zones_1bd1c8c771\6e034533.jpg;119.634576;1302.241251;0.328831;0.056937
+20;result\ablation_no_zones_1bd1c8c771\dbbdc88f.jpg;110.648503;1506.140967;0.340944;0.040225
+;;;;;
+;;;mse;dssim;lbp_distance
+;;median;1107.611774;0.29369525;0.08207155
+;;min;566.624253;0.201929;0.022178
+;;max;1506.140967;0.342857;0.182291
