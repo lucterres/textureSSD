@@ -2,6 +2,7 @@ import os
 import numpy as np
 from PIL import Image
 from pathlib import Path
+import argparse
 
 
 def load_binary_mask(image_path):
@@ -49,15 +50,27 @@ def calculate_metrics(ground_truth, prediction):
 
 
 def main():
-    # Diretório com as imagens
-    #compare_dir = Path(r"result/ablation_no_zones_1d798aa5d5/compare")
-    compare_dir = Path(r"result/ablation_no_zones_1bd1c8c771/compare")
+    parser = argparse.ArgumentParser(description="Calcula métricas de comparação de texturas.")
+    parser.add_argument("--compare_dir", "-d", type=str, required=True, 
+                        help="Diretório com as imagens sintetizadas.")
+    parser.add_argument("--mask_path", "-m", type=str, default=None,
+                        help="Caminho para a máscara de referência (default: compare_dir/Mask.png).")
     
-    # Arquivo de referência (ground truth)
-    mask_path = compare_dir / "Mask.png"
+    args = parser.parse_args()
+    
+    compare_dir = Path(args.compare_dir)
+    
+    if args.mask_path:
+        mask_path = Path(args.compare_dir + '/' + args.mask_path)
+    else:
+        mask_path = compare_dir / "Mask.png"
     
     if not mask_path.exists():
         print(f"Erro: Arquivo {mask_path} não encontrado!")
+        return
+    
+    if not compare_dir.exists():
+        print(f"Erro: Diretório {compare_dir} não encontrado!")
         return
     
     # Carrega a máscara de referência
