@@ -92,7 +92,7 @@ def compute_lbp(image, P=4, R=1, tile_size=64):
 
 
 # Calcula a distância euclidiana média entre os histogramas LBP de tiles 64x64, usando 4 vizinhos e raio 1
-def lbp_tile_distance(imageA, imageB, P=4, R=1, tile_size=64):
+def lbp_tile_distance(imageA, imageB, P=4, R=1, tile_size=40):
     """
     Calcula a distância euclidiana média entre os histogramas LBP de tiles correspondentes
     das duas imagens, usando 4 vizinhos, raio 1 e tile size 64.

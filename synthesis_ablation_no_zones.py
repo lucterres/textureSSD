@@ -366,11 +366,35 @@ def main():
         # Save metrics to CSV
         metrics_df = pd.DataFrame(metrics_rows)
         sampleName = os.path.splitext(os.path.basename(args.sample_path))[0]
-        metrics_csv_path = os.path.join(run_dir, f"ablation_metrics_{sampleName}.csv")
+        metrics_csv_path = os.path.join(
+            run_dir, f"metrics_{sampleName}.csv"
+        )
+        metrics_stats_csv_path = os.path.join(
+            run_dir, f"stats_{sampleName}.csv"
+        )
+        metadata_path = os.path.join(
+            run_dir, f"metadata_{sampleName}.txt"
+        )
         run_ts = datetime.now().isoformat(timespec='seconds')
 
-        with open(metrics_csv_path, 'w', encoding='utf-8', newline='') as f:
-            f.write(f"# ABLATION STUDY: No Zone Separation\n")
+        stats_columns = ['time_sec', 'mse', 'dssim', 'lbp_distance']
+        available_stats_columns = [
+            column for column in stats_columns if column in metrics_df.columns
+        ]
+        if available_stats_columns:
+            metrics_stats_df = metrics_df[available_stats_columns].agg(
+                ['min', 'max', 'median']
+            ).transpose().reset_index()
+            metrics_stats_df = metrics_stats_df.rename(
+                columns={'index': 'metric'}
+            )
+        else:
+            metrics_stats_df = pd.DataFrame(
+                columns=['metric', 'min', 'max', 'median']
+            )
+
+        with open(metadata_path, 'w', encoding='utf-8', newline='') as f:
+            f.write("# ABLATION STUDY: No Zone Separation\n")
             f.write(f"# run_dir;{run_dir}\n")
             f.write(f"# run_timestamp;{run_ts}\n")
             f.write(f"# sample_path;{args.sample_path}\n")
@@ -383,9 +407,15 @@ def main():
             f.write(f"# iterations_completed;{len(durations)}\n")
             if i >= 0 and len(durations) < n:
                 f.write(f"# interrupted_iteration;{i+1}\n")
-            f.write("# --- metrics per iteration ---\n")
-            metrics_df.to_csv(f, sep=';', index=False, float_format='%.6f')
+        metrics_df.to_csv(
+            metrics_csv_path, sep=';', index=False, float_format='%.6f'
+        )
+        metrics_stats_df.to_csv(
+            metrics_stats_csv_path, sep=';', index=False, float_format='%.6f'
+        )
         print(f"Metrics saved to {metrics_csv_path}")
+        print(f"Metrics stats saved to {metrics_stats_csv_path}")
+        print(f"Run info saved to {metadata_path}")
 
 
 if __name__ == '__main__':

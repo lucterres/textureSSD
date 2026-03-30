@@ -1,5 +1,6 @@
 examples/
 result/
+result_old/
 .vs/
 ```
 .ipynb_checkpoints/
