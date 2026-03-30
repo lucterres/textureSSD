@@ -33,8 +33,8 @@ RESULT_BASE = PROJECT_ROOT / "result" / "comparaBaseFerreira"
 # Parâmetros de síntese
 WINDOW_HEIGHT = 40
 WINDOW_WIDTH = 40
-KERNEL_SIZE = 11
-ITERATIONS = 20
+KERNEL_SIZE = 7
+ITERATIONS = 10
 NUM_SAMPLES = 10
 
 def get_image_files(dataset_path: Path, limit: int = 10) -> list:
@@ -100,8 +100,7 @@ def run_synthesis(image_path: Path, output_dir: Path, sample_index: int) -> bool
             f"--window_height={WINDOW_HEIGHT}",
             f"--window_width={WINDOW_WIDTH}",
             f"--kernel_size={KERNEL_SIZE}",
-            f"--iterations={ITERATIONS}",
-            "--visualize"
+            f"--iterations={ITERATIONS}"
         ]
         
         logger.info(f"Executando: {' '.join(cmd)}")
