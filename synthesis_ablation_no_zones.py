@@ -35,6 +35,11 @@ SIGMA_COEFF = 6.4
 ERROR_THRESHOLD = 0.1
 
 
+def log_output(enabled, *args, **kwargs):
+    if enabled:
+        print(*args, **kwargs)
+
+
 def normalized_ssd(sample, window, mask):
     wh, ww = window.shape
     sh, sw = sample.shape
@@ -172,7 +177,7 @@ def findInsideMaskPixel(controlMask):
     return ph, pw
 
 
-def analizeMetrics(original_sample, resultRGBW):
+def analizeMetrics(original_sample, resultRGBW, verbose=False):
     from metrics import mse, dssim, lbp_tile_distance
     m = mse(original_sample, resultRGBW)
     s = dssim(original_sample, resultRGBW)
@@ -182,16 +187,20 @@ def analizeMetrics(original_sample, resultRGBW):
         'Metric': ['MSE', 'DLBP', 'DSSIM'],
         'Value': [m, euclidean_distance, s]
     })
-    print(metrics_df)
+    log_output(verbose, metrics_df)
     return m, euclidean_distance, s
 
 
-def synthesize_ablated(original_sample, window_size, kernel_size, visualize):
+def synthesize_ablated(
+    original_sample, window_size, kernel_size, visualize, verbose=False
+):
     """
     ABLATED VERSION: Single-pass synthesis without zone separation.
     Uses the complete original image as texture source.
     """
-    print("Starting ABLATED texture synthesis (no zone separation)...")
+    log_output(
+        verbose, "Starting ABLATED texture synthesis (no zone separation)..."
+    )
 
     # Use complete original image as texture source
     sample = update(original_sample)
@@ -238,9 +247,9 @@ def synthesize_ablated(original_sample, window_size, kernel_size, visualize):
     return result_window
 
 
-def inspect(img, title=None):
+def inspect(img, title=None, verbose=False):
     if INSPECT:
-        print(img.shape)
+        log_output(verbose, img.shape)
         showResult(img, title, 70, 200)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -277,6 +286,12 @@ def parse_args():
     parser.add_argument('--kernel_size', type=int, required=False, default=11, help='One dimension of the square synthesis kernel')
     parser.add_argument('--visualize', required=False, action='store_true', help='Visualize the synthesis process')
     parser.add_argument('--iterations', type=int, required=False, default=50, help='Number of synthesis iterations (default: 50)')
+    parser.add_argument(
+        '--verbose',
+        required=False,
+        action='store_true',
+        help='Enable console output during execution'
+    )
     args = parser.parse_args()
     return args
 
@@ -314,10 +329,10 @@ def main():
     stats_dir = os.path.join(run_dir, 'data')
     os.makedirs(stats_dir, exist_ok=False)
 
-    print("*****************")
-    print(f"ABLATION STUDY: No Zone Separation")
-    print(f"Results will be saved to: {run_dir}")
-    print("*****************")
+    log_output(args.verbose, "*****************")
+    log_output(args.verbose, "ABLATION STUDY: No Zone Separation")
+    log_output(args.verbose, f"Results will be saved to: {run_dir}")
+    log_output(args.verbose, "*****************")
 
     durations = []
     metrics_rows = []
@@ -327,28 +342,40 @@ def main():
     try:
         for i in range(n):
             tic = time.time()
-            print("*****************")
+            log_output(args.verbose, "*****************")
             synthesized_texture = synthesize_ablated(
                 original_sample=sample,
                 window_size=(args.window_height, args.window_width),
                 kernel_size=args.kernel_size,
-                visualize=args.visualize
+                visualize=args.visualize,
+                verbose=args.verbose
             )
             toc = time.time()
             dur = toc - tic
             durations.append(dur)
-            print(f"Iteration {i+1}/{n} - Processing time: {dur:.3f}s")
+            log_output(
+                args.verbose,
+                f"Iteration {i+1}/{n} - Processing time: {dur:.3f}s"
+            )
 
             # Save result
             randomName = str(uuid.uuid4())[:8]
             filename = os.path.join(run_dir, f"{randomName}.jpg")
             cv2.imwrite(filename, synthesized_texture)
-            print(f'Iteration {i+1}: synthesized texture saved to {filename}')
+            if args.verbose:
+                log_output(
+                    args.verbose,
+                    f'Iteration {i+1}: synthesized texture saved to {filename}'
+                )
+            else:
+                print('.', end='', flush=True)
 
             # Analyze metrics
             graysample = cv2.cvtColor(sample, cv2.COLOR_BGR2GRAY)
             synthesized_gray = cv2.cvtColor(synthesized_texture, cv2.COLOR_BGR2GRAY)
-            m, lbp_dist, dssim_val = analizeMetrics(graysample, synthesized_gray)
+            m, lbp_dist, dssim_val = analizeMetrics(
+                graysample, synthesized_gray, verbose=args.verbose
+            )
             metrics_rows.append({
                 'iteration': i+1,
                 'output_file': filename,
@@ -358,13 +385,32 @@ def main():
                 'lbp_distance': lbp_dist
             })
     except Exception as e:
-        print(f"Error during iteration {i+1} (loop interrupted): {e}")
-        traceback.print_exc()
+        if not args.verbose and i >= 0:
+            print()
+        log_output(
+            args.verbose,
+            f"Error during iteration {i+1} (loop interrupted): {e}"
+        )
+        if args.verbose:
+            traceback.print_exc()
     finally:
+        if not args.verbose and durations:
+            print()
         if durations:
-            print(f"Average time ({len(durations)} successful runs): {np.mean(durations):.3f}s | Std dev: {np.std(durations):.3f}s")
+            mean_duration = np.mean(durations)
+            std_duration = np.std(durations)
+            average_time_message = (
+                f"Average time ({len(durations)} successful runs): "
+                f"{mean_duration:.3f}s | Std dev: {std_duration:.3f}s"
+            )
+            log_output(
+                args.verbose,
+                average_time_message
+            )
         else:
-            print("No successful runs to calculate statistics.")
+            log_output(
+                args.verbose, "No successful runs to calculate statistics."
+            )
 
         # Save metrics to CSV
         metrics_df = pd.DataFrame(metrics_rows)
@@ -380,7 +426,7 @@ def main():
         )
         run_ts = datetime.now().isoformat(timespec='seconds')
 
-        stats_columns = ['time_sec', 'mse', 'dssim', 'lbp_distance']
+        stats_columns = ['mse', 'dssim', 'lbp_distance']
         available_stats_columns = [
             column for column in stats_columns if column in metrics_df.columns
         ]
@@ -414,11 +460,13 @@ def main():
             metrics_csv_path, sep=';', index=False, float_format='%.6f'
         )
         metrics_stats_df.to_csv(
-            metrics_stats_csv_path, sep=';', index=False, float_format='%.6f'
+            metrics_stats_csv_path, sep=';', index=False, float_format='%.2f'
         )
-        print(f"Metrics saved to {metrics_csv_path}")
-        print(f"Metrics stats saved to {metrics_stats_csv_path}")
-        print(f"Run info saved to {metadata_path}")
+        log_output(args.verbose, f"Metrics saved to {metrics_csv_path}")
+        log_output(
+            args.verbose, f"Metrics stats saved to {metrics_stats_csv_path}"
+        )
+        log_output(args.verbose, f"Run info saved to {metadata_path}")
 
 
 if __name__ == '__main__':

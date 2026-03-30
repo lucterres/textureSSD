@@ -33,9 +33,10 @@ RESULT_BASE = PROJECT_ROOT / "result" / "comparaBaseFerreira"
 # Parâmetros de síntese
 WINDOW_HEIGHT = 40
 WINDOW_WIDTH = 40
-KERNEL_SIZE = 7
+KERNEL_SIZE = 11
 ITERATIONS = 10
-NUM_SAMPLES = 10
+NUM_SAMPLES = 20
+
 
 def get_image_files(dataset_path: Path, limit: int = 10) -> list:
     """
@@ -60,10 +61,12 @@ def get_image_files(dataset_path: Path, limit: int = 10) -> list:
     logger.info(f"Encontradas {len(image_files)} imagens no dataset")
     return image_files
 
+
 def create_output_directories(result_base: Path) -> None:
     """Cria diretórios de saída se não existirem"""
     result_base.mkdir(parents=True, exist_ok=True)
     logger.info(f"Diretório de resultados: {result_base}")
+
 
 def run_synthesis(image_path: Path, output_dir: Path, sample_index: int) -> bool:
     """
