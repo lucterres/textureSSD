@@ -18,6 +18,8 @@ The algorithm synthesizes a new texture from an existing input by sampling the c
 
 ## Dependencies
 
+O ambiente conda utilizado é o **LIR**, conforme definido no arquivo `environmentt.yml`.
+
 * Python - Tested on version 3.7.0
 * OpenCV - Tested on version 3.4.1
 * NumPy - Tested on version 1.15.0
