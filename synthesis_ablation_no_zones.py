@@ -436,7 +436,7 @@ def main():
             compare_base_dir, f"stats_{sampleName}.csv"
         )
         metadata_path = os.path.join(
-            compare_base_dir, f"metadata_{sampleName}.txt"
+            stats_dir, f"metadata_{sampleName}.txt"
         )
         run_ts = datetime.now().isoformat(timespec='seconds')
 
