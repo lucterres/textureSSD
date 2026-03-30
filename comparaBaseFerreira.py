@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 DATASET_PATH = Path(r"D:\dataset\NetherlandsF3\tiles_inlines")
 PROJECT_ROOT = Path(__file__).parent
 SCRIPT_TO_RUN = PROJECT_ROOT / "synthesis_ablation_no_zones.py"
-RESULT_BASE = PROJECT_ROOT / "result" / "comparaBaseFerreira"
+RESULT_ROOT = PROJECT_ROOT / "result"
 
 # Parâmetros de síntese
 WINDOW_HEIGHT = 40
@@ -68,6 +68,16 @@ def create_output_directories(result_base: Path) -> None:
     logger.info(f"Diretório de resultados: {result_base}")
 
 
+def get_next_result_directory(result_root: Path, prefix: str = "compara") -> Path:
+    """Retorna o próximo diretório sequencial no formato compara001."""
+    seq = 1
+    while True:
+        candidate = result_root / f"{prefix}{seq:03d}"
+        if not candidate.exists():
+            return candidate
+        seq += 1
+
+
 def run_synthesis(image_path: Path, output_dir: Path, sample_index: int) -> bool:
     """
     Executa synthesis_ablation_no_zones.py para uma imagem
@@ -81,11 +91,7 @@ def run_synthesis(image_path: Path, output_dir: Path, sample_index: int) -> bool
         True se bem-sucedido, False caso contrário
     """
     try:
-        # Criar diretório específico para este sample
-        sample_dir = output_dir / f"sample_{sample_index:02d}_{image_path.stem}"
-        sample_dir.mkdir(parents=True, exist_ok=True)
-        
-        output_path = sample_dir / f"synthesis_{image_path.stem}.png"
+        output_path = output_dir / f"synthesis_{sample_index:02d}_{image_path.stem}.png"
         
         logger.info(f"\n{'='*70}")
         logger.info(f"Processando: {image_path.name} (Sample {sample_index})")
@@ -147,9 +153,11 @@ def main():
     if not SCRIPT_TO_RUN.exists():
         logger.error(f"Script não encontrado: {SCRIPT_TO_RUN}")
         sys.exit(1)
+
+    result_base = get_next_result_directory(RESULT_ROOT)
     
     # Criar diretórios
-    create_output_directories(RESULT_BASE)
+    create_output_directories(result_base)
     
     # Obter imagens
     image_files = get_image_files(DATASET_PATH, limit=NUM_SAMPLES)
@@ -160,7 +168,7 @@ def main():
     failed_count = 0
     
     for idx, image_path in enumerate(image_files, 1):
-        if run_synthesis(image_path, RESULT_BASE, idx):
+        if run_synthesis(image_path, result_base, idx):
             success_count += 1
         else:
             failed_count += 1
@@ -177,7 +185,7 @@ def main():
     logger.info(f"Falhas: {failed_count}")
     logger.info(f"Duração total: {duration}")
     logger.info(f"Fim: {end_time.strftime('%Y-%m-%d %H:%M:%S')}")
-    logger.info(f"Resultados salvos em: {RESULT_BASE}")
+    logger.info(f"Resultados salvos em: {result_base}")
     logger.info(f"{'#'*70}\n")
     
     return 0 if failed_count == 0 else 1

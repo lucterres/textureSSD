@@ -328,6 +328,20 @@ def main():
     os.makedirs(run_dir, exist_ok=False)
     stats_dir = os.path.join(run_dir, 'data')
     os.makedirs(stats_dir, exist_ok=False)
+    compare_base_dir = stats_dir
+    if args.out_path:
+        out_parent = os.path.dirname(os.path.abspath(args.out_path))
+        out_grandparent = os.path.dirname(out_parent)
+        out_parent_name = os.path.basename(out_parent)
+        if out_parent_name.startswith('sample_'):
+            compare_base_dir = out_grandparent
+            os.makedirs(compare_base_dir, exist_ok=True)
+        elif (
+            out_parent_name.startswith('compara')
+            and out_parent_name[7:].isdigit()
+        ):
+            compare_base_dir = out_parent
+            os.makedirs(compare_base_dir, exist_ok=True)
 
     log_output(args.verbose, "*****************")
     log_output(args.verbose, "ABLATION STUDY: No Zone Separation")
@@ -419,10 +433,10 @@ def main():
             stats_dir, f"metrics_{sampleName}.csv"
         )
         metrics_stats_csv_path = os.path.join(
-            stats_dir, f"stats_{sampleName}.csv"
+            compare_base_dir, f"stats_{sampleName}.csv"
         )
         metadata_path = os.path.join(
-            stats_dir, f"metadata_{sampleName}.txt"
+            compare_base_dir, f"metadata_{sampleName}.txt"
         )
         run_ts = datetime.now().isoformat(timespec='seconds')
 
