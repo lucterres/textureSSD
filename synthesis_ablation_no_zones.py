@@ -302,14 +302,17 @@ def main():
     # Create output directory
     os.makedirs("result", exist_ok=True)
     run_id = os.path.basename(args.sample_path).split('.')[0]
-    run_dir = os.path.join('result', f'ablation_no_zones_{run_id}')
+    run_dir_prefix = 'abl_nz'
+    run_dir = os.path.join('result', f'{run_dir_prefix}_{run_id}')
 
     if os.path.exists(run_dir):
         i = 1
         while os.path.exists(run_dir):
-            run_dir = os.path.join('result', f'ablation_no_zones_{run_id}_{i}')
+            run_dir = os.path.join('result', f'{run_dir_prefix}_{run_id}_{i}')
             i += 1
     os.makedirs(run_dir, exist_ok=False)
+    stats_dir = os.path.join(run_dir, 'data')
+    os.makedirs(stats_dir, exist_ok=False)
 
     print("*****************")
     print(f"ABLATION STUDY: No Zone Separation")
@@ -367,13 +370,13 @@ def main():
         metrics_df = pd.DataFrame(metrics_rows)
         sampleName = os.path.splitext(os.path.basename(args.sample_path))[0]
         metrics_csv_path = os.path.join(
-            run_dir, f"metrics_{sampleName}.csv"
+            stats_dir, f"metrics_{sampleName}.csv"
         )
         metrics_stats_csv_path = os.path.join(
-            run_dir, f"stats_{sampleName}.csv"
+            stats_dir, f"stats_{sampleName}.csv"
         )
         metadata_path = os.path.join(
-            run_dir, f"metadata_{sampleName}.txt"
+            stats_dir, f"metadata_{sampleName}.txt"
         )
         run_ts = datetime.now().isoformat(timespec='seconds')
 
@@ -383,14 +386,14 @@ def main():
         ]
         if available_stats_columns:
             metrics_stats_df = metrics_df[available_stats_columns].agg(
-                ['min', 'max', 'median']
+                ['min', 'median', 'max']
             ).transpose().reset_index()
             metrics_stats_df = metrics_stats_df.rename(
                 columns={'index': 'metric'}
             )
         else:
             metrics_stats_df = pd.DataFrame(
-                columns=['metric', 'min', 'max', 'median']
+                columns=['metric', 'min', 'median', 'max']
             )
 
         with open(metadata_path, 'w', encoding='utf-8', newline='') as f:
