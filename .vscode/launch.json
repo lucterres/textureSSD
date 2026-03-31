@@ -1,23 +1,89 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
         {
-            "name": "Python: Current File",
+            "name": "Synthesis (cache padrão)",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
+            "program": "${workspaceFolder}/synthesis.py",
             "console": "integratedTerminal",
             "args": [
-                //"--visualize",
-                "--sample_path=tgs_salt/2a6477aee8.png", // source image
-                "--sample_semantic_mask_path=tgs_salt/2a6477aee8Mask.png" , // source image context mask
-                "--generat_mask_path=tgs_salt/2a6477aee8Mask.png" , 
+                "--sample_path=tgs_salt/0bdd44d530.png",
+                "--sample_semantic_mask_path=tgs_salt/0bdd44d530Mask.png",
+                "--generat_mask_path=tgs_salt/0bdd44d530Mask.png",
+                "--window_height=101",
+                "--window_width=101",
+                "--kernel_size=11",
+                "--iterations=50",
+                "--patches_cache_path=result/patches_db_cache.npz"
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Synthesis (forçar rebuild cache)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/synthesis.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--sample_path=tgs_salt/0bdd44d530.png",
+                "--sample_semantic_mask_path=tgs_salt/0bdd44d530Mask.png",
+                "--generat_mask_path=tgs_salt/0bdd44d530Mask.png",
+                "--window_height=101",
+                "--window_width=101",
+                "--kernel_size=11",
+                "--patches_cache_path=result/patches_db_cache.npz",
+                "--iterations=50",
+                "--rebuild_patches_db"
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Synthesis (sem cache)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/synthesis.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--sample_path=tgs_salt/0bdd44d530.png",
+                "--sample_semantic_mask_path=tgs_salt/0bdd44d530Mask.png",
+                "--generat_mask_path=tgs_salt/0bdd44d530Mask.png",
+                "--window_height=101",
+                "--window_width=101",
+                "--kernel_size=11",
+                "--iterations=10",
+                "--patches_cache_path=none"
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Original_Efros (lir env)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/synthesis_original_Efros.py",
+            "console": "integratedTerminal",
+            "python": "C:\\Users\\lucia\\miniconda3\\envs\\lir\\python.exe",
+            "args": [
+                "--visualize",
+                "--sample_path=examples/1d798aa5d5.png",
+                "--out_path=result/1d798aa5d5_synthesis_2.jpg",
                 "--window_height=101",
                 "--window_width=101"
+            ],
+            "justMyCode": true
+        },
+        {
+            "name": "Ablation: No Zones",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/synthesis_ablation_no_zones.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--sample_path=tgs_salt/3ce657b8f7.png",
+                "--window_height=101",
+                "--window_width=101",
+                "--kernel_size=11",
+                "--iterations=20"
             ],
             "justMyCode": true
         }

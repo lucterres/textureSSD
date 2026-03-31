@@ -1,0 +1,364 @@
+2026-03-30 14:42:53,089 - INFO - 
+######################################################################
+2026-03-30 14:42:53,089 - INFO - # COMPARABASEFERREIRA - Síntese de Textura
+2026-03-30 14:42:53,090 - INFO - # Início: 2026-03-30 14:42:53
+2026-03-30 14:42:53,090 - INFO - ######################################################################
+
+2026-03-30 14:42:53,090 - INFO - Diretório de resultados: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira
+2026-03-30 14:42:54,085 - INFO - Encontradas 20 imagens no dataset
+2026-03-30 14:42:54,085 - INFO - 
+Processando 20 imagens...
+2026-03-30 14:42:54,087 - INFO - 
+======================================================================
+2026-03-30 14:42:54,087 - INFO - Processando: in_100_00000512.png (Sample 1)
+2026-03-30 14:42:54,087 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00000512.png
+2026-03-30 14:42:54,087 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_01_in_100_00000512\synthesis_in_100_00000512.png
+2026-03-30 14:42:54,087 - INFO - Tamanho: 40x40
+2026-03-30 14:42:54,087 - INFO - ======================================================================
+2026-03-30 14:42:54,087 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00000512.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_01_in_100_00000512\synthesis_in_100_00000512.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:43:00,623 - INFO - 
+======================================================================
+2026-03-30 14:43:00,623 - INFO - Processando: in_100_00001729.png (Sample 2)
+2026-03-30 14:43:00,623 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00001729.png
+2026-03-30 14:43:00,623 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_02_in_100_00001729\synthesis_in_100_00001729.png
+2026-03-30 14:43:00,623 - INFO - Tamanho: 40x40
+2026-03-30 14:43:00,623 - INFO - ======================================================================
+2026-03-30 14:43:00,623 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00001729.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_02_in_100_00001729\synthesis_in_100_00001729.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:43:07,260 - INFO - 
+======================================================================
+2026-03-30 14:43:07,260 - INFO - Processando: in_100_00002209.png (Sample 3)
+2026-03-30 14:43:07,260 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00002209.png
+2026-03-30 14:43:07,260 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_03_in_100_00002209\synthesis_in_100_00002209.png
+2026-03-30 14:43:07,260 - INFO - Tamanho: 40x40
+2026-03-30 14:43:07,260 - INFO - ======================================================================
+2026-03-30 14:43:07,260 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00002209.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_03_in_100_00002209\synthesis_in_100_00002209.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:43:13,770 - INFO - 
+======================================================================
+2026-03-30 14:43:13,770 - INFO - Processando: in_100_00002359.png (Sample 4)
+2026-03-30 14:43:13,770 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00002359.png
+2026-03-30 14:43:13,770 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_04_in_100_00002359\synthesis_in_100_00002359.png
+2026-03-30 14:43:13,770 - INFO - Tamanho: 40x40
+2026-03-30 14:43:13,770 - INFO - ======================================================================
+2026-03-30 14:43:13,770 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00002359.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_04_in_100_00002359\synthesis_in_100_00002359.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:43:20,676 - INFO - 
+======================================================================
+2026-03-30 14:43:20,676 - INFO - Processando: in_100_00004387.png (Sample 5)
+2026-03-30 14:43:20,676 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00004387.png
+2026-03-30 14:43:20,676 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_05_in_100_00004387\synthesis_in_100_00004387.png
+2026-03-30 14:43:20,676 - INFO - Tamanho: 40x40
+2026-03-30 14:43:20,676 - INFO - ======================================================================
+2026-03-30 14:43:20,676 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00004387.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_05_in_100_00004387\synthesis_in_100_00004387.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:43:27,375 - INFO - 
+======================================================================
+2026-03-30 14:43:27,375 - INFO - Processando: in_100_00004787.png (Sample 6)
+2026-03-30 14:43:27,375 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00004787.png
+2026-03-30 14:43:27,375 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_06_in_100_00004787\synthesis_in_100_00004787.png
+2026-03-30 14:43:27,375 - INFO - Tamanho: 40x40
+2026-03-30 14:43:27,375 - INFO - ======================================================================
+2026-03-30 14:43:27,375 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00004787.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_06_in_100_00004787\synthesis_in_100_00004787.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:43:34,103 - INFO - 
+======================================================================
+2026-03-30 14:43:34,103 - INFO - Processando: in_100_00005257.png (Sample 7)
+2026-03-30 14:43:34,103 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00005257.png
+2026-03-30 14:43:34,103 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_07_in_100_00005257\synthesis_in_100_00005257.png
+2026-03-30 14:43:34,103 - INFO - Tamanho: 40x40
+2026-03-30 14:43:34,103 - INFO - ======================================================================
+2026-03-30 14:43:34,103 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00005257.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_07_in_100_00005257\synthesis_in_100_00005257.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:43:40,551 - INFO - 
+======================================================================
+2026-03-30 14:43:40,551 - INFO - Processando: in_100_00005642.png (Sample 8)
+2026-03-30 14:43:40,551 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00005642.png
+2026-03-30 14:43:40,551 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_08_in_100_00005642\synthesis_in_100_00005642.png
+2026-03-30 14:43:40,551 - INFO - Tamanho: 40x40
+2026-03-30 14:43:40,551 - INFO - ======================================================================
+2026-03-30 14:43:40,551 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00005642.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_08_in_100_00005642\synthesis_in_100_00005642.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:43:47,017 - INFO - 
+======================================================================
+2026-03-30 14:43:47,017 - INFO - Processando: in_100_00006111.png (Sample 9)
+2026-03-30 14:43:47,017 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006111.png
+2026-03-30 14:43:47,017 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_09_in_100_00006111\synthesis_in_100_00006111.png
+2026-03-30 14:43:47,017 - INFO - Tamanho: 40x40
+2026-03-30 14:43:47,017 - INFO - ======================================================================
+2026-03-30 14:43:47,017 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006111.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_09_in_100_00006111\synthesis_in_100_00006111.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:43:53,632 - INFO - 
+======================================================================
+2026-03-30 14:43:53,632 - INFO - Processando: in_100_00006263.png (Sample 10)
+2026-03-30 14:43:53,632 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006263.png
+2026-03-30 14:43:53,632 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_10_in_100_00006263\synthesis_in_100_00006263.png
+2026-03-30 14:43:53,632 - INFO - Tamanho: 40x40
+2026-03-30 14:43:53,632 - INFO - ======================================================================
+2026-03-30 14:43:53,632 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006263.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_10_in_100_00006263\synthesis_in_100_00006263.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:44:00,060 - INFO - 
+======================================================================
+2026-03-30 14:44:00,060 - INFO - Processando: in_100_00006675.png (Sample 11)
+2026-03-30 14:44:00,060 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006675.png
+2026-03-30 14:44:00,060 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_11_in_100_00006675\synthesis_in_100_00006675.png
+2026-03-30 14:44:00,060 - INFO - Tamanho: 40x40
+2026-03-30 14:44:00,060 - INFO - ======================================================================
+2026-03-30 14:44:00,060 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006675.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_11_in_100_00006675\synthesis_in_100_00006675.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:44:07,107 - INFO - 
+======================================================================
+2026-03-30 14:44:07,107 - INFO - Processando: in_100_00007021.png (Sample 12)
+2026-03-30 14:44:07,107 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00007021.png
+2026-03-30 14:44:07,107 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_12_in_100_00007021\synthesis_in_100_00007021.png
+2026-03-30 14:44:07,107 - INFO - Tamanho: 40x40
+2026-03-30 14:44:07,107 - INFO - ======================================================================
+2026-03-30 14:44:07,107 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00007021.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_12_in_100_00007021\synthesis_in_100_00007021.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:44:13,843 - INFO - 
+======================================================================
+2026-03-30 14:44:13,843 - INFO - Processando: in_100_00007882.png (Sample 13)
+2026-03-30 14:44:13,843 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00007882.png
+2026-03-30 14:44:13,843 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_13_in_100_00007882\synthesis_in_100_00007882.png
+2026-03-30 14:44:13,843 - INFO - Tamanho: 40x40
+2026-03-30 14:44:13,843 - INFO - ======================================================================
+2026-03-30 14:44:13,843 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00007882.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_13_in_100_00007882\synthesis_in_100_00007882.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:44:20,183 - INFO - 
+======================================================================
+2026-03-30 14:44:20,183 - INFO - Processando: in_100_00009225.png (Sample 14)
+2026-03-30 14:44:20,183 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00009225.png
+2026-03-30 14:44:20,183 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_14_in_100_00009225\synthesis_in_100_00009225.png
+2026-03-30 14:44:20,183 - INFO - Tamanho: 40x40
+2026-03-30 14:44:20,183 - INFO - ======================================================================
+2026-03-30 14:44:20,183 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00009225.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_14_in_100_00009225\synthesis_in_100_00009225.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:44:26,535 - INFO - 
+======================================================================
+2026-03-30 14:44:26,535 - INFO - Processando: in_100_00009271.png (Sample 15)
+2026-03-30 14:44:26,535 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00009271.png
+2026-03-30 14:44:26,535 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_15_in_100_00009271\synthesis_in_100_00009271.png
+2026-03-30 14:44:26,535 - INFO - Tamanho: 40x40
+2026-03-30 14:44:26,535 - INFO - ======================================================================
+2026-03-30 14:44:26,535 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00009271.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_15_in_100_00009271\synthesis_in_100_00009271.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:44:33,193 - INFO - 
+======================================================================
+2026-03-30 14:44:33,193 - INFO - Processando: in_100_00011244.png (Sample 16)
+2026-03-30 14:44:33,193 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00011244.png
+2026-03-30 14:44:33,193 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_16_in_100_00011244\synthesis_in_100_00011244.png
+2026-03-30 14:44:33,193 - INFO - Tamanho: 40x40
+2026-03-30 14:44:33,193 - INFO - ======================================================================
+2026-03-30 14:44:33,193 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00011244.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_16_in_100_00011244\synthesis_in_100_00011244.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:44:39,683 - INFO - 
+======================================================================
+2026-03-30 14:44:39,683 - INFO - Processando: in_100_00011996.png (Sample 17)
+2026-03-30 14:44:39,683 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00011996.png
+2026-03-30 14:44:39,683 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_17_in_100_00011996\synthesis_in_100_00011996.png
+2026-03-30 14:44:39,683 - INFO - Tamanho: 40x40
+2026-03-30 14:44:39,683 - INFO - ======================================================================
+2026-03-30 14:44:39,683 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00011996.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_17_in_100_00011996\synthesis_in_100_00011996.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:44:46,102 - INFO - 
+======================================================================
+2026-03-30 14:44:46,102 - INFO - Processando: in_100_00012077.png (Sample 18)
+2026-03-30 14:44:46,102 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012077.png
+2026-03-30 14:44:46,102 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_18_in_100_00012077\synthesis_in_100_00012077.png
+2026-03-30 14:44:46,102 - INFO - Tamanho: 40x40
+2026-03-30 14:44:46,102 - INFO - ======================================================================
+2026-03-30 14:44:46,103 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012077.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_18_in_100_00012077\synthesis_in_100_00012077.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:44:52,666 - INFO - 
+======================================================================
+2026-03-30 14:44:52,666 - INFO - Processando: in_100_00012534.png (Sample 19)
+2026-03-30 14:44:52,666 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012534.png
+2026-03-30 14:44:52,666 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_19_in_100_00012534\synthesis_in_100_00012534.png
+2026-03-30 14:44:52,666 - INFO - Tamanho: 40x40
+2026-03-30 14:44:52,666 - INFO - ======================================================================
+2026-03-30 14:44:52,666 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012534.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_19_in_100_00012534\synthesis_in_100_00012534.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:44:59,270 - INFO - 
+======================================================================
+2026-03-30 14:44:59,270 - INFO - Processando: in_100_00012538.png (Sample 20)
+2026-03-30 14:44:59,270 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012538.png
+2026-03-30 14:44:59,270 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_20_in_100_00012538\synthesis_in_100_00012538.png
+2026-03-30 14:44:59,270 - INFO - Tamanho: 40x40
+2026-03-30 14:44:59,270 - INFO - ======================================================================
+2026-03-30 14:44:59,270 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012538.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira\sample_20_in_100_00012538\synthesis_in_100_00012538.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:45:05,777 - INFO - 
+######################################################################
+2026-03-30 14:45:05,793 - INFO - # RESUMO FINAL
+2026-03-30 14:45:05,793 - INFO - ######################################################################
+2026-03-30 14:45:05,793 - INFO - Total de amostras: 20
+2026-03-30 14:45:05,793 - INFO - Sucesso: 20
+2026-03-30 14:45:05,793 - INFO - Falhas: 0
+2026-03-30 14:45:05,793 - INFO - Duração total: 0:02:12.688011
+2026-03-30 14:45:05,793 - INFO - Fim: 2026-03-30 14:45:05
+2026-03-30 14:45:05,793 - INFO - Resultados salvos em: D:\0Code\_phdSeismic\textureSSD\result\comparaBaseFerreira
+2026-03-30 14:45:05,794 - INFO - ######################################################################
+
+2026-03-30 14:57:40,228 - INFO - 
+######################################################################
+2026-03-30 14:57:40,229 - INFO - # COMPARABASEFERREIRA - Síntese de Textura
+2026-03-30 14:57:40,229 - INFO - # Início: 2026-03-30 14:57:40
+2026-03-30 14:57:40,229 - INFO - ######################################################################
+
+2026-03-30 14:57:40,229 - INFO - Diretório de resultados: D:\0Code\_phdSeismic\textureSSD\result\compara001
+2026-03-30 14:57:41,260 - INFO - Encontradas 20 imagens no dataset
+2026-03-30 14:57:41,260 - INFO - 
+Processando 20 imagens...
+2026-03-30 14:57:41,260 - INFO - 
+======================================================================
+2026-03-30 14:57:41,260 - INFO - Processando: in_100_00000512.png (Sample 1)
+2026-03-30 14:57:41,261 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00000512.png
+2026-03-30 14:57:41,261 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_01_in_100_00000512\synthesis_in_100_00000512.png
+2026-03-30 14:57:41,261 - INFO - Tamanho: 40x40
+2026-03-30 14:57:41,261 - INFO - ======================================================================
+2026-03-30 14:57:41,261 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00000512.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_01_in_100_00000512\synthesis_in_100_00000512.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:57:47,935 - INFO - 
+======================================================================
+2026-03-30 14:57:47,935 - INFO - Processando: in_100_00001729.png (Sample 2)
+2026-03-30 14:57:47,935 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00001729.png
+2026-03-30 14:57:47,935 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_02_in_100_00001729\synthesis_in_100_00001729.png
+2026-03-30 14:57:47,935 - INFO - Tamanho: 40x40
+2026-03-30 14:57:47,935 - INFO - ======================================================================
+2026-03-30 14:57:47,935 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00001729.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_02_in_100_00001729\synthesis_in_100_00001729.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:57:54,635 - INFO - 
+======================================================================
+2026-03-30 14:57:54,635 - INFO - Processando: in_100_00002209.png (Sample 3)
+2026-03-30 14:57:54,635 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00002209.png
+2026-03-30 14:57:54,635 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_03_in_100_00002209\synthesis_in_100_00002209.png
+2026-03-30 14:57:54,635 - INFO - Tamanho: 40x40
+2026-03-30 14:57:54,636 - INFO - ======================================================================
+2026-03-30 14:57:54,636 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00002209.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_03_in_100_00002209\synthesis_in_100_00002209.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:58:01,133 - INFO - 
+======================================================================
+2026-03-30 14:58:01,133 - INFO - Processando: in_100_00002359.png (Sample 4)
+2026-03-30 14:58:01,133 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00002359.png
+2026-03-30 14:58:01,133 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_04_in_100_00002359\synthesis_in_100_00002359.png
+2026-03-30 14:58:01,133 - INFO - Tamanho: 40x40
+2026-03-30 14:58:01,133 - INFO - ======================================================================
+2026-03-30 14:58:01,133 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00002359.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_04_in_100_00002359\synthesis_in_100_00002359.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:58:07,551 - INFO - 
+======================================================================
+2026-03-30 14:58:07,551 - INFO - Processando: in_100_00004387.png (Sample 5)
+2026-03-30 14:58:07,551 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00004387.png
+2026-03-30 14:58:07,551 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_05_in_100_00004387\synthesis_in_100_00004387.png
+2026-03-30 14:58:07,551 - INFO - Tamanho: 40x40
+2026-03-30 14:58:07,551 - INFO - ======================================================================
+2026-03-30 14:58:07,551 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00004387.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_05_in_100_00004387\synthesis_in_100_00004387.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:58:14,329 - INFO - 
+======================================================================
+2026-03-30 14:58:14,329 - INFO - Processando: in_100_00004787.png (Sample 6)
+2026-03-30 14:58:14,329 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00004787.png
+2026-03-30 14:58:14,329 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_06_in_100_00004787\synthesis_in_100_00004787.png
+2026-03-30 14:58:14,329 - INFO - Tamanho: 40x40
+2026-03-30 14:58:14,329 - INFO - ======================================================================
+2026-03-30 14:58:14,329 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00004787.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_06_in_100_00004787\synthesis_in_100_00004787.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:58:21,127 - INFO - 
+======================================================================
+2026-03-30 14:58:21,127 - INFO - Processando: in_100_00005257.png (Sample 7)
+2026-03-30 14:58:21,127 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00005257.png
+2026-03-30 14:58:21,127 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_07_in_100_00005257\synthesis_in_100_00005257.png
+2026-03-30 14:58:21,127 - INFO - Tamanho: 40x40
+2026-03-30 14:58:21,127 - INFO - ======================================================================
+2026-03-30 14:58:21,127 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00005257.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_07_in_100_00005257\synthesis_in_100_00005257.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:58:28,329 - INFO - 
+======================================================================
+2026-03-30 14:58:28,329 - INFO - Processando: in_100_00005642.png (Sample 8)
+2026-03-30 14:58:28,329 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00005642.png
+2026-03-30 14:58:28,329 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_08_in_100_00005642\synthesis_in_100_00005642.png
+2026-03-30 14:58:28,329 - INFO - Tamanho: 40x40
+2026-03-30 14:58:28,329 - INFO - ======================================================================
+2026-03-30 14:58:28,329 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00005642.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_08_in_100_00005642\synthesis_in_100_00005642.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:58:35,629 - INFO - 
+======================================================================
+2026-03-30 14:58:35,629 - INFO - Processando: in_100_00006111.png (Sample 9)
+2026-03-30 14:58:35,629 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006111.png
+2026-03-30 14:58:35,629 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_09_in_100_00006111\synthesis_in_100_00006111.png
+2026-03-30 14:58:35,629 - INFO - Tamanho: 40x40
+2026-03-30 14:58:35,629 - INFO - ======================================================================
+2026-03-30 14:58:35,629 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006111.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_09_in_100_00006111\synthesis_in_100_00006111.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:58:42,993 - INFO - 
+======================================================================
+2026-03-30 14:58:42,993 - INFO - Processando: in_100_00006263.png (Sample 10)
+2026-03-30 14:58:42,993 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006263.png
+2026-03-30 14:58:42,994 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_10_in_100_00006263\synthesis_in_100_00006263.png
+2026-03-30 14:58:42,994 - INFO - Tamanho: 40x40
+2026-03-30 14:58:42,994 - INFO - ======================================================================
+2026-03-30 14:58:42,994 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006263.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_10_in_100_00006263\synthesis_in_100_00006263.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:58:49,957 - INFO - 
+======================================================================
+2026-03-30 14:58:49,959 - INFO - Processando: in_100_00006675.png (Sample 11)
+2026-03-30 14:58:49,959 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006675.png
+2026-03-30 14:58:49,959 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_11_in_100_00006675\synthesis_in_100_00006675.png
+2026-03-30 14:58:49,959 - INFO - Tamanho: 40x40
+2026-03-30 14:58:49,959 - INFO - ======================================================================
+2026-03-30 14:58:49,959 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006675.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_11_in_100_00006675\synthesis_in_100_00006675.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:58:56,808 - INFO - 
+======================================================================
+2026-03-30 14:58:56,808 - INFO - Processando: in_100_00007021.png (Sample 12)
+2026-03-30 14:58:56,808 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00007021.png
+2026-03-30 14:58:56,808 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_12_in_100_00007021\synthesis_in_100_00007021.png
+2026-03-30 14:58:56,808 - INFO - Tamanho: 40x40
+2026-03-30 14:58:56,808 - INFO - ======================================================================
+2026-03-30 14:58:56,808 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00007021.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_12_in_100_00007021\synthesis_in_100_00007021.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:59:03,547 - INFO - 
+======================================================================
+2026-03-30 14:59:03,547 - INFO - Processando: in_100_00007882.png (Sample 13)
+2026-03-30 14:59:03,547 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00007882.png
+2026-03-30 14:59:03,547 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_13_in_100_00007882\synthesis_in_100_00007882.png
+2026-03-30 14:59:03,547 - INFO - Tamanho: 40x40
+2026-03-30 14:59:03,547 - INFO - ======================================================================
+2026-03-30 14:59:03,547 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00007882.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_13_in_100_00007882\synthesis_in_100_00007882.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:59:10,694 - INFO - 
+======================================================================
+2026-03-30 14:59:10,694 - INFO - Processando: in_100_00009225.png (Sample 14)
+2026-03-30 14:59:10,695 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00009225.png
+2026-03-30 14:59:10,695 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_14_in_100_00009225\synthesis_in_100_00009225.png
+2026-03-30 14:59:10,695 - INFO - Tamanho: 40x40
+2026-03-30 14:59:10,695 - INFO - ======================================================================
+2026-03-30 14:59:10,695 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00009225.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_14_in_100_00009225\synthesis_in_100_00009225.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:59:17,766 - INFO - 
+======================================================================
+2026-03-30 14:59:17,767 - INFO - Processando: in_100_00009271.png (Sample 15)
+2026-03-30 14:59:17,767 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00009271.png
+2026-03-30 14:59:17,767 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_15_in_100_00009271\synthesis_in_100_00009271.png
+2026-03-30 14:59:17,767 - INFO - Tamanho: 40x40
+2026-03-30 14:59:17,767 - INFO - ======================================================================
+2026-03-30 14:59:17,767 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00009271.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_15_in_100_00009271\synthesis_in_100_00009271.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:59:24,639 - INFO - 
+======================================================================
+2026-03-30 14:59:24,639 - INFO - Processando: in_100_00011244.png (Sample 16)
+2026-03-30 14:59:24,639 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00011244.png
+2026-03-30 14:59:24,639 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_16_in_100_00011244\synthesis_in_100_00011244.png
+2026-03-30 14:59:24,639 - INFO - Tamanho: 40x40
+2026-03-30 14:59:24,639 - INFO - ======================================================================
+2026-03-30 14:59:24,639 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00011244.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_16_in_100_00011244\synthesis_in_100_00011244.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:59:31,287 - INFO - 
+======================================================================
+2026-03-30 14:59:31,287 - INFO - Processando: in_100_00011996.png (Sample 17)
+2026-03-30 14:59:31,287 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00011996.png
+2026-03-30 14:59:31,287 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_17_in_100_00011996\synthesis_in_100_00011996.png
+2026-03-30 14:59:31,287 - INFO - Tamanho: 40x40
+2026-03-30 14:59:31,287 - INFO - ======================================================================
+2026-03-30 14:59:31,287 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00011996.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_17_in_100_00011996\synthesis_in_100_00011996.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:59:38,024 - INFO - 
+======================================================================
+2026-03-30 14:59:38,024 - INFO - Processando: in_100_00012077.png (Sample 18)
+2026-03-30 14:59:38,024 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012077.png
+2026-03-30 14:59:38,024 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_18_in_100_00012077\synthesis_in_100_00012077.png
+2026-03-30 14:59:38,024 - INFO - Tamanho: 40x40
+2026-03-30 14:59:38,033 - INFO - ======================================================================
+2026-03-30 14:59:38,033 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012077.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_18_in_100_00012077\synthesis_in_100_00012077.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:59:44,830 - INFO - 
+======================================================================
+2026-03-30 14:59:44,830 - INFO - Processando: in_100_00012534.png (Sample 19)
+2026-03-30 14:59:44,830 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012534.png
+2026-03-30 14:59:44,830 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_19_in_100_00012534\synthesis_in_100_00012534.png
+2026-03-30 14:59:44,830 - INFO - Tamanho: 40x40
+2026-03-30 14:59:44,830 - INFO - ======================================================================
+2026-03-30 14:59:44,830 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012534.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_19_in_100_00012534\synthesis_in_100_00012534.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:59:51,916 - INFO - 
+======================================================================
+2026-03-30 14:59:51,916 - INFO - Processando: in_100_00012538.png (Sample 20)
+2026-03-30 14:59:51,917 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012538.png
+2026-03-30 14:59:51,917 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_20_in_100_00012538\synthesis_in_100_00012538.png
+2026-03-30 14:59:51,917 - INFO - Tamanho: 40x40
+2026-03-30 14:59:51,917 - INFO - ======================================================================
+2026-03-30 14:59:51,917 - INFO - Executando: C:\Users\lucia\miniconda3\envs\lir\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012538.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\sample_20_in_100_00012538\synthesis_in_100_00012538.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10
+2026-03-30 14:59:59,116 - INFO - 
+######################################################################
+2026-03-30 14:59:59,116 - INFO - # RESUMO FINAL
+2026-03-30 14:59:59,116 - INFO - ######################################################################
+2026-03-30 14:59:59,116 - INFO - Total de amostras: 20
+2026-03-30 14:59:59,116 - INFO - Sucesso: 20
+2026-03-30 14:59:59,116 - INFO - Falhas: 0
+2026-03-30 14:59:59,117 - INFO - Duração total: 0:02:18.888363
+2026-03-30 14:59:59,117 - INFO - Fim: 2026-03-30 14:59:59
+2026-03-30 14:59:59,117 - INFO - Resultados salvos em: D:\0Code\_phdSeismic\textureSSD\result\compara001
+2026-03-30 14:59:59,117 - INFO - ######################################################################
+

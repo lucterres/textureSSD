@@ -1,0 +1,4 @@
+PWD d:\0Code\textureSSD\documentation
+INPUT C:\Users\lucia\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
+INPUT d:\0Code\textureSSD\documentation\_v6.tex
+OUTPUT _v6.log

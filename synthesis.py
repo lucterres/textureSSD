@@ -32,8 +32,11 @@ import time
 import uuid
 import pandas as pd 
 import suport.patchesMethods as pm
+import os
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+from datetime import datetime
+import traceback
 
 
 EIGHT_CONNECTED_NEIGHBOR_KERNEL = np.array([[1., 1., 1.],
@@ -219,13 +222,15 @@ def analizeMetrics(original_sample, resultRGBW):
     euclidean_distance = lbp_tile_distance(original_sample, resultRGBW)
 
     # Create a DataFrame to display the results
-    metrics = pd.DataFrame({
+    metrics_df = pd.DataFrame({
         'Metric': ['MSE', 'DLBP' , 'DSSIM'],
         'Value': [m, euclidean_distance, s]
     })
-    print(metrics)
+    print(metrics_df)
+    # Return raw values for programmatic usage
+    return m, euclidean_distance, s
     
-def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize):
+def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_size, visualize, patches_db=None):
     # Convert original to sample representation.
     print ("Starting texture synthesis...")
 
@@ -278,8 +283,18 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
         print("Error: no patches found for this image")
         return None
 
-    # build patches database to find the nearest patch according to angle
-    samplesPatchesDB = pm.loadDataBase() #(600,2000)    
+    # use provided patches_db (loaded once) or fallback
+    if patches_db is None:
+        try:
+            cache_path = globals().get('runtime_args').patches_cache_path if 'runtime_args' in globals() else 'result/patches_db_cache.npz'
+            rebuild_flag = globals().get('runtime_args').rebuild_patches_db if 'runtime_args' in globals() else False
+            if cache_path == 'none':
+                cache_path = None
+            samplesPatchesDB = pm.loadDataBase(cache_path=cache_path, rebuild=rebuild_flag)
+        except Exception:
+            samplesPatchesDB = pm.loadDataBase()
+    else:
+        samplesPatchesDB = patches_db
     # create the interface edge dilated 
     dilated_edge, zone0, zone1, fullmask = pm.create_Masks(generat_mask)
     zones = [dilated_edge, zone0, zone1, fullmask]
@@ -367,7 +382,7 @@ def synthesize(origRGBSample, semantic_mask, generat_mask, window_size, kernel_s
     # fourth step is to complete the full mask
     controlMask = controlMask + fullmask
     inspect(controlMask, "controlMask + fullmask expanded")
-    fillSample
+    fillSample()
 
     #cv2.waitKey(0)
     if visualize:
@@ -426,11 +441,17 @@ def parse_args():
     parser.add_argument('--window_width', type=int, required=False, default=50, help='Width of the synthesis window')
     parser.add_argument('--kernel_size', type=int, required=False, default=11, help='One dimension of the square synthesis kernel')
     parser.add_argument('--visualize', required=False, action='store_true', help='Visualize the synthesis process')
+    parser.add_argument('--patches_cache_path', type=str, required=False, default='result/patches_db_cache.npz',
+                        help='Path to cache the patches database (.npz). Use "none" to disable caching.')
+    parser.add_argument('--rebuild_patches_db', action='store_true', help='Force rebuild of patches DB even if cache exists')
+    parser.add_argument('--iterations', type=int, required=False, default=50, help='Number of synthesis iterations (default: 50)')
     args = parser.parse_args()
     return args
 
 def main():
     args = parse_args()
+    # store globally for synthesize() optional cache usage
+    globals()['runtime_args'] = args
     sample = cv2.imread(args.sample_path)
     if sample is None:
         raise ValueError('Unable to read image from sample_path.')
@@ -439,7 +460,7 @@ def main():
         sample_semantic_mask = cv2.imread(args.sample_semantic_mask_path)
         sample_semantic_mask = cv2.cvtColor(sample_semantic_mask, cv2.COLOR_BGR2GRAY) 
         if sample_semantic_mask is None:
-            raise ValueError('Unable to read image from sample_path.')
+            raise ValueError('Unable to read image from sample_semantic_mask.')
     else:
         sample_semantic_mask = sample
             
@@ -447,7 +468,7 @@ def main():
         generat_mask = cv2.imread(args.generat_mask_path)
         generat_mask = cv2.cvtColor(generat_mask, cv2.COLOR_BGR2GRAY) 
         if generat_mask is None:
-            raise ValueError('Unable to read image from sample_path.')
+            raise ValueError('Unable to read image from generat_mask.')
     else:
         idim = args.window_height
         jdim = args.window_width
@@ -455,26 +476,113 @@ def main():
 
     validate_args(args)
 
-    tic = time.time() 
-    synthesized_texture= synthesize(origRGBSample=sample, 
-                                    semantic_mask = sample_semantic_mask,
-                                    generat_mask = generat_mask,
-                                    window_size=(args.window_height, args.window_width), 
-                                    kernel_size=args.kernel_size, 
-                                    visualize=args.visualize)
-    toc = time.time()
-    print ("Tempo de processamento:" , toc - tic);
+    # Repeat synthesis n times and record timings
+    os.makedirs("result", exist_ok=True)
+    # Create a unique subfolder for this run 
+    # run_id = nome do sample
+    run_id = os.path.basename(args.sample_path).split('.')[0]
+    run_dir = os.path.join('result', f'run_{run_id}')
+    # se existir o diretorio rundir  acrescenta um numero no final
+    if os.path.exists(run_dir):
+        i = 1
+        while os.path.exists(run_dir):
+            run_dir = os.path.join('result', f'run_{run_id}_{i}')
+            i += 1
+    os.makedirs(run_dir, exist_ok=False)
+    print ("*****************")
+    print(f"Resultados desta execução serão salvos em: {run_dir}")
+    print ("*****************")
+    durations = []
+    metrics_rows = []  # collect per-iteration metrics
+    n = args.iterations  # number of synthesis iterations
+    metrics_csv_path = None
+    i = -1  # track iteration for error reporting
+    # Load / build patches DB once before loop
+    patches_db = None
+    try:
+        cache_path = args.patches_cache_path
+        rebuild_flag = args.rebuild_patches_db
+        if cache_path == 'none':
+            cache_path = None
+        patches_db = pm.loadDataBase(cache_path=cache_path, rebuild=rebuild_flag)
+        print(f"Patches DB carregado: {len(patches_db)} patches.")
+    except Exception as e:
+        print(f"Falha ao carregar patches DB com cache (fallback para rebuild in-memory): {e}")
+        try:
+            patches_db = pm.loadDataBase()
+        except Exception as ee:
+            print(f"Falha ao construir patches DB sem cache: {ee}")
+            patches_db = None
+    print ("*****************")
+    try:
+        for i in range(n):
+            tic = time.time()
+            print ("*****************")
+            synthesized_texture = synthesize(origRGBSample=sample,
+                                             semantic_mask=sample_semantic_mask,
+                                             generat_mask=generat_mask,
+                                             window_size=(args.window_height, args.window_width),
+                                             kernel_size=args.kernel_size,
+                                             visualize=args.visualize,
+                                             patches_db=patches_db)
+            toc = time.time()
+            dur = toc - tic
+            durations.append(dur)
+            print(f"Iteração {i+1}/{n} - Tempo de processamento: {dur:.3f}s")
 
-    # save result
-    randomName = str(uuid.uuid4())[:8]
-    filename = "result/" + randomName  + ".jpg"
-    cv2.imwrite(filename, synthesized_texture)
-    print(f'Synthesized texture saved to {filename}')
-    # compare original and synthesized texture
-    graysample = cv2.cvtColor(sample, cv2.COLOR_BGR2GRAY)
-    synthesized_texture = cv2.cvtColor(synthesized_texture, cv2.COLOR_BGR2GRAY)
-    analizeMetrics(graysample, synthesized_texture)
-    pm.showImages(images=[sample,synthesized_texture], imagesTitle=[args.sample_path,randomName],size=(10,10)) 
+            # save result of this iteration
+            randomName = str(uuid.uuid4())[:8]
+            filename = os.path.join(run_dir, f"{randomName}.jpg")
+            cv2.imwrite(filename, synthesized_texture)
+            print(f'Iteração {i+1}: textura sintetizada salva em {filename}')
+
+            # Analyze metrics for this iteration (optional: could skip for speed)
+            graysample = cv2.cvtColor(sample, cv2.COLOR_BGR2GRAY)
+            synthesized_gray = cv2.cvtColor(synthesized_texture, cv2.COLOR_BGR2GRAY)
+            m, lbp_dist, dssim_val = analizeMetrics(graysample, synthesized_gray)
+            metrics_rows.append({
+                'iteration': i+1,
+                'output_file': filename,
+                'time_sec': dur,
+                'mse': m,
+                'dssim': dssim_val,
+                'lbp_distance': lbp_dist
+            })
+    except Exception as e:
+        print(f"Erro durante a iteração {i+1} (loop interrompido): {e}")
+        traceback.print_exc()
+    finally:
+        if durations:
+            print(f"Tempo médio ({len(durations)} execuções bem-sucedidas): {np.mean(durations):.3f}s | Desvio padrão: {np.std(durations):.3f}s")
+        else:
+            print("Nenhuma execução bem-sucedida para calcular estatísticas.")
+
+        # Persist metrics to CSV (even if partial)
+        # calcule as estatísticas min, max, mean, stddev, q125, median, q75
+
+        metrics_df = pd.DataFrame(metrics_rows)
+        #troca randomname por nome da sample
+        sampleName = os.path.splitext(os.path.basename(args.sample_path))[0]
+        metrics_csv_path = os.path.join(run_dir, f"run_metrics_{sampleName}.csv")
+        run_ts = datetime.now().isoformat(timespec='seconds')
+        with open(metrics_csv_path, 'w', encoding='utf-8', newline='') as f:
+            f.write(f"# run_dir;{run_dir}\n")
+            f.write(f"# run_timestamp;{run_ts}\n")
+            f.write(f"# sample_path;{args.sample_path}\n")
+            f.write(f"# sample_semantic_mask_path;{args.sample_semantic_mask_path or 'N/A'}\n")
+            f.write(f"# generat_mask_path;{args.generat_mask_path or 'N/A'}\n")
+            f.write(f"# window_height;{args.window_height}\n")
+            f.write(f"# window_width;{args.window_width}\n")
+            f.write(f"# kernel_size;{args.kernel_size}\n")
+            f.write(f"# visualize;{args.visualize}\n")
+            f.write(f"# iterations_requested;{args.iterations}\n")
+            f.write(f"# iterations_completed;{len(durations)}\n")
+            if i >= 0 and len(durations) < n:
+                f.write(f"# interrupted_iteration;{i+1}\n")
+            #TODO gerar estatísticas descritivas
+            f.write("# --- métricas por iteração ---\n")
+            metrics_df.to_csv(f, sep=';', index=False, float_format='%.6f')
+        print(f"Metric results (parciais ou completos) salvos em {metrics_csv_path}")
 
 if __name__ == '__main__':
     main()
