@@ -84,10 +84,20 @@ def get_candidate_indices(normalized_ssd, error_threshold=ERROR_THRESHOLD):
 def select_pixel_index(normalized_ssd, indices, method='uniform'):
     N = indices[0].shape[0]
 
+    if method == 'best':
+        # Deterministic: always pick the lowest-error candidate.
+        candidate_ssd = normalized_ssd[indices]
+        best_pos = np.argmin(candidate_ssd)
+        return (
+            np.array([indices[0][best_pos]]),
+            np.array([indices[1][best_pos]])
+        )
+
     if method == 'uniform':
         weights = np.ones(N) / float(N)
     else:
-        weights = normalized_ssd[indices]
+        # Weighted random choice favoring lower SSD values.
+        weights = 1.0 / (normalized_ssd[indices] + 1e-12)
         weights = weights / np.sum(weights)
 
     selection = np.random.choice(np.arange(N), size=1, p=weights)
@@ -131,7 +141,9 @@ def update(original_sample):
     return sample.astype(np.float64) / 255.
 
 
-def initialize(original_sample, window_size, kernel_size, controlMask):
+def initialize(
+    original_sample, window_size, kernel_size, controlMask, seed_mode='random'
+):
     sample = update(original_sample)
 
     window = np.zeros(window_size, dtype=np.float64)
@@ -142,8 +154,12 @@ def initialize(original_sample, window_size, kernel_size, controlMask):
         result_window = np.zeros(window_size + (3,), dtype=np.uint8)
 
     sh, sw = original_sample.shape[:2]
-    ih = np.random.randint(sh-3+1)
-    iw = np.random.randint(sw-3+1)
+    if seed_mode == 'center':
+        ih = max((sh // 2) - 1, 0)
+        iw = max((sw // 2) - 1, 0)
+    else:
+        ih = np.random.randint(sh-3+1)
+        iw = np.random.randint(sw-3+1)
     seed = sample[ih:ih+3, iw:iw+3]
 
     h, w = window.shape
@@ -192,7 +208,14 @@ def analizeMetrics(original_sample, resultRGBW, verbose=False):
 
 
 def synthesize_ablated(
-    original_sample, window_size, kernel_size, visualize, verbose=False
+    original_sample,
+    window_size,
+    kernel_size,
+    visualize,
+    verbose=False,
+    selection_method='uniform',
+    seed_mode='random',
+    error_threshold=ERROR_THRESHOLD
 ):
     """
     ABLATED VERSION: Single-pass synthesis without zone separation.
@@ -207,7 +230,7 @@ def synthesize_ablated(
 
     # Initialize synthesis
     _, window, mask, padded_window, padded_mask, result_window = initialize(
-        original_sample, window_size, kernel_size, None
+        original_sample, window_size, kernel_size, None, seed_mode=seed_mode
     )
 
     # Single-pass synthesis: fill entire window
@@ -221,8 +244,12 @@ def synthesize_ablated(
 
             # Compute SSD and select best matching pixel
             ssd = normalized_ssd(sample, window_slice, mask_slice)
-            indices = get_candidate_indices(ssd)
-            selected_index = select_pixel_index(ssd, indices)
+            indices = get_candidate_indices(
+                ssd, error_threshold=error_threshold
+            )
+            selected_index = select_pixel_index(
+                ssd, indices, method=selection_method
+            )
 
             # Translate index to accommodate padding
             selected_index = (selected_index[0] + kernel_size // 2, selected_index[1] + kernel_size // 2)
@@ -287,6 +314,36 @@ def parse_args():
     parser.add_argument('--visualize', required=False, action='store_true', help='Visualize the synthesis process')
     parser.add_argument('--iterations', type=int, required=False, default=50, help='Number of synthesis iterations (default: 50)')
     parser.add_argument(
+        '--seed',
+        type=int,
+        required=False,
+        default=None,
+        help='Random seed for reproducible synthesis runs'
+    )
+    parser.add_argument(
+        '--selection_method',
+        type=str,
+        required=False,
+        default='uniform',
+        choices=['uniform', 'weighted', 'best'],
+        help='Pixel candidate selection strategy'
+    )
+    parser.add_argument(
+        '--seed_mode',
+        type=str,
+        required=False,
+        default='random',
+        choices=['random', 'center'],
+        help='How the initial 3x3 seed is chosen from sample'
+    )
+    parser.add_argument(
+        '--error_threshold',
+        type=float,
+        required=False,
+        default=ERROR_THRESHOLD,
+        help='Candidate acceptance threshold relative to min SSD'
+    )
+    parser.add_argument(
         '--verbose',
         required=False,
         action='store_true',
@@ -298,6 +355,9 @@ def parse_args():
 
 def main():
     args = parse_args()
+    if args.seed is not None:
+        np.random.seed(args.seed)
+
     sample = cv2.imread(args.sample_path)
     if sample is None:
         raise ValueError('Unable to read image from sample_path.')
@@ -362,7 +422,10 @@ def main():
                 window_size=(args.window_height, args.window_width),
                 kernel_size=args.kernel_size,
                 visualize=args.visualize,
-                verbose=args.verbose
+                verbose=args.verbose,
+                selection_method=args.selection_method,
+                seed_mode=args.seed_mode,
+                error_threshold=args.error_threshold
             )
             toc = time.time()
             dur = toc - tic
@@ -446,14 +509,14 @@ def main():
         ]
         if available_stats_columns:
             metrics_stats_df = metrics_df[available_stats_columns].agg(
-                ['min', 'median', 'max']
+                ['min', 'mean', 'median', 'max', 'std']
             ).transpose().reset_index()
             metrics_stats_df = metrics_stats_df.rename(
                 columns={'index': 'metric'}
             )
         else:
             metrics_stats_df = pd.DataFrame(
-                columns=['metric', 'min', 'median', 'max']
+                columns=['metric', 'min', 'mean', 'median', 'max', 'std']
             )
 
         with open(metadata_path, 'w', encoding='utf-8', newline='') as f:
@@ -468,6 +531,10 @@ def main():
             f.write(f"# visualize;{args.visualize}\n")
             f.write(f"# iterations_requested;{args.iterations}\n")
             f.write(f"# iterations_completed;{len(durations)}\n")
+            f.write(f"# random_seed;{args.seed}\n")
+            f.write(f"# selection_method;{args.selection_method}\n")
+            f.write(f"# seed_mode;{args.seed_mode}\n")
+            f.write(f"# error_threshold;{args.error_threshold}\n")
             if i >= 0 and len(durations) < n:
                 f.write(f"# interrupted_iteration;{i+1}\n")
         metrics_df.to_csv(

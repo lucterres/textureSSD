@@ -83,6 +83,25 @@ python synthesis_ablation_no_zones.py `
   --iterations 50
 ```
 
+Configuração alternativa recomendada para o método ablado quando o objetivo for melhorar o equilíbrio entre diversidade visual e estabilidade das métricas:
+
+```powershell
+python synthesis_ablation_no_zones.py `
+  --sample_path tgs_salt/0bdd44d530.png `
+  --generat_mask_path tgs_salt/0bdd44d530Mask.png `
+  --window_height 101 `
+  --window_width 101 `
+  --kernel_size 11 `
+  --iterations 50 `
+  --selection_method weighted `
+  --seed_mode center
+```
+
+- `--selection_method weighted`: introduz pequena aleatoriedade, mas ainda prioriza candidatos com baixo SSD.
+- `--seed_mode center`: inicializa a síntese com um bloco 3x3 central da amostra, reduzindo a dispersão entre iterações.
+
+Nos testes locais, esta combinação apresentou o melhor equilíbrio entre diversidade visual e estabilidade das métricas. A opção `best` torna o resultado mais determinístico e muito próximo da imagem original, enquanto `random` aumenta a diversidade, mas normalmente piora MSE e DSSIM.
+
 #### Opção C: Executar Apenas Método Completo
 
 Executa o método original com separação de zonas:
@@ -110,6 +129,10 @@ python synthesis.py `
 | `--window_width` | Largura da janela de síntese (pixels) | 50 | Não |
 | `--kernel_size` | Tamanho do kernel de síntese (deve ser ímpar) | 11 | Não |
 | `--iterations` | Número de iterações de síntese | 50 (10 para comparar) | Não |
+| `--selection_method` | Estratégia de seleção do pixel candidato (`uniform`, `weighted`, `best`) | `uniform` | Não |
+| `--seed_mode` | Estratégia para escolher o seed inicial 3x3 (`random`, `center`) | `random` | Não |
+| `--seed` | Seed aleatória para reprodutibilidade | `None` | Não |
+| `--error_threshold` | Tolerância relativa ao menor SSD na seleção de candidatos | `0.1` | Não |
 | `--visualize` | Mostrar processo de síntese (muito lento) | False | Não |
 | `--output_dir` | Diretório de saída customizado | Auto-gerado | Não |
 
@@ -117,6 +140,10 @@ python synthesis.py `
 - Tamanho da janela controla a área sintetizada de uma vez (maior = mais lento mas melhor coerência)
 - Tamanho do kernel afeta precisão de correspondência (maior = mais rápido mas menos detalhado)
 - Use números ímpares para kernel_size (11, 13, 15, etc.)
+- A configuração original do método ablado usa os valores padrão do script, sem informar `--selection_method` e `--seed_mode`.
+- `--selection_method weighted --seed_mode center` é uma alternativa recomendada quando você quiser reduzir a dispersão das métricas sem eliminar totalmente a aleatoriedade.
+- Use `--selection_method best` se o objetivo for maximizar regularidade e minimizar MSE.
+- Use `--seed_mode random` apenas quando quiser mais diversidade visual e aceitar piora nas métricas.
 
 ### Estrutura de Saída
 

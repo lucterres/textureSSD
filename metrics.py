@@ -26,7 +26,7 @@ def mse(imageA, imageB):
 def _ssim(imageA, imageB):
     C1 = (0.01 * 255) ** 2
     C2 = (0.03 * 255) ** 2
-
+  
     muA = cv2.GaussianBlur(imageA.astype("float"), (11, 11), 1.5)
     muB = cv2.GaussianBlur(imageB.astype("float"), (11, 11), 1.5)
 

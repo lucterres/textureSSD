@@ -16,6 +16,23 @@ The algorithm synthesizes a new texture from an existing input by sampling the c
 * `iterations` - (Optional) Number of full synthesis repetitions to perform (each run produces an output image & metrics). Default: 50.
 * `visualize` - (Optional) Visualize an in-progress texture synthesis.
 
+### Ablation Study Without Zone Separation
+
+The simplified ablation pipeline is executed with `synthesis_ablation_no_zones.py`.
+
+Recommended configuration after local evaluation:
+
+```bash
+python synthesis_ablation_no_zones.py --sample_path=<input_path> --window_height=[win_height] --window_width=[win_width] --kernel_size=[ksize] --iterations=[n] --selection_method=weighted --seed_mode=center
+```
+
+Recommended flags for this ablation mode:
+
+* `--selection_method=weighted` - Adds controlled randomness while still favoring low-SSD candidates.
+* `--seed_mode=center` - Initializes synthesis from a central 3x3 sample block, which reduced metric dispersion substantially in local tests.
+
+This combination gave the best balance between visual diversity and metric stability. Using `--selection_method=best` makes results more deterministic and closer to the original sample, while `--seed_mode=random` increases diversity but usually worsens MSE and DSSIM.
+
 ## Dependencies
 
 O ambiente conda utilizado é o **LIR**, conforme definido no arquivo `environmentt.yml`.
