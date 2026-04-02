@@ -1,4 +1,0 @@
-metric;min;median;max
-mse;2318.82;2775.43;3302.63
-dssim;0.44;0.50;0.56
-lbp_distance;0.02;0.03;0.04
