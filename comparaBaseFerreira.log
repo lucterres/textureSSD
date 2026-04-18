@@ -362,3 +362,345 @@ Processando 20 imagens...
 2026-03-30 14:59:59,117 - INFO - Resultados salvos em: D:\0Code\_phdSeismic\textureSSD\result\compara001
 2026-03-30 14:59:59,117 - INFO - ######################################################################
 
+2026-04-02 19:06:08,828 - INFO - 
+######################################################################
+2026-04-02 19:06:08,831 - INFO - # COMPARABASEFERREIRA - Síntese de Textura
+2026-04-02 19:06:08,831 - INFO - # Início: 2026-04-02 19:06:08
+2026-04-02 19:06:08,831 - INFO - ######################################################################
+
+2026-04-02 19:06:08,831 - INFO - Diretório de resultados: D:\0Code\_phdSeismic\textureSSD\result\compara001
+2026-04-02 19:06:09,414 - INFO - Encontradas 20 imagens no dataset
+2026-04-02 19:06:09,414 - INFO - 
+Processando 20 imagens...
+2026-04-02 19:06:09,417 - INFO - 
+======================================================================
+2026-04-02 19:06:09,417 - INFO - Processando: in_100_00000512.png (Sample 1)
+2026-04-02 19:06:09,417 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00000512.png
+2026-04-02 19:06:09,417 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_01_in_100_00000512.png
+2026-04-02 19:06:09,417 - INFO - Tamanho: 40x40
+2026-04-02 19:06:09,417 - INFO - Seleção: weighted
+2026-04-02 19:06:09,417 - INFO - Seed mode: center
+2026-04-02 19:06:09,417 - INFO - ======================================================================
+2026-04-02 19:06:09,417 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00000512.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_01_in_100_00000512.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:09,489 - ERROR - STDOUT: 
+2026-04-02 19:06:09,489 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:09,490 - INFO - 
+======================================================================
+2026-04-02 19:06:09,490 - INFO - Processando: in_100_00001729.png (Sample 2)
+2026-04-02 19:06:09,490 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00001729.png
+2026-04-02 19:06:09,490 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_02_in_100_00001729.png
+2026-04-02 19:06:09,490 - INFO - Tamanho: 40x40
+2026-04-02 19:06:09,490 - INFO - Seleção: weighted
+2026-04-02 19:06:09,490 - INFO - Seed mode: center
+2026-04-02 19:06:09,490 - INFO - ======================================================================
+2026-04-02 19:06:09,490 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00001729.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_02_in_100_00001729.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:09,556 - ERROR - STDOUT: 
+2026-04-02 19:06:09,556 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:09,556 - INFO - 
+======================================================================
+2026-04-02 19:06:09,556 - INFO - Processando: in_100_00002209.png (Sample 3)
+2026-04-02 19:06:09,556 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00002209.png
+2026-04-02 19:06:09,556 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_03_in_100_00002209.png
+2026-04-02 19:06:09,556 - INFO - Tamanho: 40x40
+2026-04-02 19:06:09,556 - INFO - Seleção: weighted
+2026-04-02 19:06:09,556 - INFO - Seed mode: center
+2026-04-02 19:06:09,556 - INFO - ======================================================================
+2026-04-02 19:06:09,556 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00002209.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_03_in_100_00002209.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:09,599 - ERROR - STDOUT: 
+2026-04-02 19:06:09,599 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:09,599 - INFO - 
+======================================================================
+2026-04-02 19:06:09,599 - INFO - Processando: in_100_00002359.png (Sample 4)
+2026-04-02 19:06:09,599 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00002359.png
+2026-04-02 19:06:09,614 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_04_in_100_00002359.png
+2026-04-02 19:06:09,614 - INFO - Tamanho: 40x40
+2026-04-02 19:06:09,614 - INFO - Seleção: weighted
+2026-04-02 19:06:09,614 - INFO - Seed mode: center
+2026-04-02 19:06:09,614 - INFO - ======================================================================
+2026-04-02 19:06:09,614 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00002359.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_04_in_100_00002359.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:09,669 - ERROR - STDOUT: 
+2026-04-02 19:06:09,669 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:09,669 - INFO - 
+======================================================================
+2026-04-02 19:06:09,669 - INFO - Processando: in_100_00004387.png (Sample 5)
+2026-04-02 19:06:09,669 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00004387.png
+2026-04-02 19:06:09,669 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_05_in_100_00004387.png
+2026-04-02 19:06:09,671 - INFO - Tamanho: 40x40
+2026-04-02 19:06:09,671 - INFO - Seleção: weighted
+2026-04-02 19:06:09,671 - INFO - Seed mode: center
+2026-04-02 19:06:09,671 - INFO - ======================================================================
+2026-04-02 19:06:09,671 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00004387.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_05_in_100_00004387.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:09,729 - ERROR - STDOUT: 
+2026-04-02 19:06:09,729 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:09,729 - INFO - 
+======================================================================
+2026-04-02 19:06:09,729 - INFO - Processando: in_100_00004787.png (Sample 6)
+2026-04-02 19:06:09,729 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00004787.png
+2026-04-02 19:06:09,729 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_06_in_100_00004787.png
+2026-04-02 19:06:09,729 - INFO - Tamanho: 40x40
+2026-04-02 19:06:09,729 - INFO - Seleção: weighted
+2026-04-02 19:06:09,729 - INFO - Seed mode: center
+2026-04-02 19:06:09,729 - INFO - ======================================================================
+2026-04-02 19:06:09,729 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00004787.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_06_in_100_00004787.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:09,789 - ERROR - STDOUT: 
+2026-04-02 19:06:09,789 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:09,789 - INFO - 
+======================================================================
+2026-04-02 19:06:09,789 - INFO - Processando: in_100_00005257.png (Sample 7)
+2026-04-02 19:06:09,789 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00005257.png
+2026-04-02 19:06:09,789 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_07_in_100_00005257.png
+2026-04-02 19:06:09,789 - INFO - Tamanho: 40x40
+2026-04-02 19:06:09,789 - INFO - Seleção: weighted
+2026-04-02 19:06:09,789 - INFO - Seed mode: center
+2026-04-02 19:06:09,789 - INFO - ======================================================================
+2026-04-02 19:06:09,789 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00005257.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_07_in_100_00005257.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:09,881 - ERROR - STDOUT: 
+2026-04-02 19:06:09,881 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:09,881 - INFO - 
+======================================================================
+2026-04-02 19:06:09,881 - INFO - Processando: in_100_00005642.png (Sample 8)
+2026-04-02 19:06:09,881 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00005642.png
+2026-04-02 19:06:09,881 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_08_in_100_00005642.png
+2026-04-02 19:06:09,881 - INFO - Tamanho: 40x40
+2026-04-02 19:06:09,881 - INFO - Seleção: weighted
+2026-04-02 19:06:09,881 - INFO - Seed mode: center
+2026-04-02 19:06:09,881 - INFO - ======================================================================
+2026-04-02 19:06:09,881 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00005642.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_08_in_100_00005642.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:09,949 - ERROR - STDOUT: 
+2026-04-02 19:06:09,949 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:09,956 - INFO - 
+======================================================================
+2026-04-02 19:06:09,956 - INFO - Processando: in_100_00006111.png (Sample 9)
+2026-04-02 19:06:09,956 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006111.png
+2026-04-02 19:06:09,956 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_09_in_100_00006111.png
+2026-04-02 19:06:09,956 - INFO - Tamanho: 40x40
+2026-04-02 19:06:09,956 - INFO - Seleção: weighted
+2026-04-02 19:06:09,956 - INFO - Seed mode: center
+2026-04-02 19:06:09,956 - INFO - ======================================================================
+2026-04-02 19:06:09,956 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006111.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_09_in_100_00006111.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:10,018 - ERROR - STDOUT: 
+2026-04-02 19:06:10,018 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:10,018 - INFO - 
+======================================================================
+2026-04-02 19:06:10,018 - INFO - Processando: in_100_00006263.png (Sample 10)
+2026-04-02 19:06:10,018 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006263.png
+2026-04-02 19:06:10,018 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_10_in_100_00006263.png
+2026-04-02 19:06:10,018 - INFO - Tamanho: 40x40
+2026-04-02 19:06:10,018 - INFO - Seleção: weighted
+2026-04-02 19:06:10,018 - INFO - Seed mode: center
+2026-04-02 19:06:10,018 - INFO - ======================================================================
+2026-04-02 19:06:10,023 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006263.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_10_in_100_00006263.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:10,071 - ERROR - STDOUT: 
+2026-04-02 19:06:10,071 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:10,071 - INFO - 
+======================================================================
+2026-04-02 19:06:10,071 - INFO - Processando: in_100_00006675.png (Sample 11)
+2026-04-02 19:06:10,071 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006675.png
+2026-04-02 19:06:10,071 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_11_in_100_00006675.png
+2026-04-02 19:06:10,071 - INFO - Tamanho: 40x40
+2026-04-02 19:06:10,071 - INFO - Seleção: weighted
+2026-04-02 19:06:10,071 - INFO - Seed mode: center
+2026-04-02 19:06:10,071 - INFO - ======================================================================
+2026-04-02 19:06:10,071 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00006675.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_11_in_100_00006675.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:10,132 - ERROR - STDOUT: 
+2026-04-02 19:06:10,132 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:10,132 - INFO - 
+======================================================================
+2026-04-02 19:06:10,132 - INFO - Processando: in_100_00007021.png (Sample 12)
+2026-04-02 19:06:10,132 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00007021.png
+2026-04-02 19:06:10,132 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_12_in_100_00007021.png
+2026-04-02 19:06:10,132 - INFO - Tamanho: 40x40
+2026-04-02 19:06:10,132 - INFO - Seleção: weighted
+2026-04-02 19:06:10,132 - INFO - Seed mode: center
+2026-04-02 19:06:10,132 - INFO - ======================================================================
+2026-04-02 19:06:10,132 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00007021.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_12_in_100_00007021.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:10,184 - ERROR - STDOUT: 
+2026-04-02 19:06:10,184 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:10,184 - INFO - 
+======================================================================
+2026-04-02 19:06:10,184 - INFO - Processando: in_100_00007882.png (Sample 13)
+2026-04-02 19:06:10,184 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00007882.png
+2026-04-02 19:06:10,184 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_13_in_100_00007882.png
+2026-04-02 19:06:10,184 - INFO - Tamanho: 40x40
+2026-04-02 19:06:10,184 - INFO - Seleção: weighted
+2026-04-02 19:06:10,184 - INFO - Seed mode: center
+2026-04-02 19:06:10,184 - INFO - ======================================================================
+2026-04-02 19:06:10,184 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00007882.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_13_in_100_00007882.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:10,241 - ERROR - STDOUT: 
+2026-04-02 19:06:10,241 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:10,241 - INFO - 
+======================================================================
+2026-04-02 19:06:10,241 - INFO - Processando: in_100_00009225.png (Sample 14)
+2026-04-02 19:06:10,241 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00009225.png
+2026-04-02 19:06:10,241 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_14_in_100_00009225.png
+2026-04-02 19:06:10,241 - INFO - Tamanho: 40x40
+2026-04-02 19:06:10,241 - INFO - Seleção: weighted
+2026-04-02 19:06:10,241 - INFO - Seed mode: center
+2026-04-02 19:06:10,241 - INFO - ======================================================================
+2026-04-02 19:06:10,241 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00009225.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_14_in_100_00009225.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:10,295 - ERROR - STDOUT: 
+2026-04-02 19:06:10,295 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:10,298 - INFO - 
+======================================================================
+2026-04-02 19:06:10,298 - INFO - Processando: in_100_00009271.png (Sample 15)
+2026-04-02 19:06:10,298 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00009271.png
+2026-04-02 19:06:10,298 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_15_in_100_00009271.png
+2026-04-02 19:06:10,298 - INFO - Tamanho: 40x40
+2026-04-02 19:06:10,298 - INFO - Seleção: weighted
+2026-04-02 19:06:10,298 - INFO - Seed mode: center
+2026-04-02 19:06:10,298 - INFO - ======================================================================
+2026-04-02 19:06:10,298 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00009271.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_15_in_100_00009271.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:10,349 - ERROR - STDOUT: 
+2026-04-02 19:06:10,349 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:10,350 - INFO - 
+======================================================================
+2026-04-02 19:06:10,350 - INFO - Processando: in_100_00011244.png (Sample 16)
+2026-04-02 19:06:10,350 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00011244.png
+2026-04-02 19:06:10,350 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_16_in_100_00011244.png
+2026-04-02 19:06:10,351 - INFO - Tamanho: 40x40
+2026-04-02 19:06:10,351 - INFO - Seleção: weighted
+2026-04-02 19:06:10,351 - INFO - Seed mode: center
+2026-04-02 19:06:10,351 - INFO - ======================================================================
+2026-04-02 19:06:10,351 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00011244.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_16_in_100_00011244.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:10,402 - ERROR - STDOUT: 
+2026-04-02 19:06:10,402 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:10,402 - INFO - 
+======================================================================
+2026-04-02 19:06:10,402 - INFO - Processando: in_100_00011996.png (Sample 17)
+2026-04-02 19:06:10,402 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00011996.png
+2026-04-02 19:06:10,402 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_17_in_100_00011996.png
+2026-04-02 19:06:10,402 - INFO - Tamanho: 40x40
+2026-04-02 19:06:10,402 - INFO - Seleção: weighted
+2026-04-02 19:06:10,402 - INFO - Seed mode: center
+2026-04-02 19:06:10,402 - INFO - ======================================================================
+2026-04-02 19:06:10,402 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00011996.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_17_in_100_00011996.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:10,451 - ERROR - STDOUT: 
+2026-04-02 19:06:10,451 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:10,451 - INFO - 
+======================================================================
+2026-04-02 19:06:10,451 - INFO - Processando: in_100_00012077.png (Sample 18)
+2026-04-02 19:06:10,451 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012077.png
+2026-04-02 19:06:10,451 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_18_in_100_00012077.png
+2026-04-02 19:06:10,451 - INFO - Tamanho: 40x40
+2026-04-02 19:06:10,451 - INFO - Seleção: weighted
+2026-04-02 19:06:10,451 - INFO - Seed mode: center
+2026-04-02 19:06:10,451 - INFO - ======================================================================
+2026-04-02 19:06:10,451 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012077.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_18_in_100_00012077.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:10,508 - ERROR - STDOUT: 
+2026-04-02 19:06:10,508 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:10,508 - INFO - 
+======================================================================
+2026-04-02 19:06:10,508 - INFO - Processando: in_100_00012534.png (Sample 19)
+2026-04-02 19:06:10,508 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012534.png
+2026-04-02 19:06:10,508 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_19_in_100_00012534.png
+2026-04-02 19:06:10,508 - INFO - Tamanho: 40x40
+2026-04-02 19:06:10,508 - INFO - Seleção: weighted
+2026-04-02 19:06:10,508 - INFO - Seed mode: center
+2026-04-02 19:06:10,508 - INFO - ======================================================================
+2026-04-02 19:06:10,508 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012534.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_19_in_100_00012534.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:10,565 - ERROR - STDOUT: 
+2026-04-02 19:06:10,565 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:10,566 - INFO - 
+======================================================================
+2026-04-02 19:06:10,566 - INFO - Processando: in_100_00012538.png (Sample 20)
+2026-04-02 19:06:10,566 - INFO - Entrada: D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012538.png
+2026-04-02 19:06:10,566 - INFO - Saída: D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_20_in_100_00012538.png
+2026-04-02 19:06:10,566 - INFO - Tamanho: 40x40
+2026-04-02 19:06:10,566 - INFO - Seleção: weighted
+2026-04-02 19:06:10,566 - INFO - Seed mode: center
+2026-04-02 19:06:10,566 - INFO - ======================================================================
+2026-04-02 19:06:10,566 - INFO - Executando: D:\0Code\_phdSeismic\textureSSD\.venv\bin\python.exe D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py --sample_path=D:\dataset\NetherlandsF3\tiles_inlines\in_100_00012538.png --out_path=D:\0Code\_phdSeismic\textureSSD\result\compara001\synthesis_20_in_100_00012538.png --window_height=40 --window_width=40 --kernel_size=11 --iterations=10 --selection_method=weighted --seed_mode=center
+2026-04-02 19:06:10,622 - ERROR - STDOUT: 
+2026-04-02 19:06:10,622 - ERROR - STDERR: Traceback (most recent call last):
+  File "D:\0Code\_phdSeismic\textureSSD\synthesis_ablation_no_zones.py", line 19, in <module>
+    import cv2
+ModuleNotFoundError: No module named 'cv2'
+
+2026-04-02 19:06:10,622 - INFO - 
+######################################################################
+2026-04-02 19:06:10,622 - INFO - # RESUMO FINAL
+2026-04-02 19:06:10,622 - INFO - ######################################################################
+2026-04-02 19:06:10,622 - INFO - Total de amostras: 20
+2026-04-02 19:06:10,622 - INFO - Sucesso: 0
+2026-04-02 19:06:10,622 - INFO - Falhas: 20
+2026-04-02 19:06:10,622 - INFO - Duração total: 0:00:01.794697
+2026-04-02 19:06:10,622 - INFO - Fim: 2026-04-02 19:06:10
+2026-04-02 19:06:10,622 - INFO - Resultados salvos em: D:\0Code\_phdSeismic\textureSSD\result\compara001
+2026-04-02 19:06:10,622 - INFO - ######################################################################
+

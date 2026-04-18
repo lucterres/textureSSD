@@ -36,6 +36,8 @@ WINDOW_WIDTH = 40
 KERNEL_SIZE = 11
 ITERATIONS = 10
 NUM_SAMPLES = 20
+SELECTION_METHOD = "weighted"
+SEED_MODE = "center"
 
 
 def get_image_files(dataset_path: Path, limit: int = 10) -> list:
@@ -98,6 +100,8 @@ def run_synthesis(image_path: Path, output_dir: Path, sample_index: int) -> bool
         logger.info(f"Entrada: {image_path}")
         logger.info(f"Saída: {output_path}")
         logger.info(f"Tamanho: {WINDOW_HEIGHT}x{WINDOW_WIDTH}")
+        logger.info(f"Seleção: {SELECTION_METHOD}")
+        logger.info(f"Seed mode: {SEED_MODE}")
         logger.info(f"{'='*70}")
         
         # Construir comando
@@ -109,7 +113,9 @@ def run_synthesis(image_path: Path, output_dir: Path, sample_index: int) -> bool
             f"--window_height={WINDOW_HEIGHT}",
             f"--window_width={WINDOW_WIDTH}",
             f"--kernel_size={KERNEL_SIZE}",
-            f"--iterations={ITERATIONS}"
+            f"--iterations={ITERATIONS}",
+            f"--selection_method={SELECTION_METHOD}",
+            f"--seed_mode={SEED_MODE}"
         ]
         
         logger.info(f"Executando: {' '.join(cmd)}")

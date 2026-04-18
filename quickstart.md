@@ -72,7 +72,7 @@ Imagens de teste estão disponíveis em:
 python synthesis.py --sample_path=examples/wood.jpg --visualize
 ```
 
-## Ablação Study
+## Estudo de Ablação
 
 Para executar estudos de ablação sem zonas:
 
@@ -85,6 +85,22 @@ python synthesis_ablation_no_zones.py \
   --iterations=20 \
   --visualize
 ```
+
+### Comparação em Lote com Dataset NetherlandsF3
+
+Para gerar sínteses em lote a partir das imagens do dataset NetherlandsF3, use:
+
+```bash
+python comparaBaseFerreira.py
+```
+
+Esse script:
+- lê imagens em `D:/dataset/NetherlandsF3/tiles_inlines`
+- executa `synthesis_ablation_no_zones.py` para múltiplas amostras
+- usa a configuração atual de ablação em lote com `selection_method=weighted` e `seed_mode=center`
+- salva os resultados em um diretório sequencial dentro de `result/`, como `compara001/`
+
+Se necessário, ajuste diretamente no script os parâmetros `WINDOW_HEIGHT`, `WINDOW_WIDTH`, `KERNEL_SIZE`, `ITERATIONS` e `NUM_SAMPLES`.
 
 ## Otimização com Cache
 
